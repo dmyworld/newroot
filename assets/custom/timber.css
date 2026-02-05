@@ -1,0 +1,241 @@
+/* Timber ERP Theme */
+:root {
+    --timber-primary: #2E7D32;
+    /* Forest Green */
+    --timber-primary-light: #4caf50;
+    --timber-secondary: #795548;
+    /* Wood Brown */
+    --timber-secondary-light: #a1887f;
+    --timber-accent: #FFC107;
+    /* Amber/Gold */
+    --timber-bg: #F9FBE7;
+    /* Very Light Green/Off-white */
+    --timber-surface: #FFFFFF;
+    /* White */
+    --timber-text: #3E2723;
+    /* Dark Brown content text */
+    --timber-border: #D7CCC8;
+    /* Light Brown border */
+}
+
+body {
+    background-color: var(--timber-bg);
+    color: #196018;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Card Styling - Friendly & Soft */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(46, 125, 50, 0.08);
+    /* Green tinted shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(121, 85, 72, 0.12);
+    /* Brown tinted hover */
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid var(--timber-border);
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-title {
+    color: var(--timber-primary);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 1rem;
+}
+
+.card-body,
+.card-content {
+    color: #000000;
+    /* Force black text in cards */
+}
+
+/* Friendly Timber Utilities */
+.bg-timber-primary {
+    background: linear-gradient(135deg, #2E7D32 0%, #66BB6A 100%) !important;
+    color: white;
+    box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+}
+
+.bg-timber-secondary {
+    background: linear-gradient(135deg, #5D4037 0%, #8D6E63 100%) !important;
+    color: white;
+    box-shadow: 0 4px 10px rgba(93, 64, 55, 0.3);
+}
+
+.bg-timber-accent {
+    background: linear-gradient(135deg, #FFA000 0%, #FFCA28 100%) !important;
+    color: #3E2723;
+    box-shadow: 0 4px 10px rgba(255, 160, 0, 0.3);
+}
+
+.bg-timber-dark {
+    background: linear-gradient(135deg, #1B5E20 0%, #388E3C 100%) !important;
+    color: white;
+    box-shadow: 0 4px 10px rgba(27, 94, 32, 0.3);
+}
+
+/* Text Colors */
+.text-timber-primary {
+    color: var(--timber-primary) !important;
+}
+
+.text-timber-secondary {
+    color: var(--timber-secondary) !important;
+}
+
+.text-timber-accent {
+    color: #F57F17 !important;
+}
+
+/* Darker Amber for text visibility */
+.text-timber-dark {
+    color: #1B5E20 !important;
+}
+
+/* Table Enhancements */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    /* Row spacing */
+}
+
+.table thead th {
+    background-color: #D7CCC8;
+    /* Light Wood Brown */
+    color: #000000;
+    /* Black Text */
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 15px;
+}
+
+.table thead th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table thead th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.table tbody tr {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+    background-color: #EFEBE9 !important;
+    /* Light brown hover */
+}
+
+.table td {
+    vertical-align: middle;
+    border-top: none;
+    padding: 12px 15px;
+    color: #000000;
+    /* Pure Black for maximum contrast */
+    font-weight: 500;
+}
+
+.table td a {
+    color: var(--timber-primary) !important;
+    font-weight: 600;
+}
+
+.table tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+/* Custom Buttons */
+.btn-timber-primary {
+    background: linear-gradient(135deg, #2E7D32 0%, #43A047 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 2px 5px rgba(46, 125, 50, 0.3);
+}
+
+.btn-timber-primary:hover {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+    color: white;
+    box-shadow: 0 4px 8px rgba(46, 125, 50, 0.4);
+}
+
+/* Badge Tweaks */
+.badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* List Groups */
+.list-group-item {
+    border: none;
+    margin-bottom: 5px;
+    border-radius: 8px !important;
+    background-color: #FAFAFA;
+}
+
+.list-group-item:hover {
+    background-color: #F1F8E9;
+    /* Light Green hover */
+}
+
+/* Input Fields */
+.form-control {
+    border: 1px solid var(--timber-border);
+    border-radius: 6px;
+}
+
+.form-control:focus {
+    border-color: var(--timber-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+}
+
+/* Morris Chart Tooltips */
+.morris-hover.morris-default-style {
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--timber-primary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: var(--timber-secondary);
+}
+
+/* Custom Input Group Addons */
+.input-group-addon {
+    background-color: #F1F8E9;
+    /* Light green */
+    border: 1px solid var(--timber-border);
+    color: var(--timber-primary);
+    font-weight: bold;
+    border-radius: 6px 0 0 6px;
+    padding: 6px 12px;
+}
+
+/* Fix rounding for inputs in groups */
+.input-group .form-control:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}

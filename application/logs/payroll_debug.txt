@@ -1,0 +1,500 @@
+2026-02-02 00:10:04 - Preview Called
+POST: Array
+(
+    [employee_ids] => Array
+        (
+            [0] => 1
+        )
+
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [ci_csrf_token] => 
+)
+
+2026-02-02 00:13:02 - Preview Called
+POST: Array
+(
+    [employee_ids] => Array
+        (
+            [0] => 1
+        )
+
+    [start] => 2026-02-02
+    [end] => 2026-02-02
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:49:48 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:49:48 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:51:45 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:51:45 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:57:23 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 03:57:23 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:09:00 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:09:00 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:12:51 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:12:51 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:22:55 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:26:12 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:28:39 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:37:15 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_list_table_length] => 10
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 1
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 04:44:24 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [1] => 25
+        )
+
+    [gross] => Array
+        (
+            [1] => 800
+        )
+
+    [tax] => Array
+        (
+            [1] => 0
+        )
+
+    [deductions] => Array
+        (
+            [1] => 74
+        )
+
+    [advance] => Array
+        (
+            [1] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [1] => 726
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 05:12:22 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [1] => 25
+        )
+
+    [gross] => Array
+        (
+            [1] => 800
+        )
+
+    [tax] => Array
+        (
+            [1] => 0
+        )
+
+    [deductions] => Array
+        (
+            [1] => 74
+        )
+
+    [advance] => Array
+        (
+            [1] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [1] => 726
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 05:17:50 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [1] => 25
+        )
+
+    [gross] => Array
+        (
+            [1] => 800
+        )
+
+    [tax] => Array
+        (
+            [1] => 0
+        )
+
+    [deductions] => Array
+        (
+            [1] => 74
+        )
+
+    [advance] => Array
+        (
+            [1] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [1] => 726
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 05:19:22 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [1] => 25
+        )
+
+    [gross] => Array
+        (
+            [1] => 800
+        )
+
+    [tax] => Array
+        (
+            [1] => 0
+        )
+
+    [deductions] => Array
+        (
+            [1] => 74
+        )
+
+    [advance] => Array
+        (
+            [1] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [1] => 726
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-02 05:24:29 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-02
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [1] => 25
+        )
+
+    [gross] => Array
+        (
+            [1] => 800
+        )
+
+    [tax] => Array
+        (
+            [1] => 0
+        )
+
+    [deductions] => Array
+        (
+            [1] => 74
+        )
+
+    [advance] => Array
+        (
+            [1] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [1] => 726
+        )
+
+    [ci_csrf_token] => 
+)
+
+2026-02-04 00:19:27 - Finalize Called
+POST: Array
+(
+    [start] => 2026-01-01
+    [end] => 2026-02-04
+    [employee_ids] => Array
+        (
+            [0] => 1
+            [1] => 10
+        )
+
+    [hours] => Array
+        (
+            [10] => 9
+        )
+
+    [gross] => Array
+        (
+            [10] => 1000
+        )
+
+    [tax] => Array
+        (
+            [10] => 0
+        )
+
+    [deductions] => Array
+        (
+            [10] => 77000
+        )
+
+    [advance] => Array
+        (
+            [10] => 0.00
+        )
+
+    [net_pay] => Array
+        (
+            [10] => -76000.00
+        )
+
+    [ci_csrf_token] => 
+)
+

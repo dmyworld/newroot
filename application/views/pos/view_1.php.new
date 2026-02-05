@@ -1,0 +1,229 @@
+<div class="content-body">
+    <div class="card">
+        <div class="card-content">
+            <div id="notify" class="alert alert-success" style="display:none;">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+
+                <div class="message"></div>
+            </div>
+            <div id="thermal_a" class="alert alert-success" style="display:none;">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+
+                <div class="message"></div>
+            </div>
+
+
+            <div id="invoice-template" class="card-body">
+                <div class="row">
+
+                    <div class="">
+                        <?php
+                        $validtoken = hash_hmac('ripemd160', $invoice['iid'], $this->config->item('encryption_key'));
+
+                        $link = base_url('billing/view?id=' . $invoice['iid'] . '&token=' . $validtoken);
+                        if ($invoice['status'] != 'canceled') { ?>
+                            <div class="title-action">
+
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                                                       <!-- SMS -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-blue dropdown-toggle mb-1"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                            <span
+                                    class="fa fa-mobile"></span> SMS
+                                </button>
+                                <div class="dropdown-menu"><a href="#sendSMS" data-toggle="modal"
+                                                              data-remote="false" class="dropdown-item sendsms"
+                                                              data-type="notification"><?php echo $this->lang->line('Invoice Notification') ?></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="#sendSMS" data-toggle="modal" data-remote="false"
+                                       class="dropdown-item sendsms"
+                                       data-type="reminder"><?php echo $this->lang->line('Payment Reminder') ?></a>
+                                    <a
+                                            href="#sendSMS" data-toggle="modal" data-remote="false"
+                                            class="dropdown-item sendsms"
+                                            data-type="received"><?php echo $this->lang->line('Payment Received') ?></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="#sendSMS" data-toggle="modal" data-remote="false"
+                                       class="dropdown-item sendsms" href="#"
+                                       data-type="overdue"><?php echo $this->lang->line('Payment Overdue') ?></a><a
+                                            href="#sendSMS" data-toggle="modal" data-remote="false"
+                                            class="dropdown-item sendsms"
+                                            data-type="refund"><?php echo $this->lang->line('Refund Generated') ?></a>
+
+                                </div>
+
+                            </div>
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+
+                                                                                   <a href="<?php echo 'edit?id=' . $invoice['iid']; ?>" class="btn btn-warning mb-1"><i
+                                        class="fa fa-pencil"></i> <?php echo $this->lang->line('Edit Invoice') ?></a> 
+
+                            <a href="#part_payment" data-toggle="modal" data-remote="false" data-type="reminder"
+                               class="btn btn-large btn-info mb-1" title="Partial Payment"
+                            ><span class="fa fa-money"></span> <?php echo $this->lang->line('Make Payment') ?> </a>
+
+                           
+
+                            <div class="btn-group ">
+                                <button type="button" class="btn btn-success mb-1 btn-min-width dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                            class="fa fa-print"></i> <?php echo $this->lang->line('Print') ?>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item"
+                                       href="<?php echo 'printinvoice?id=' . $invoice['iid'] .'&id2='; ?>"><?php echo $this->lang->line('Print') ?></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item"
+                                       href="<?php echo 'printinvoice?id=' . $invoice['iid']; ?>&d=1"><?php echo $this->lang->line('PDF Download') ?></a>
+
+                                </div>
+                            </div>
+                            
+
+                            <a href="#pop_model" data-toggle="modal" data-remote="false"
+                               class="btn btn-large btn-cyan mb-1" title="Change Status"
+                            ><span class="fa fa-retweet"></span> <?php echo $this->lang->line('Change Status') ?></a>
+                           
+                            <div class="btn-group ">
+                                <button type="button" class="btn btn-primary mb-1 btn-min-width dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                            class="icon-anchor"></i> <?php echo $this->lang->line('Extra') ?>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item"
+                                       href="<?= base_url() . 'invoices/delivery?id=' . $invoice['iid']; ?>"><?php echo $this->lang->line('Delivery Note') ?></a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item"
+                                       href="<?= base_url() . 'invoices/proforma?id=' . $invoice['iid']; ?>"><?php echo $this->lang->line('Proforma Invoice') ?></a>
+
+                                </div>
+                            </div>
+
+
+
+
+                            </div><?php if ($invoice['multi'] > 0) {
+
+                                echo '<div class="badge bg-blue text-xs-center mt-2 white">' . $this->lang->line('Payment currency is different') . '</div>';
+                            }
+                        } else {
+                            echo '<h2 class="btn btn-oval btn-danger">' . $this->lang->line('Cancelled') . '</h2>';
+                        } ?>
+                    </div>
+                </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+            <!-- Invoice Company Details -->
+                <div id="invoice-company-details" class="row mt-2">
+                    <div class="col-md-6 col-sm-12 text-xs-center text-md-left"><p></p>
+                        <img src="<?php $loc = location($invoice['loc']);
+                        echo base_url('userfiles/company/' . $loc['logo']) ?>"
+                             class="img-responsive p-1 m-b-2" style="max-height: 120px;">
+                        <p class="ml-2"><?= $loc['cname'] ?></p>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-xs-center text-md-right">
+                        <h2><?php echo $this->lang->line('INVOICE') ?></h2>
+                        <p class="pb-1"> <?php echo prefix(7) . ' ' . $invoice['tid'] . '</p>
+                            <p class="pb-1">' . $this->lang->line('Reference') . ':' . $invoice['refer'] . '</p>'; ?>
+                        <ul class="px-0 list-unstyled">
+                            <li><?php echo $this->lang->line('Gross Amount') ?></li>
+                            <li class="lead text-bold-800"><?php echo amountExchange($invoice['total'], 0, $this->aauth->get_user()->loc) ?></li>
+                        </ul>
+                    </div>
+                </div>
+                <!--/ Invoice Company Details -->
+
+                <!-- Invoice Customer Details -->
+                <div id="invoice-customer-details" class="row pt-2">
+                    <div class="col-sm-12 text-xs-center text-md-left">
+                        <p class="text-muted"><?php echo $this->lang->line('Bill To') ?></p>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-xs-center text-md-left">
+                        <ul class="px-0 list-unstyled">
+
+
+                            <li class="text-bold-800"><a
+                                        href="<?php echo base_url('customers/view?id=' . $invoice['cid']) ?>"><strong
+                                            class="invoice_a"><?php echo $invoice['name'] . '</strong></a></li><li>' . $invoice['company'] . '</li><li>' . $invoice['address'] . '</li><li>' . $invoice['city'] . ',' . $invoice

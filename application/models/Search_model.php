@@ -1,0 +1,35 @@
+<?php
+/**
+ * D Business Solutions  -  Accounting,  Invoicing  and CRM Application
+ * Copyright (c) Dashan Korala Hewage. All Rights Reserved
+ * ***********************************************************************
+ *
+ *  Email: support@dmyworld.com
+ *  Website: https://www.dmyworld.com
+ *
+ *  ************************************************************************
+ *  * This software is furnished under a license and may be used and copied
+ *  * only  in  accordance  with  the  terms  of such  license and with the
+ *  * inclusion of the above copyright notice.
+ *  * If you Purchased from D My World, Please read the full License from
+ *  * here- https://dmyworld.com/licenses/standard/
+ * ***********************************************************************
+ */
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Search_model extends CI_Model
+{
+
+    public function autoSearch($name)
+    {
+
+
+        $query = $this->db->query("SELECT pid,product_name,product_price FROM geopos_products WHERE UPPER(product_name) LIKE '" . strtoupper($name) . "%'");
+
+        $result = $query->result_array();
+
+        return $result;
+    }
+}
+
