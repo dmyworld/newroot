@@ -192,9 +192,7 @@
                                 <td>
                                     <span class="currenty">ft&#179; :</span>
                                     <strong><span class='ttlTextt' name="result" id="result2-0">0</span></strong>
-                                    <br>
-                                    <span class="currenty">Total Cubic :</span>
-                                    <strong><span class='woodttlText' name="result" id="result3wood-0">0</span></strong>
+                                    
                                 </td>
                                 <td class="text-center">
 

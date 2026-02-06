@@ -188,7 +188,7 @@
 
                         <div class="col-sm-4">
                             <label class="col-form-label font-weight-bold" for="paymethod"><?php echo $this->lang->line('Method') ?> </label>
-                            <select name="paymethod" class="form-control custom-select">
+                            <select name="paymethod" id="paymethod_trans" class="form-control custom-select">
                                 <option value="Cash" selected><?php echo $this->lang->line('Cash') ?></option>
                                 <option value="Card"><?php echo $this->lang->line('Card') ?></option>
                                 <option value="Cheque"><?php echo $this->lang->line('Cheque') ?></option>
@@ -197,6 +197,26 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="row form-group" id="cheque_number_row_trans" style="display: none;">
+                        <div class="col-sm-4">
+                            <label class="col-form-label font-weight-bold" for="cheque_number"><?php echo $this->lang->line('Cheque Number') ?></label>
+                            <input type="text" class="form-control" name="cheque_number" id="cheque_number_trans" placeholder="Cheque Number">
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#paymethod_trans').on('change', function() {
+                                if ($(this).val() == 'Bank' || $(this).val() == 'Cheque') {
+                                    $('#cheque_number_row_trans').show();
+                                } else {
+                                    $('#cheque_number_row_trans').hide();
+                                    $('#cheque_number_trans').val('');
+                                }
+                            });
+                        });
+                    </script>
 
                     <div class="row form-group mb-4">
                         <div class="col-sm-12">

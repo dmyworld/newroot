@@ -313,15 +313,38 @@ class Pos_invoices_model extends CI_Model
         if ($opt) {
             $this->db->where('geopos_invoices.eid', $opt);
         }
+
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) {
+                $this->db->where('geopos_invoices.loc', $loc);
+            }
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_invoices.loc', 0); 
+            }
+        }
+
+        // Status Filter
+        $status = $this->input->post('status');
+        if($status) {
+            if($status == 'due') {
+                $this->db->group_start();
+                $this->db->where_in('geopos_invoices.status', array('due', 'partial', 'Due', 'Partial'));
+                $this->db->group_end();
+            } else {
+                $this->db->where('geopos_invoices.status', $status);
+            }
+        }
+
         if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
             $this->db->where('DATE(geopos_invoices.invoicedate) >=', datefordatabase($this->input->post('start_date')));
             $this->db->where('DATE(geopos_invoices.invoicedate) <=', datefordatabase($this->input->post('end_date')));
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }
-          elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         $this->db->join('geopos_customers', 'geopos_invoices.csd=geopos_customers.id', 'left');
 
         $i = 0;
@@ -369,15 +392,38 @@ class Pos_invoices_model extends CI_Model
         if ($opt) {
             $this->db->where('geopos_invoices.eid', $opt);
         }
+
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) {
+                $this->db->where('geopos_invoices.loc', $loc);
+            }
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_invoices.loc', 0); 
+            }
+        }
+
+        // Status Filter
+        $status = $this->input->post('status');
+        if($status) {
+            if($status == 'due') {
+                $this->db->group_start();
+                $this->db->where_in('geopos_invoices.status', array('due', 'partial', 'Due', 'Partial'));
+                $this->db->group_end();
+            } else {
+                $this->db->where('geopos_invoices.status', $status);
+            }
+        }
+
         if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
             $this->db->where('DATE(geopos_invoices.invoicedate) >=', datefordatabase($this->input->post('start_date')));
             $this->db->where('DATE(geopos_invoices.invoicedate) <=', datefordatabase($this->input->post('end_date')));
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }
-          elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         $this->db->join('geopos_customers', 'geopos_invoices.csd=geopos_customers.id', 'left');
 
         $i = 0;
@@ -417,11 +463,6 @@ class Pos_invoices_model extends CI_Model
             $this->db->limit($_POST['length'], $_POST['start']);
 
         $query = $this->db->get();
-        $this->db->where('geopos_invoices.i_class', 1);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }
-          elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         return $query->result();
     }
     
@@ -432,67 +473,66 @@ class Pos_invoices_model extends CI_Model
             $this->db->limit($_POST['length'], $_POST['start']);
 
         $query = $this->db->get();
-        $this->db->where('geopos_invoices.i_class', 1);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }
-          elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         return $query->result();
     }
 
     function count_filtered($opt = '')
     {
         $this->_get_datatables_query($opt);
-        if ($opt) {
-            $this->db->where('eid', $opt);
-
-        }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         $query = $this->db->get();
         return $query->num_rows();
     }
 
     public function count_all($opt = '')
     {
-        $this->db->select('geopos_invoices.id');
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 1);
+
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) $this->db->where('geopos_invoices.loc', $loc);
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_invoices.loc', 0); 
+            }
+        }
+
         if ($opt) {
             $this->db->where('geopos_invoices.eid', $opt);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         return $this->db->count_all_results();
     }
 
         function count_filtered_v2($opt = '')
     {
         $this->_get_datatables_query_v2($opt);
-        if ($opt) {
-            $this->db->where('eid', $opt);
-
-        }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         $query = $this->db->get();
         return $query->num_rows();
     }
 
     public function count_all_v2($opt = '')
     {
-        $this->db->select('geopos_invoices.id');
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 2);
+
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) $this->db->where('geopos_invoices.loc', $loc);
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_invoices.loc', 0); 
+            }
+        }
+
         if ($opt) {
             $this->db->where('geopos_invoices.eid', $opt);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
         return $this->db->count_all_results();
     }
     

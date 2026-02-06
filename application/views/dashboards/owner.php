@@ -463,109 +463,155 @@
         </div>
     </div>
 
-    <!-- Financial Metrics Intelligence Widget -->
-    <div class="col-12 mb-2">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-gradient-x-info">
-                <h5 class="text-white mb-0"><i class="fa fa-calculator"></i> Financial Metrics Intelligence</h5>
+    <!-- Financial Metrics Intelligence Section -->
+    <style>
+        .fin-intel-card { transition: all 0.3s ease; border-radius: 15px !important; border: none; }
+        .fin-intel-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.12) !important; }
+        .fin-metric-tile { padding: 15px; border-radius: 12px; height: 100%; border: 1px solid rgba(0,0,0,0.05); }
+        .gradient-light-success { background: linear-gradient(135deg, rgba(40,208,148,0.1) 0%, rgba(40,208,148,0.05) 100%); }
+        .gradient-light-danger { background: linear-gradient(135deg, rgba(255,73,97,0.1) 0%, rgba(255,73,97,0.05) 100%); }
+        .gradient-light-info { background: linear-gradient(135deg, rgba(30,159,242,0.1) 0%, rgba(30,159,242,0.05) 100%); }
+        .gradient-light-warning { background: linear-gradient(135deg, rgba(255,145,73,0.1) 0%, rgba(255,145,73,0.05) 100%); }
+    </style>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="card-header bg-gradient-x-info" style="border-radius: 15px 15px 0 0;">
+                <h4 class="card-title text-white"><i class="fa fa-calculator"></i> FINANCIAL METRICS INTELLIGENCE <span class="badge badge-pill badge-info ml-1" style="font-size: 10px; background: rgba(255,255,255,0.2);">LIVE ANALYTICS</span></h4>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <!-- Customer Due -->
-                    <div class="col-md-6 col-12 mb-2">
-                        <div class="p-2 border-left-primary border-left-3 bg-light h-100">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="text-primary mb-0">Customer Due</h6>
-                                    <h3 class="font-weight-bold mb-0"><?= amountExchange($customer_due, 0, $this->aauth->get_user()->loc) ?></h3>
-                                    <small class="text-muted">Total outstanding balance as of end date</small>
+                <!-- Top Row: Core Financial KPIs -->
+                <div class="row match-height mb-3">
+                    <!-- Net Profit -->
+                    <div class="col-xl-3 col-md-6 col-12 mb-2">
+                        <div class="fin-metric-tile gradient-light-success">
+                            <div class="d-flex justify-content-between mb-1">
+                                <h6 class="text-uppercase font-small-3 text-bold-600 mb-0">Total Profit</h6>
+                                <i class="fa fa-line-chart text-success"></i>
+                            </div>
+                            <h2 class="text-bold-700 text-success mb-0"><?= amountExchange($todayprofit, 0, $this->aauth->get_user()->loc) ?></h2>
+                            <p class="text-muted font-small-2 mb-0">Monthly target: <?= amountExchange($goals['netincome'], 0, $this->aauth->get_user()->loc) ?></p>
+                        </div>
+                    </div>
+                    <!-- Net Cash Flow -->
+                    <div class="col-xl-3 col-md-6 col-12 mb-2">
+                        <div class="fin-metric-tile gradient-light-info">
+                            <div class="d-flex justify-content-between mb-1">
+                                <h6 class="text-uppercase font-small-3 text-bold-600 mb-0">Net Cash Flow</h6>
+                                <i class="fa fa-exchange text-info"></i>
+                            </div>
+                            <h2 class="text-bold-700 text-info mb-0"><?= amountExchange($tt_inc - $tt_exp, 0, $this->aauth->get_user()->loc) ?></h2>
+                            <p class="text-muted font-small-2 mb-0">In: <?= amountExchange($tt_inc, 0, $this->aauth->get_user()->loc) ?> | Out: <?= amountExchange($tt_exp, 0, $this->aauth->get_user()->loc) ?></p>
+                        </div>
+                    </div>
+                    <!-- Cash in Hand -->
+                    <div class="col-xl-3 col-md-6 col-12 mb-2">
+                        <div class="fin-metric-tile gradient-light-warning">
+                            <div class="d-flex justify-content-between mb-1">
+                                <h6 class="text-uppercase font-small-3 text-bold-600 mb-0">Cash in Hand</h6>
+                                <i class="fa fa-money text-warning"></i>
+                            </div>
+                            <h2 class="text-bold-700 text-warning mb-0"><?= amountExchange($cash_in_hand, 0, $this->aauth->get_user()->loc) ?></h2>
+                            <p class="text-muted font-small-2 mb-0">Primary liquidity pool</p>
+                        </div>
+                    </div>
+                    <!-- Bank balance proxy -->
+                    <div class="col-xl-3 col-md-6 col-12 mb-2">
+                        <div class="fin-metric-tile bg-light">
+                            <div class="d-flex justify-content-between mb-1">
+                                <h6 class="text-uppercase font-small-3 text-bold-600 mb-0">Bank Balance</h6>
+                                <i class="fa fa-university text-dark"></i>
+                            </div>
+                            <h2 class="text-bold-700 text-dark mb-0"><?= amountExchange($financial_metrics['income']['Bank'] - $financial_metrics['expense']['Bank'], 0, $this->aauth->get_user()->loc) ?></h2>
+                            <p class="text-muted font-small-2 mb-0">Digital assets & clears</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Row: Liabilities -->
+                <div class="row match-height mb-3">
+                    <div class="col-xl-6 col-12 mb-2">
+                        <div class="card fin-intel-card bg-lighten-5" style="border-left: 5px solid #1e9ff2; background-color: #f7fbff;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="text-bold-600 mb-0 text-primary">CUSTOMER RECEIVABLES</h6>
+                                    <div class="badge badge-primary">DUE</div>
                                 </div>
-                                <div class="btn-group">
-                                    <a href="<?= base_url('invoices?status=due&branch_id='.(isset($current_branch)?$current_branch:0).'&start_date='.$start_date.'&end_date='.$end_date) ?>" class="btn btn-sm btn-outline-primary shadow-sm" title="Standard Invoices">
-                                        <i class="fa fa-file-text-o"></i> INV
-                                    </a>
-                                    <a href="<?= base_url('pos_invoices?status=due&branch_id='.(isset($current_branch)?$current_branch:0).'&start_date='.$start_date.'&end_date='.$end_date) ?>" class="btn btn-sm btn-outline-primary shadow-sm" title="POS Invoices">
-                                        <i class="fa fa-shopping-cart"></i> POS
-                                    </a>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2 class="mb-0 text-bold-700"><?= amountExchange($customer_due, 0, $this->aauth->get_user()->loc) ?></h2>
+                                    <div class="btn-group">
+                                        <a href="<?= base_url('invoices?status=due&branch_id='.(isset($current_branch)?$current_branch:0)) ?>" class="btn btn-sm btn-info rounded-left"><i class="fa fa-file-text-o"></i></a>
+                                        <a href="<?= base_url('pos_invoices?status=due&branch_id='.(isset($current_branch)?$current_branch:0)) ?>" class="btn btn-sm btn-primary rounded-right"><i class="fa fa-shopping-cart"></i></a>
+                                    </div>
                                 </div>
+                                <p class="small text-muted mb-0 mt-1"><i class="fa fa-info-circle"></i> Outstanding payments expected from customers</p>
                             </div>
                         </div>
                     </div>
-                    <!-- Supplier Due -->
-                    <div class="col-md-6 col-12 mb-2">
-                        <div class="p-2 border-left-danger border-left-3 bg-light h-100">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="text-danger mb-0">Supplier Due</h6>
-                                    <h3 class="font-weight-bold mb-0"><?= amountExchange($supplier_due, 0, $this->aauth->get_user()->loc) ?></h3>
-                                    <small class="text-muted">Total balance due as of end date</small>
+                    <div class="col-xl-6 col-12 mb-2">
+                        <div class="card fin-intel-card bg-lighten-5" style="border-left: 5px solid #ff4961; background-color: #fffafa;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="text-bold-600 mb-0 text-danger">SUPPLIER PAYABLES</h6>
+                                    <div class="badge badge-danger">PENDING</div>
                                 </div>
-                                <div class="btn-group">
-                                    <a href="<?= base_url('purchase?status=due&branch_id='.(isset($current_branch)?$current_branch:0).'&start_date='.$start_date.'&end_date='.$end_date) ?>" class="btn btn-sm btn-outline-danger shadow-sm" title="General Purchases">
-                                        <i class="fa fa-truck"></i> GEN
-                                    </a>
-                                    <a href="<?= base_url('purchase/list?status=due&branch_id='.(isset($current_branch)?$current_branch:0).'&start_date='.$start_date.'&end_date='.$end_date) ?>" class="btn btn-sm btn-outline-danger shadow-sm" title="Timber Logs">
-                                        <i class="fa fa-tree"></i> LOGS
-                                    </a>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2 class="mb-0 text-bold-700"><?= amountExchange($supplier_due, 0, $this->aauth->get_user()->loc) ?></h2>
+                                    <div class="btn-group">
+                                        <a href="<?= base_url('purchase?status=due&branch_id='.(isset($current_branch)?$current_branch:0)) ?>" class="btn btn-sm btn-danger rounded-left"><i class="fa fa-truck"></i></a>
+                                        <a href="<?= base_url('purchase/list?status=due&branch_id='.(isset($current_branch)?$current_branch:0)) ?>" class="btn btn-sm btn-dark rounded-right"><i class="fa fa-tree"></i></a>
+                                    </div>
                                 </div>
+                                <p class="small text-muted mb-0 mt-1"><i class="fa fa-info-circle"></i> Total liability due to suppliers & logs</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-1">
+                <div class="row">
                     <!-- Income Breakdown -->
                     <div class="col-md-6 col-12">
-                        <h6 class="text-success border-bottom pb-1 mb-2"><i class="fa fa-arrow-up"></i> Income Breakdown</h6>
-                        <table class="table table-sm table-hover">
-                            <tbody>
-                                <tr>
-                                    <td><i class="fa fa-money text-success mr-1"></i> Cash Income</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['income']['Cash'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fa fa-university text-info mr-1"></i> Bank Income</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['income']['Bank'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fa fa-id-card-o text-warning mr-1"></i> Cheque Income</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['income']['Cheque'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr class="bg-light">
-                                    <td class="font-weight-bold">Total Income</td>
-                                    <td class="text-right font-weight-bold text-success" style="font-size: 1.1rem; border-top: 2px solid #ccc;">
-                                        <?= amountExchange($financial_metrics['income']['Total'], 0, $this->aauth->get_user()->loc) ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <h6 class="text-bold-600 mb-2 text-uppercase font-small-3" style="letter-spacing: 1px;"><i class="fa fa-arrow-up text-success"></i> Income Breakdown</h6>
+                        <div class="list-group list-group-flush">
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom-light">
+                                <span class="small font-weight-bold"><i class="fa fa-money text-success mr-1"></i> Cash Income</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['income']['Cash'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom-light">
+                                <span class="small font-weight-bold"><i class="fa fa-university text-info mr-1"></i> Bank Income</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['income']['Bank'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center py-2">
+                                <span class="small font-weight-bold"><i class="fa fa-id-card-o text-warning mr-1"></i> Cheque Income</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['income']['Cheque'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="bg-light p-2 mt-1 rounded d-flex justify-content-between align-items-center">
+                                <span class="text-bold-700">TOTAL INCOME</span>
+                                <span class="text-bold-700 text-success" style="font-size: 1.2rem;"><?= amountExchange($financial_metrics['income']['Total'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Expense Breakdown -->
                     <div class="col-md-6 col-12">
-                        <h6 class="text-danger border-bottom pb-1 mb-2"><i class="fa fa-arrow-down"></i> Expense Breakdown</h6>
-                        <table class="table table-sm table-hover">
-                            <tbody>
-                                <tr>
-                                    <td><i class="fa fa-money text-danger mr-1"></i> Cash Expense</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['expense']['Cash'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fa fa-university text-info mr-1"></i> Bank Expense</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['expense']['Bank'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr>
-                                    <td><i class="fa fa-id-card-o text-warning mr-1"></i> Cheque Expense</td>
-                                    <td class="text-right font-weight-bold"><?= amountExchange($financial_metrics['expense']['Cheque'], 0, $this->aauth->get_user()->loc) ?></td>
-                                </tr>
-                                <tr class="bg-light">
-                                    <td class="font-weight-bold">Total Expense</td>
-                                    <td class="text-right font-weight-bold text-danger" style="font-size: 1.1rem; border-top: 2px solid #ccc;">
-                                        <?= amountExchange($financial_metrics['expense']['Total'], 0, $this->aauth->get_user()->loc) ?>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <h6 class="text-bold-600 mb-2 text-uppercase font-small-3" style="letter-spacing: 1px;"><i class="fa fa-arrow-down text-danger"></i> Expense Breakdown</h6>
+                        <div class="list-group list-group-flush">
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom-light">
+                                <span class="small font-weight-bold"><i class="fa fa-money text-danger mr-1"></i> Cash Expense</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['expense']['Cash'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom-light">
+                                <span class="small font-weight-bold"><i class="fa fa-university text-info mr-1"></i> Bank Expense</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['expense']['Bank'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center py-2">
+                                <span class="small font-weight-bold"><i class="fa fa-id-card-o text-warning mr-1"></i> Cheque Expense</span>
+                                <span class="text-bold-700"><?= amountExchange($financial_metrics['expense']['Cheque'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                            <div class="bg-light p-2 mt-1 rounded d-flex justify-content-between align-items-center">
+                                <span class="text-bold-700">TOTAL EXPENSE</span>
+                                <span class="text-bold-700 text-danger" style="font-size: 1.2rem;"><?= amountExchange($financial_metrics['expense']['Total'], 0, $this->aauth->get_user()->loc) ?></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -882,7 +928,200 @@
         </div>
     </div>
    
-    <!-- Branch Performance Heatmap -->
+    <!-- Staff Professional Intelligence Section -->
+    <style>
+        .staff-intel-card { transition: all 0.3s ease; border-radius: 12px !important; overflow: hidden; }
+        .staff-intel-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+        .progress-thin { height: 4px !important; border-radius: 10px; }
+        .monitor-display { background: #1e293b; color: #38bdf8; border-radius: 10px; padding: 15px; border: 1px solid #334155; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .table-score { vertical-align: middle !important; }
+    </style>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="card-header bg-gradient-x-secondary" style="border-radius: 15px 15px 0 0;">
+                <h4 class="card-title text-white"><i class="fa fa-braille"></i> STAFF PROFESSIONAL INTELLIGENCE <span class="badge badge-pill badge-primary ml-1" style="font-size: 10px; background: rgba(255,255,255,0.2);">AI DRIVEN</span></h4>
+            </div>
+            <div class="card-body">
+                <div class="row match-height">
+                    <!-- Staff Trust Analytics -->
+                    <div class="col-xl-4 col-md-6 col-12 mb-2">
+                        <div class="card bg-white border-0 h-100 staff-intel-card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-bold-600 mb-2 text-uppercase" style="letter-spacing: 1px;"><i class="fa fa-shield text-success"></i> Trust Analytics</h6>
+                                <?php if(isset($staff_scores_list) && !empty($staff_scores_list)): ?>
+                                    <?php foreach(array_slice($staff_scores_list, 0, 3) as $staff): 
+                                        $color = ($staff['trust_score'] > 80) ? 'success' : (($staff['trust_score'] > 50) ? 'warning' : 'danger');
+                                        $dot = ($staff['trust_score'] > 80) ? 'bg-success' : (($staff['trust_score'] > 50) ? 'bg-warning' : 'bg-danger');
+                                    ?>
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="small font-weight-bold text-dark"><span class="status-dot <?= $dot ?>"></span> <?= $staff['username'] ?></span>
+                                            <span class="text-bold-600" style="color: <?= ($color == 'success') ? '#28d094' : (($color == 'warning') ? '#ff9149' : '#ff4961') ?>;"><?= round($staff['trust_score']) ?>%</span>
+                                        </div>
+                                        <div class="progress progress-thin">
+                                            <div class="progress-bar bg-<?= $color ?>" style="width: <?= $staff['trust_score'] ?>%"></div>
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="text-center py-3">
+                                        <i class="fa fa-user-o fa-2x text-muted opacity-50"></i>
+                                        <p class="text-muted small mt-2">No active staff analytics</p>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Staff Behaviour Intelligence Engine -->
+                    <div class="col-xl-4 col-md-6 col-12 mb-2">
+                        <div class="card bg-white border-0 h-100 staff-intel-card shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-bold-600 mb-2 text-uppercase" style="letter-spacing: 1px;"><i class="fa fa-microchip text-info"></i> Behaviour Engine</h6>
+                                <?php 
+                                    $total_overrides = isset($staff_scores_list) ? array_sum(array_column($staff_scores_list, 'overrides')) : 0;
+                                    $adj_freq = isset($loss_stats['stock_leak']['count']) ? $loss_stats['stock_leak']['count'] : 0;
+                                    $canceled_bills_pct = isset($loss_stats['billing_error']['percentage']) ? $loss_stats['billing_error']['percentage'] : 0;
+                                ?>
+                                <div class="list-group list-group-flush">
+                                    <div class="d-flex justify-content-between align-items-center py-1 border-bottom-light">
+                                        <span class="small"><i class="fa fa-tags text-warning mr-1"></i> Price Overrides</span>
+                                        <span class="badge badge-warning badge-sm badge-pill"><?= $total_overrides ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center py-1 border-bottom-light">
+                                        <span class="small"><i class="fa fa-cubes text-info mr-1"></i> Stock Adjustments</span>
+                                        <span class="badge badge-info badge-sm badge-pill"><?= $adj_freq ?></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center py-1">
+                                        <span class="small"><i class="fa fa-file-excel-o text-danger mr-1"></i> Cancelled Bills Rate</span>
+                                        <span class="badge badge-danger badge-sm badge-pill"><?= $canceled_bills_pct ?>%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cashier Dashboard Monitor -->
+                    <div class="col-xl-4 col-md-12 col-12 mb-2">
+                        <div class="card border-0 h-100 staff-intel-card bg-white shadow-sm">
+                            <div class="card-body">
+                                <h6 class="text-bold-600 mb-2 text-uppercase font-small-3" style="letter-spacing: 1px;"><i class="fa fa-television text-purple"></i> Cashier terminal Monitor</h6>
+                                <?php 
+                                    $error_rate = isset($loss_stats['billing_error']['percentage']) ? (float)$loss_stats['billing_error']['percentage'] : 0;
+                                    $accuracy = 100 - $error_rate;
+                                ?>
+                                <div class="monitor-display">
+                                    <div class="text-center mb-1">
+                                        <h2 class="text-bold-700 mb-0" style="color: #38bdf8;"><?= number_format($accuracy, 1) ?>%</h2>
+                                        <small class="text-uppercase" style="color: #64748b; letter-spacing: 2px;">ACCURACY INDEX</small>
+                                    </div>
+                                    <div class="row text-center mt-1">
+                                        <div class="col-6" style="border-right: 1px solid #334155;">
+                                            <p class="mb-0 small text-white">SPEED</p>
+                                            <span class="text-success badge badge-pill" style="background: rgba(40,208,148,0.1); border: 1px solid #28d094;">HIGH</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="mb-0 small text-white">ERRORS</p>
+                                            <span class="text-<?= ($error_rate > 5) ? 'danger' : 'success' ?>"><?= ($error_rate > 5) ? 'CRITICAL' : 'OPTIMAL' ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="d-flex justify-content-between align-items-center small text-muted">
+                                        <span>Status: Operational</span>
+                                        <span class="text-primary"><i class="fa fa-refresh fa-spin p-0"></i> Live Data</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+
+                <div class="row match-height mt-1">
+                    <!-- Staff Performance Scoreboard -->
+                    <div class="col-xl-8 col-lg-12 col-12 mb-2">
+                        <div class="card border-0 h-100 staff-intel-card bg-white shadow-sm">
+                            <div class="card-header p-2 bg-light bg-lighten-4">
+                                <h6 class="mb-0 text-bold-600 text-uppercase font-small-3" style="letter-spacing: 1px;"><i class="fa fa-list-ol text-primary"></i> Staff Performance Leaderboard</h6>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="bg-light">
+                                        <tr class="text-uppercase font-small-2 text-muted">
+                                            <th class="border-0">Staff Member</th>
+                                            <th class="text-center border-0">Sales</th>
+                                            <th class="text-center border-0">Errors</th>
+                                            <th class="text-center border-0">Returns</th>
+                                            <th class="text-center border-0">Status</th>
+                                            <th class="text-center border-0">Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="font-small-3">
+                                        <?php if(isset($staff_scores_list) && !empty($staff_scores_list)): ?>
+                                            <?php foreach($staff_scores_list as $staff): 
+                                                $score_color = ($staff['trust_score'] > 80) ? 'success' : (($staff['trust_score'] > 50) ? 'warning' : 'danger');
+                                                $traffic_dot = ($staff['trust_score'] > 80) ? 'bg-success' : (($staff['trust_score'] > 50) ? 'bg-warning' : 'bg-danger');
+                                            ?>
+                                            <tr>
+                                                <td class="text-bold-600 table-score"><img src="<?= base_url() ?>assets/images/portrait/small/avatar-s-1.png" class="rounded-circle mr-1" width="24"> <?= $staff['username'] ?></td>
+                                                <td class="text-center table-score"><?= amountExchange($staff['sales'], 0, $this->aauth->get_user()->loc) ?></td>
+                                                <td class="text-center table-score font-weight-bold text-<?= ($staff['errors'] > 5) ? 'danger' : 'muted' ?>"><?= $staff['errors'] ?></td>
+                                                <td class="text-center table-score"><?= $staff['returns'] ?></td>
+                                                <td class="text-center table-score"><span class="status-dot <?= $traffic_dot ?>"></span></td>
+                                                <td class="text-center table-score"><span class="badge badge-<?= $score_color ?>" style="min-width: 45px; opacity: 0.9;"><?= round($staff['trust_score']) ?>%</span></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">Analytical engines standby. Awaiting staff data flows...</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fraud Alert Center -->
+                    <div class="col-xl-4 col-lg-12 col-12 mb-2">
+                        <div class="card bg-gradient-x-danger h-100 staff-intel-card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="white mb-2 text-uppercase font-small-3" style="letter-spacing: 1px;"><i class="fa fa-warning"></i> Fraud Alert Center</h6>
+                                <div class="bg-white p-2" style="border-radius: 10px; border-left: 5px solid #ff4b2b; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+                                    <?php if(isset($risk_alerts) && !empty($risk_alerts)): 
+                                        $alert = $risk_alerts[0]; // Most recent alert
+                                    ?>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="badge badge-danger badge-pill">CRITICAL</span>
+                                            <small class="text-muted"><?= date('M d, H:i') ?></small>
+                                        </div>
+                                        <h5 class="text-bold-700 text-danger mb-1"><?= $alert['type'] ?> detected</h5>
+                                        <div class="d-flex justify-content-between mb-1 small text-dark">
+                                            <span><strong>Staff:</strong> Admin</span>
+                                            <span><strong>ID:</strong> #RX-99</span>
+                                        </div>
+                                        <hr class="my-1 opacity-25">
+                                        <p class="font-small-3 mb-0 text-dark" style="line-height: 1.4;"><strong>Insight:</strong> <?= $alert['message'] ?></p>
+                                    <?php else: ?>
+                                        <div class="text-center py-2">
+                                            <div class="mb-1"><i class="fa fa-shield text-success fa-2x"></i></div>
+                                            <h5 class="text-bold-700 text-success mb-1">NO THREATS</h5>
+                                            <p class="font-small-2 mb-0 text-muted">Awaiting signal anomalies...</p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="text-right mt-2">
+                                    <button class="btn btn-sm btn-link white text-uppercase font-small-2 p-0" style="text-decoration: underline;">Full Security Audit <i class="fa fa-chevron-right ml-1"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-xl-12 col-lg-12">
         <div class="card">
             <div class="card-header bg-gradient-x-cyan">

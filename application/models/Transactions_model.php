@@ -151,7 +151,7 @@ class Transactions_model extends CI_Model
         return $this->db->insert('geopos_trans_cat', $data);
     }
 
-    public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0,$wallet_balance)
+    public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0, $wallet_balance = 0, $doc_id = 0, $doc_type = '')
     {
 
         if ($pay_acc > 0) {
@@ -226,9 +226,33 @@ class Transactions_model extends CI_Model
                 $this->db->set('lastbal', "lastbal+$amount", FALSE);
                 $this->db->where('id', $pay_acc);
                 $this->db->update('geopos_accounts');
-                
-                           
-                return $this->db->insert('geopos_transactions', $data);
+
+                $res = $this->db->insert('geopos_transactions', $data);
+                $tid = $this->db->insert_id();
+
+                // Cheque Manager Integration
+                if ($paymethod == 'Bank' || $paymethod == 'Cheque') {
+                    $this->load->model('cheque_model');
+                    $cheque_number = $this->input->post('cheque_number', true);
+                    
+                    // Determine party type based on $pay_type (Income -> Customer, Expense -> Supplier)
+                    $party_type = ($pay_type == 'Income') ? 'Customer' : 'Supplier';
+                    
+                    $cheque_data = array(
+                        'amount' => ($pay_type == 'Income') ? $credit : $debit,
+                        'party_id' => $payer_id,
+                        'party_type' => $party_type,
+                        'cheque_number' => $cheque_number,
+                        'date' => $date,
+                        'tid' => $tid,
+                        'doc_id' => $doc_id,
+                        'doc_type' => $doc_type,
+                        'note' => $note
+                    );
+                    $this->cheque_model->create_from_payment($cheque_data);
+                }
+
+                return $res;
             }
         }
     }

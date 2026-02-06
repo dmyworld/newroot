@@ -241,6 +241,24 @@ class Transactions extends CI_Controller
         $this->db->insert('geopos_transactions', $data);
         $tttid = $this->db->insert_id();
 
+        // Cheque Manager Integration
+        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+            $this->load->model('cheque_model');
+            $cheque_number = $this->input->post('cheque_number', true);
+            $cheque_data = array(
+                'amount' => $amount,
+                'party_id' => $cid,
+                'party_type' => 'Customer',
+                'cheque_number' => $cheque_number,
+                'date' => $paydate,
+                'tid' => $tttid,
+                'doc_id' => $tid,
+                'doc_type' => 'invoice',
+                'note' => $note
+            );
+            $this->cheque_model->create_from_payment($cheque_data);
+        }
+
         $this->db->select('total,csd,pamnt');
         $this->db->from('geopos_invoices');
         $this->db->where('id', $tid);
@@ -356,9 +374,31 @@ class Transactions extends CI_Controller
             'loc' => $this->aauth->get_user()->loc
         );
         $this->db->insert('geopos_transactions', $data);
-        $this->db->insert_id();
+        $tttid = $this->db->insert_id();
+
+        $dtype = $this->input->post('dtype', true) ?: 'purchase';
+        $table = ($dtype == 'purchase_logs') ? 'geopos_purchase_logs' : 'geopos_purchase';
+
+        // Cheque Manager Integration
+        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+            $this->load->model('cheque_model');
+            $cheque_number = $this->input->post('cheque_number', true);
+            $cheque_data = array(
+                'amount' => $amount,
+                'party_id' => $cid,
+                'party_type' => 'Supplier',
+                'cheque_number' => $cheque_number,
+                'date' => $paydate,
+                'tid' => $tttid,
+                'doc_id' => $tid,
+                'doc_type' => $dtype,
+                'note' => $note
+            );
+            $this->cheque_model->create_from_payment($cheque_data);
+        }
+
         $this->db->select('total,csd,pamnt');
-        $this->db->from('geopos_purchase');
+        $this->db->from($table);
         $this->db->where('id', $tid);
         $query = $this->db->get();
         $invresult = $query->row();
@@ -368,7 +408,7 @@ class Transactions extends CI_Controller
             $this->db->set('pamnt', "pamnt+$amount", FALSE);
             $this->db->set('status', 'partial');
             $this->db->where('id', $tid);
-            $this->db->update('geopos_purchase');
+            $this->db->update($table);
             //account update
             $this->db->set('lastbal', "lastbal-$amount", FALSE);
             $this->db->where('id', $acid);
@@ -381,7 +421,7 @@ class Transactions extends CI_Controller
             $this->db->set('pamnt', "pamnt+$amount", FALSE);
             $this->db->set('status', 'paid');
             $this->db->where('id', $tid);
-            $this->db->update('geopos_purchase');
+            $this->db->update($table);
             //acount update
             $this->db->set('lastbal', "lastbal-$amount", FALSE);
             $this->db->where('id', $acid);
@@ -460,7 +500,26 @@ class Transactions extends CI_Controller
             'loc' => $this->aauth->get_user()->loc
         );
         $this->db->insert('geopos_transactions', $data);
-        $this->db->insert_id();
+        $tttid = $this->db->insert_id();
+
+        // Cheque Manager Integration
+        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+            $this->load->model('cheque_model');
+            $cheque_number = $this->input->post('cheque_number', true);
+            $cheque_data = array(
+                'amount' => $amount,
+                'party_id' => $cid,
+                'party_type' => 'Supplier',
+                'cheque_number' => $cheque_number,
+                'date' => $paydate,
+                'tid' => $tttid,
+                'doc_id' => $tid,
+                'doc_type' => 'purchase_wood',
+                'note' => $note
+            );
+            $this->cheque_model->create_from_payment($cheque_data);
+        }
+
         $this->db->select('total,csd,pamnt');
         $this->db->from('geopos_purchase_wood');
         $this->db->where('id', $tid);

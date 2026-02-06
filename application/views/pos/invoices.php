@@ -126,9 +126,17 @@ if (($_GET['id'] ?? null) == 'v2') {
 
 <script type="text/javascript">
     $(document).ready(function () {
-        draw_data();
+        var status = "<?php echo (isset($status) ? $status : '') ?>";
+        var branch_id = "<?php echo (isset($branch_id) ? $branch_id : '') ?>";
+        var start_date = "<?php echo (isset($start_date) ? $start_date : '') ?>";
+        var end_date = "<?php echo (isset($end_date) ? $end_date : '') ?>";
 
-        function draw_data(start_date = '', end_date = '') {
+        if (start_date != '') $('#start_date').val(start_date);
+        if (end_date != '') $('#end_date').val(end_date);
+
+        draw_data(start_date, end_date, status, branch_id);
+
+        function draw_data(start_date = '', end_date = '', status = '', branch_id = '') {
             $('#invoices').DataTable({
                 'processing': true,
                 'serverSide': true,
@@ -141,7 +149,9 @@ if (($_GET['id'] ?? null) == 'v2') {
                     'data': {
                         '<?=$this->security->get_csrf_token_name()?>': crsf_hash,
                         start_date: start_date,
-                        end_date: end_date
+                        end_date: end_date,
+                        status: status,
+                        loc: branch_id
                     }
                 },
                 'columnDefs': [
@@ -168,7 +178,7 @@ if (($_GET['id'] ?? null) == 'v2') {
             var end_date = $('#end_date').val();
             if (start_date != '' && end_date != '') {
                 $('#invoices').DataTable().destroy();
-                draw_data(start_date, end_date);
+                draw_data(start_date, end_date, '', '');
             } else {
                 alert("Date range is Required");
             }
@@ -191,9 +201,17 @@ if (($_GET['id'] ?? null) == 'v2') {
 
 <script type="text/javascript">
     $(document).ready(function () {
-        draw_data();
+        var status = "<?php echo (isset($status) ? $status : '') ?>";
+        var branch_id = "<?php echo (isset($branch_id) ? $branch_id : '') ?>";
+        var start_date = "<?php echo (isset($start_date) ? $start_date : '') ?>";
+        var end_date = "<?php echo (isset($end_date) ? $end_date : '') ?>";
 
-        function draw_data(start_date = '', end_date = '') {
+        if (start_date != '') $('#start_date').val(start_date);
+        if (end_date != '') $('#end_date').val(end_date);
+
+        draw_data(start_date, end_date, status, branch_id);
+
+        function draw_data(start_date = '', end_date = '', status = '', branch_id = '') {
             $('#invoices').DataTable({
                 'processing': true,
                 'serverSide': true,
@@ -206,7 +224,9 @@ if (($_GET['id'] ?? null) == 'v2') {
                     'data': {
                         '<?=$this->security->get_csrf_token_name()?>': crsf_hash,
                         start_date: start_date,
-                        end_date: end_date
+                        end_date: end_date,
+                        status: status,
+                        loc: branch_id
                     }
                 },
                 'columnDefs': [
@@ -233,7 +253,7 @@ if (($_GET['id'] ?? null) == 'v2') {
             var end_date = $('#end_date').val();
             if (start_date != '' && end_date != '') {
                 $('#invoices').DataTable().destroy();
-                draw_data(start_date, end_date);
+                draw_data(start_date, end_date, '', '');
             } else {
                 alert("Date range is Required");
             }

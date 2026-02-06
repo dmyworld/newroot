@@ -245,9 +245,18 @@ class Intelligence_model extends CI_Model
             $staff['errors'] = $errors;
             
             // 3. Calculate RETURNS (from geopos_movers with d_type=2, this month)
-            // Note: geopos_movers may not have staff_id, so we approximate or use a join if possible
-            // For MVP, we use the return_count from staff_scores directly
             $staff['returns'] = $staff['return_count'] ?? 0;
+
+            // 4. Calculate PRICE OVERRIDES (Items where price != product base price)
+            $this->db->select('COUNT(*) as overrides');
+            $this->db->from('geopos_invoice_items');
+            $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid');
+            $this->db->join('geopos_products', 'geopos_products.id = geopos_invoice_items.product');
+            $this->db->where('geopos_invoices.eid', $staff_id);
+            $this->db->where('geopos_invoice_items.subtotal / geopos_invoice_items.qty != geopos_products.product_price', NULL, FALSE);
+            $this->db->where('date(geopos_invoices.invoicedate) >=', date('Y-m-01'));
+            $overrides = $this->db->get()->row()->overrides ?? 0;
+            $staff['overrides'] = $overrides;
         }
         
         return $staff_list;
@@ -335,51 +344,108 @@ class Intelligence_model extends CI_Model
 
     public function get_detailed_financial_metrics($branch_id = 0, $start_date = '', $end_date = '')
     {
-        // 1. Get Income Breakdown (Credit transactions)
-        $this->db->select('method, SUM(credit) as total');
-        $this->db->from('geopos_transactions');
-        $this->db->where('credit >', 0);
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($start_date && $end_date) {
-            $this->db->where('DATE(date) >=', $start_date);
-            $this->db->where('DATE(date) <=', $end_date);
-        }
-        $this->db->group_by('method');
-        $income_query = $this->db->get()->result_array();
-
-        // 2. Get Expense Breakdown (Debit transactions)
-        $this->db->select('method, SUM(debit) as total');
-        $this->db->from('geopos_transactions');
-        $this->db->where('debit >', 0);
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($start_date && $end_date) {
-            $this->db->where('DATE(date) >=', $start_date);
-            $this->db->where('DATE(date) <=', $end_date);
-        }
-        $this->db->group_by('method');
-        $expense_query = $this->db->get()->result_array();
-
-        // Map Payment Methods to Categories
-        $categories = array('Cash' => 'Cash', 'Bank' => 'Bank', 'Cheque' => 'Cheque');
-        
         $metrics = array(
             'income' => array('Cash' => 0, 'Bank' => 0, 'Cheque' => 0, 'Total' => 0),
             'expense' => array('Cash' => 0, 'Bank' => 0, 'Cheque' => 0, 'Total' => 0)
         );
 
+        // 1. Get Income Breakdown (Credit transactions) from Transactions
+        $this->db->select('method, SUM(credit) as total');
+        $this->db->from('geopos_transactions');
+        $this->db->where('credit >', 0);
+        // CI standard where_not_in doesn't support functions, use string where
+        $this->db->where("LOWER(method) NOT IN ('cheque', 'check')", NULL, FALSE);
+        if ($branch_id > 0) $this->db->where('loc', $branch_id);
+        if ($start_date && $end_date) {
+            $this->db->where('DATE(date) >=', $start_date);
+            $this->db->where('DATE(date) <=', $end_date);
+        }
+        $this->db->group_by('method');
+        $query = $this->db->get();
+        $income_query = $query ? $query->result_array() : array();
+
+        // 2. Get Expense Breakdown (Debit transactions) from Transactions
+        $this->db->select('method, SUM(debit) as total');
+        $this->db->from('geopos_transactions');
+        $this->db->where('debit >', 0);
+        $this->db->where("LOWER(method) NOT IN ('cheque', 'check')", NULL, FALSE);
+        if ($branch_id > 0) $this->db->where('loc', $branch_id);
+        if ($start_date && $end_date) {
+            $this->db->where('DATE(date) >=', $start_date);
+            $this->db->where('DATE(date) <=', $end_date);
+        }
+        $this->db->group_by('method');
+        $query = $this->db->get();
+        $expense_query = $query ? $query->result_array() : array();
+
+        // 3. Get Cheque Specifics (Clearing transactions + PDC - Returned)
+        if ($this->db->table_exists('geopos_cheques')) {
+            // Income Cheques (Receivables)
+            $this->db->select('status, SUM(amount) as total');
+            $this->db->from('geopos_cheques');
+            $this->db->where('LOWER(type)', 'incoming');
+            if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+            if ($start_date && $end_date) {
+                $this->db->where('DATE(issue_date) >=', $start_date);
+                $this->db->where('DATE(issue_date) <=', $end_date);
+            }
+            $this->db->group_by('status');
+            $query = $this->db->get();
+            $cheque_income_query = $query ? $query->result_array() : array();
+
+            // Expense Cheques (Payables)
+            $this->db->select('status, SUM(amount) as total');
+            $this->db->from('geopos_cheques');
+            $this->db->where('LOWER(type)', 'outgoing');
+            if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+            if ($start_date && $end_date) {
+                $this->db->where('DATE(issue_date) >=', $start_date);
+                $this->db->where('DATE(issue_date) <=', $end_date);
+            }
+            $this->db->group_by('status');
+            $query = $this->db->get();
+            $cheque_expense_query = $query ? $query->result_array() : array();
+
+            // Process Cheque Income with Bounce Deduction
+            foreach ($cheque_income_query as $row) {
+                $s = strtolower($row['status']);
+                if (in_array($s, array('pdc', 'cleared', 'issued', 'pending'))) {
+                    $metrics['income']['Cheque'] += (float)$row['total'];
+                    $metrics['income']['Total'] += (float)$row['total'];
+                } elseif (in_array($s, array('returned', 'bounced'))) {
+                    // Bounce Deduction
+                    $metrics['income']['Cheque'] -= (float)$row['total'];
+                    $metrics['income']['Total'] -= (float)$row['total'];
+                }
+            }
+
+            // Process Cheque Expense with Bounce Deduction
+            foreach ($cheque_expense_query as $row) {
+                 $s = strtolower($row['status']);
+                 if (in_array($s, array('pdc', 'cleared', 'issued', 'pending'))) {
+                    $metrics['expense']['Cheque'] += (float)$row['total'];
+                    $metrics['expense']['Total'] += (float)$row['total'];
+                } elseif (in_array($s, array('returned', 'bounced'))) {
+                    // Bounce Deduction
+                    $metrics['expense']['Cheque'] -= (float)$row['total'];
+                    $metrics['expense']['Total'] -= (float)$row['total'];
+                }
+            }
+        }
+
+        // Process Standard Income
         foreach ($income_query as $row) {
             $method = $this->_map_payment_method($row['method']);
             if (isset($metrics['income'][$method])) {
                 $metrics['income'][$method] += $row['total'];
                 $metrics['income']['Total'] += $row['total'];
             } else {
-                // If unknown method, put it in 'Bank' as catch-all or ignore?
-                // Let's create an 'Other' if we really wanted to, but the user asked for these three.
                 $metrics['income']['Bank'] += $row['total'];
                 $metrics['income']['Total'] += $row['total'];
             }
         }
 
+        // Process Standard Expense
         foreach ($expense_query as $row) {
             $method = $this->_map_payment_method($row['method']);
             if (isset($metrics['expense'][$method])) {
@@ -405,43 +471,54 @@ class Intelligence_model extends CI_Model
 
     public function get_cheque_status($branch_id = 0)
     {
-        // 1. Pending Receivables (PDC In - Not Cleared yet)
+        $stats = array(
+            'pdc_in' => 0,
+            'pdc_out' => 0,
+            'cleared' => 0,
+            'returned' => 0,
+            'pending_receivable' => 0,
+            'pending_payable' => 0,
+            'returned_count' => 0
+        );
+
+        if (!$this->db->table_exists('geopos_cheques')) return $stats;
+
+        // 1. Pending Receivables (PDC In)
         $this->db->select_sum('amount');
         $this->db->from('geopos_cheques');
-        $this->db->where('type', 'incoming');
-        $this->db->where('status', 'pdc'); // PDC status
+        $this->db->where('LOWER(type)', 'incoming');
+        $this->db->where_in('LOWER(status)', array('pdc', 'pending'));
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
-        $query1 = $this->db->get();
-        $pending_receivable = 0;
-        if ($query1) {
-            $result = $query1->row();
-            $pending_receivable = ($result && isset($result->amount)) ? $result->amount : 0;
+        $query = $this->db->get();
+        if ($query && $row = $query->row()) {
+            $stats['pdc_in'] = $row->amount ?: 0;
+            $stats['pending_receivable'] = $stats['pdc_in'];
         }
 
-        // 2. Pending Payables (PDC Out - Issued but not Cleared)
+        // 2. Pending Payables (PDC Out)
         $this->db->select_sum('amount');
         $this->db->from('geopos_cheques');
-        $this->db->where('type', 'outgoing');
-        $this->db->where('status', 'pdc');
+        $this->db->where('LOWER(type)', 'outgoing');
+        $this->db->where_in('LOWER(status)', array('pdc', 'pending'));
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
-        $query2 = $this->db->get();
-        $pending_payable = 0;
-        if ($query2) {
-            $result = $query2->row();
-            $pending_payable = ($result && isset($result->amount)) ? $result->amount : 0;
+        $query = $this->db->get();
+        if ($query && $row = $query->row()) {
+            $stats['pdc_out'] = $row->amount ?: 0;
+            $stats['pending_payable'] = $stats['pdc_out'];
         }
-        
-        // 3. Returned/Bounced (Action items)
-        $this->db->from('geopos_cheques');
-        $this->db->where('status', 'returned'); 
+
+        // 3. Total Cleared (Count)
+        $this->db->where('LOWER(status)', 'cleared');
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
-        $returned_count = $this->db->count_all_results();
-        
-        return array(
-            'pending_receivable' => $pending_receivable,
-            'pending_payable' => $pending_payable,
-            'returned_count' => $returned_count
-        );
+        $stats['cleared'] = $this->db->count_all_results('geopos_cheques');
+
+        // 4. Total Returned/Bounced (Count)
+        $this->db->where_in('LOWER(status)', array('returned', 'bounced'));
+        if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+        $stats['returned'] = $this->db->count_all_results('geopos_cheques');
+        $stats['returned_count'] = $stats['returned'];
+
+        return $stats;
     }
     
     /**

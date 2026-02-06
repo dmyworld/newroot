@@ -418,10 +418,32 @@ if (empty($pquick_values)) {
         $this->db->select('geopos_purchase.id,geopos_purchase.tid,geopos_purchase.invoicedate,geopos_purchase.invoiceduedate,geopos_purchase.total,geopos_purchase.status,geopos_supplier.name');
         $this->db->from($this->table);
         $this->db->join('geopos_supplier', 'geopos_purchase.csd=geopos_supplier.id', 'left');
+        
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) {
+                $this->db->where('geopos_purchase.loc', $loc);
+            }
+        } else {
             if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+                $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_purchase.loc', 0); 
+            }
         }
-        elseif(!BDATA) { $this->db->where('geopos_purchase.loc', 0); }
+
+        // Status Filter
+        $status = $this->input->post('status');
+        if($status) {
+            if($status == 'due') {
+                $this->db->group_start();
+                $this->db->where_in('geopos_purchase.status', array('due', 'partial', 'Due', 'Partial'));
+                $this->db->group_end();
+            } else {
+                $this->db->where('geopos_purchase.status', $status);
+            }
+        }
                     if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
             $this->db->where('DATE(geopos_purchase.invoicedate) >=', datefordatabase($this->input->post('start_date')));
@@ -466,10 +488,31 @@ if (empty($pquick_values)) {
 $this->db->from($this->table_wood);
 $this->db->join('geopos_supplier', 'geopos_purchase_wood.csd = geopos_supplier.id', 'left');
 
-    if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase_wood.loc', $this->aauth->get_user()->loc);
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) {
+                $this->db->where('geopos_purchase_wood.loc', $loc);
+            }
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase_wood.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_purchase_wood.loc', 0); 
+            }
         }
-        elseif(!BDATA) { $this->db->where('geopos_purchase_wood.loc', 0); }
+
+        // Status Filter
+        $status = $this->input->post('status');
+        if($status) {
+            if($status == 'due') {
+                $this->db->group_start();
+                $this->db->where_in('geopos_purchase_wood.status', array('due', 'partial', 'Due', 'Partial'));
+                $this->db->group_end();
+            } else {
+                $this->db->where('geopos_purchase_wood.status', $status);
+            }
+        }
                     if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
             $this->db->where('DATE(geopos_purchase_wood.invoicedate) >=', datefordatabase($this->input->post('start_date')));
@@ -510,10 +553,30 @@ $this->db->join('geopos_supplier', 'geopos_purchase_wood.csd = geopos_supplier.i
         $this->db->from($this->table_logs);
         $this->db->join('geopos_supplier', 'geopos_purchase_logs.csd = geopos_supplier.id', 'left');
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase_logs.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_purchase_logs.loc', 0);
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) {
+                $this->db->where('geopos_purchase_logs.loc', $loc);
+            }
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase_logs.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_purchase_logs.loc', 0);
+            }
+        }
+
+        // Status Filter
+        $status = $this->input->post('status');
+        if($status) {
+            if($status == 'due') {
+                $this->db->group_start();
+                $this->db->where_in('geopos_purchase_logs.status', array('due', 'partial', 'Due', 'Partial'));
+                $this->db->group_end();
+            } else {
+                $this->db->where('geopos_purchase_logs.status', $status);
+            }
         }
         
         if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
@@ -568,10 +631,17 @@ $this->db->join('geopos_supplier', 'geopos_purchase_wood.csd = geopos_supplier.i
     public function count_all_logs()
     {
         $this->db->from($this->table_logs);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase_logs.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_purchase_logs.loc', 0);
+        
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) $this->db->where('geopos_purchase_logs.loc', $loc);
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase_logs.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_purchase_logs.loc', 0);
+            }
         }
         return $this->db->count_all_results();
     }
@@ -678,20 +748,36 @@ function get_datatables2()
     public function count_all()
     {
         $this->db->from($this->table);
-           if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+        
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) $this->db->where('geopos_purchase.loc', $loc);
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_purchase.loc', 0); 
+            }
         }
-        elseif(!BDATA) { $this->db->where('geopos_purchase.loc', 0); }
         return $this->db->count_all_results();
     }
 
         public function count_all_wood()
     {
         $this->db->from($this->table_wood);
-           if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase_wood.loc', $this->aauth->get_user()->loc);
+        
+        // Branch Filter
+        $loc = $this->input->post('loc');
+        if($loc !== null && $loc !== '') {
+            if($loc > 0) $this->db->where('geopos_purchase_wood.loc', $loc);
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase_wood.loc', $this->aauth->get_user()->loc);
+            } elseif(!BDATA) { 
+                $this->db->where('geopos_purchase_wood.loc', 0); 
+            }
         }
-        elseif(!BDATA) { $this->db->where('geopos_purchase_wood.loc', 0); }
         return $this->db->count_all_results();
     }
 

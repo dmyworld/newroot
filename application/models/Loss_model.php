@@ -48,31 +48,18 @@ class Loss_model extends CI_Model
 
     public function get_stock_leak_stats($branch_id = 0)
     {
-        // Stock Leak: Calculated as (Stock Adjustments / Total Stock Movement) * 100
-        // We look effectively for negative adjustments in geopos_movers that are NOT sales (d_type != 1)
-        
-        // 1. Get Total Sales Volume (Valid Moves)
-        $this->db->select_sum('qty');
-        $this->db->from('geopos_invoice_items');
-        $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid');
-        $this->db->where('geopos_invoices.invoicedate >=', date('Y-m-01')); // Current Month
-        if ($branch_id > 0) $this->db->where('geopos_invoices.loc', $branch_id);
-        $sales_vol = $this->db->get()->row()->qty;
-        if(!$sales_vol) $sales_vol = 1; // Avoid divide by zero
+        // Stock Leak: Calculated as adjustments count from geopos_movers
+        // For percentage, we can use (adjustments / total moves) if possible, 
+        // but for now, we'll return a numeric count or a calculated rate.
+        $this->db->from('geopos_movers');
+        $this->db->where_in('d_type', [4, 5, 20]); 
+        $this->db->where('date(d_time) >=', date('Y-m-01'));
+        $adjustments = $this->db->count_all_results();
 
-        // 2. Get Unexplained Adjustments (Stock Leaks)
-        // Assuming 'note' in geopos_movers implies manual adjustment/loss
-        // d_type = 1 (Sale), 2 (Return), 3 (Purchase), 4 (Transfer)... assuming others or specific note is 'Adjustment'
-        // For this Demo/MVP, we will simulate or use a specific query if available.
-        // Let's use a proxy: Count of products with negative stock that were NOT sold recently (Zombie Stock Leak)
-        // OR better: specific 'adjustment' entries if they exist.
-        
-        // Let's use: (Returned Items / Sold Items) as a proxy for "Leak" in general sense + Billing Errors
-        
         return array(
-            'percentage' => 4.8, // Dynamic calculation placeholder or need geopos_stock_r table
-            'status' => 'High',  // Dynamic based on %
-            'loss_amount' => 134600 // Estimate
+            'percentage' => (float)$adjustments, // Return numeric value
+            'status' => ($adjustments > 10) ? 'Critical' : 'Good',
+            'count' => $adjustments
         );
     }
 
@@ -89,7 +76,7 @@ class Loss_model extends CI_Model
         if ($branch_id > 0) $this->db->where('loc', $branch_id);
         $total = $this->db->count_all_results('geopos_invoices');
         
-        if ($total == 0) return ['percentage' => 0, 'status' => 'Good'];
+        if ($total == 0) return ['percentage' => 0.0, 'status' => 'Good', 'count' => 0];
 
         $error_rate = ($canceled / $total) * 100;
         
@@ -98,7 +85,7 @@ class Loss_model extends CI_Model
         elseif ($error_rate > 2) $status = 'Normal';
 
         return array(
-            'percentage' => number_format($error_rate, 1),
+            'percentage' => (float)$error_rate, // Return numeric float
             'status' => $status,
             'count' => $canceled
         );
@@ -107,22 +94,16 @@ class Loss_model extends CI_Model
     public function get_return_abuse_stats($branch_id = 0)
     {
         // Return Abuse: Stock Return Notes (SRN) vs Sales
-        // Use geopos_movers where d_type='2' (assuming 2 is return, based on standard Geopos)
-        
         $this->db->from('geopos_movers');
         $this->db->where('d_type', '2'); 
-        $this->db->where('date(d_time) >=', date('Y-m-01')); // This month
-        
-        // geopos_movers usually has rid1 (product id) and d_time.
-        // It does not always store branch_id directly, but we can assume 'all' for now or join if strict.
+        $this->db->where('date(d_time) >=', date('Y-m-01'));
         $returns_count = $this->db->count_all_results();
         
-        // Sales Count
         $this->db->where('date(invoicedate) >=', date('Y-m-01'));
         if ($branch_id > 0) $this->db->where('loc', $branch_id);
         $sales_count = $this->db->count_all_results('geopos_invoices');
         
-        if ($sales_count == 0) return ['percentage' => 0, 'status' => 'Good'];
+        if ($sales_count == 0) return ['percentage' => 0.0, 'status' => 'Good', 'count' => 0];
 
         $return_rate = ($returns_count / $sales_count) * 100;
         
@@ -131,8 +112,9 @@ class Loss_model extends CI_Model
         elseif ($return_rate > 3) $status = 'Warning';
 
         return array(
-            'percentage' => number_format($return_rate, 1),
-            'status' => $status
+            'percentage' => (float)$return_rate, // Return numeric float
+            'status' => $status,
+            'count' => $returns_count
         );
     }
 }

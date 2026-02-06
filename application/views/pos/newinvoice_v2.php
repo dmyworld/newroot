@@ -975,6 +975,28 @@ if (($_GET['id'] ?? null) == 'v2') {
 
                     </div>
 
+                    <div class="row" id="cheque_number_row_pos" style="display: none;">
+                        <div class="col-12">
+                            <div class="card-title">
+                                <label for="cheque_number_pos"><?php echo $this->lang->line('Cheque Number') ?></label>
+                                <input type="text" class="form-control" name="cheque_number" id="cheque_number_pos" placeholder="Cheque Number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#p_method').on('change', function() {
+                                if ($(this).val() == 'Bank') {
+                                    $('#cheque_number_row_pos').show();
+                                } else {
+                                    $('#cheque_number_row_pos').hide();
+                                    $('#cheque_number_pos').val('');
+                                }
+                            });
+                        });
+                    </script>
+
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group  text-bold-600 red">
@@ -1207,7 +1229,7 @@ if (($_GET['id'] ?? null) == 'v2') {
     update_register();
     $(".possubmit").on("click", function (e) {
         e.preventDefault();
-        var o_data = $("#data_form").serialize() + '&type=' + $(this).attr('data-type');
+        var o_data = $("#data_form").serialize() + '&p_amount=' + accounting.unformat($('#p_amount').val(), accounting.settings.number.decimal) + '&p_method=' + $("#p_method option:selected").val() + '&type=' + $(this).attr('data-type') + '&account=' + $("#p_account option:selected").val() + '&cheque_number=' + $('#cheque_number_pos').val();
         var action_url = $('#action-url').val();
         addObject(o_data, action_url);
     });
@@ -1277,13 +1299,27 @@ if (($_GET['id'] ?? null) == 'v2') {
         addObject(o_data, action_url);
         update_register();
     });
+    $('#pos_basic_print').on("click", function (e) {
+        e.preventDefault();
+        $('#basicPay').modal('toggle');
+        $("#notify .message").html("<strong>Processing</strong>: .....");
+        $("#notify").removeClass("alert-danger").addClass("alert-primary").fadeIn();
+        $("html, body").animate({scrollTop: $('#notify').offset().top - 100}, 1000);
+        var o_data = $("#data_form").serialize() + '&p_amount=' + accounting.unformat($('#p_amount').val(), accounting.settings.number.decimal) + '&p_method=' + $("#p_method option:selected").val() + '&type=' + $(this).attr('data-type') + '&printnow=1'+ '&account=' + $("#p_account option:selected").val() + '&cheque_number=' + $('#cheque_number_pos').val();
+        var action_url = $('#action-url').val();
+        addObject(o_data, action_url);
+        setTimeout(
+            function () {
+                update_register();
+            }, 3000);
+    });
     $('#pos_basic_pay').on("click", function (e) {
         e.preventDefault();
         $('#basicPay').modal('toggle');
         $("#notify .message").html("<strong>Processing</strong>: .....");
         $("#notify").removeClass("alert-danger").addClass("alert-primary").fadeIn();
         $("html, body").animate({scrollTop: $('#notify').offset().top - 100}, 1000);
-        var o_data = $("#data_form").serialize() + '&p_amount=' + accounting.unformat($('#p_amount').val(), accounting.settings.number.decimal) + '&p_method=' + $("#p_method option:selected").val() + '&type=' + $(this).attr('data-type')+ '&account=' + $("#p_account option:selected").val();
+        var o_data = $("#data_form").serialize() + '&p_amount=' + accounting.unformat($('#p_amount').val(), accounting.settings.number.decimal) + '&p_method=' + $("#p_method option:selected").val() + '&type=' + $(this).attr('data-type')+ '&account=' + $("#p_account option:selected").val() + '&cheque_number=' + $('#cheque_number_pos').val();
         var action_url = $('#action-url').val();
         addObject(o_data, action_url);
         setTimeout(

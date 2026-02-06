@@ -90,6 +90,24 @@ class Billing_model extends CI_Model
         $this->db->insert('geopos_transactions', $data);
         $trans = $this->db->insert_id();
 
+        // Cheque Manager Integration
+        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+            $this->load->model('cheque_model');
+            $cheque_number = $this->input->post('cheque_number', true);
+            $cheque_data = array(
+                'amount' => $amount,
+                'party_id' => $invoice['csd'],
+                'party_type' => 'Customer',
+                'cheque_number' => $cheque_number,
+                'date' => $bill_date,
+                'tid' => $trans,
+                'doc_id' => $tid,
+                'doc_type' => 'invoice',
+                'note' => $note
+            );
+            $this->cheque_model->create_from_payment($cheque_data);
+        }
+
 
         $totalrm = $invoice['total'] - $invoice['pamnt'];
 
@@ -440,6 +458,24 @@ class Billing_model extends CI_Model
         $this->db->trans_start();
         $this->db->insert('geopos_transactions', $data);
         $trans = $this->db->insert_id();
+
+        // Cheque Manager Integration
+        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+            $this->load->model('cheque_model');
+            $cheque_number = $this->input->post('cheque_number', true);
+            $cheque_data = array(
+                'amount' => $amount,
+                'party_id' => $invoice['csd'],
+                'party_type' => 'Customer',
+                'cheque_number' => $cheque_number,
+                'date' => date('Y-m-d'),
+                'tid' => $trans,
+                'doc_id' => $tid,
+                'doc_type' => 'invoice',
+                'note' => $note
+            );
+            $this->cheque_model->create_from_payment($cheque_data);
+        }
 
 
         $totalrm = $invoice['total'] - $invoice['pamnt'];

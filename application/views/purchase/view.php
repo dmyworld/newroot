@@ -633,19 +633,42 @@
                     <div class="row">
                         <div class="col mb-1"><label
                                     for="pmethod"><?php echo $this->lang->line('Payment Method') ?></label>
-                            <select name="pmethod" class="form-control mb-1">
+                            <select name="pmethod" id="pmethod_purchase" class="form-control mb-1">
                                 <option value="Cash"><?php echo $this->lang->line('Cash') ?></option>
                                 <option value="Card"><?php echo $this->lang->line('Card') ?></option>
                                 <option value="Bank">Bank</option>
-                            </select><label for="account"><?php echo $this->lang->line('Account') ?></label>
-
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="col mb-1" id="cheque_number_col_p" style="display: none;">
+                            <label for="cheque_number"><?php echo $this->lang->line('Cheque Number') ?></label>
+                            <input type="text" class="form-control" name="cheque_number" id="cheque_number_purchase" placeholder="Cheque Number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-1">
+                            <label for="account"><?php echo $this->lang->line('Account') ?></label>
                             <select name="account" class="form-control">
                                 <?php foreach ($acclist as $row) {
                                     echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 }
                                 ?>
-                            </select></div>
+                            </select>
+                        </div>
                     </div>
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#pmethod_purchase').on('change', function() {
+                                if ($(this).val() == 'Bank' || $(this).val() == 'Cheque') {
+                                    $('#cheque_number_col_p').show();
+                                } else {
+                                    $('#cheque_number_col_p').hide();
+                                    $('#cheque_number_purchase').val('');
+                                }
+                            });
+                        });
+                    </script>
                     <div class="row">
                         <div class="col mb-1"><label
                                     for="shortnote"><?php echo $this->lang->line('Note') ?></label>

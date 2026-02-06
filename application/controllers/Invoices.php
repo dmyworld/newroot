@@ -105,8 +105,12 @@ class Invoices extends CI_Controller
     {
         $head['title'] = "Manage Invoices";
         $head['usernm'] = $this->aauth->get_user()->username;
+        $data['status'] = $this->input->get('status');
+        $data['branch_id'] = $this->input->get('branch_id');
+        $data['start_date'] = $this->input->get('start_date');
+        $data['end_date'] = $this->input->get('end_date');
         $this->load->view('fixed/header', $head);
-        $this->load->view('invoices/invoices');
+        $this->load->view('invoices/invoices', $data);
         $this->load->view('fixed/footer');
     }
 

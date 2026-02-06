@@ -577,22 +577,44 @@
                     </div>
 
                     <div class="row">
-                        <div class="col mb-1"><label
-                                    for="pmethod"><?php echo $this->lang->line('Payment Method') ?></label>
-                            <select name="pmethod" class="form-control mb-1">
+                        <div class="col mb-1">
+                            <label for="pmethod"><?php echo $this->lang->line('Payment Method') ?></label>
+                            <select name="pmethod" id="pmethod_invoice" class="form-control mb-1">
                                 <option value="Cash"><?php echo $this->lang->line('Cash') ?></option>
                                 <option value="Card"><?php echo $this->lang->line('Card') ?></option>
                                 <option value="Balance"><?php echo $this->lang->line('Client Balance') ?></option>
                                 <option value="Bank"><?php echo $this->lang->line('Bank') ?></option>
-                            </select><label for="account"><?php echo $this->lang->line('Account') ?></label>
-
-                            <select name="account" class="form-control">
+                            </select>
+                        </div>
+                        <div class="col mb-1" id="cheque_number_col" style="display: none;">
+                            <label for="cheque_number"><?php echo $this->lang->line('Cheque Number') ?></label>
+                            <input type="text" class="form-control" name="cheque_number" id="cheque_number_invoice" placeholder="Cheque Number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-1">
+                            <label for="account"><?php echo $this->lang->line('Account') ?></label>
+                            <select name="account" class="form-control border-bottom-0">
                                 <?php foreach ($acclist as $row) {
                                     echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 }
                                 ?>
-                            </select></div>
+                            </select>
+                        </div>
                     </div>
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#pmethod_invoice').on('change', function() {
+                                if ($(this).val() == 'Bank') {
+                                    $('#cheque_number_col').show();
+                                } else {
+                                    $('#cheque_number_col').hide();
+                                    $('#cheque_number_invoice').val('');
+                                }
+                            });
+                        });
+                    </script>
                     <div class="row">
                         <div class="col mb-1"><label
                                     for="shortnote"><?php echo $this->lang->line('Note') ?></label>

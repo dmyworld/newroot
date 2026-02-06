@@ -147,8 +147,12 @@ class Purchase extends CI_Controller
     {
         $head['title'] = "Manage Purchase Orders";
         $head['usernm'] = $this->aauth->get_user()->username;
+        $data['status'] = $this->input->get('status');
+        $data['branch_id'] = $this->input->get('branch_id');
+        $data['start_date'] = $this->input->get('start_date');
+        $data['end_date'] = $this->input->get('end_date');
         $this->load->view('fixed/header', $head);
-        $this->load->view('purchase/invoices');
+        $this->load->view('purchase/invoices', $data);
         $this->load->view('fixed/footer');
     }
     //invoices list
@@ -156,8 +160,12 @@ class Purchase extends CI_Controller
     {
         $head['title'] = "Manage Timber Logs Purchase Orders";
         $head['usernm'] = $this->aauth->get_user()->username;
+        $data['status'] = $this->input->get('status');
+        $data['branch_id'] = $this->input->get('branch_id');
+        $data['start_date'] = $this->input->get('start_date');
+        $data['end_date'] = $this->input->get('end_date');
         $this->load->view('fixed/header', $head);
-        $this->load->view('purchase/invoices_list');
+        $this->load->view('purchase/invoices_list', $data);
         $this->load->view('fixed/footer');
     }
     

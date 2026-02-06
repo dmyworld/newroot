@@ -1,0 +1,18 @@
+DATABASE_NAME: newroot
+
+TABLE_CHECK: EXISTS
+TOTAL_ROWS: 4
+
+SCHEMA_CHECK: id, tid, date, payee, amount, status, type, ref_no, note, branch_id, created_at
+
+DATA_SAMPLE:
+{"id":"5","tid":"60","date":"2026-02-05","payee":"ABC Suppliers Ltd","amount":"15000.00","status":"Issued","type":"Outgoing","ref_no":null,"note":"Inventory Purchase (Cheque #1001)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
+{"id":"6","tid":"0","date":"2026-02-05","payee":"John Doe (Customer)","amount":"5000.00","status":"Cleared","type":"Incoming","ref_no":null,"note":"Invoice #1001 payment (Cheque #5566)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
+{"id":"7","tid":"0","date":"2026-02-05","payee":"Bad Debtor Inc","amount":"2500.00","status":"Bounced","type":"Incoming","ref_no":null,"note":"Insufficient funds (Cheque #999)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
+{"id":"8","tid":"0","date":"2026-02-05","payee":"Office Rent","amount":"50000.00","status":"Cleared","type":"Outgoing","ref_no":null,"note":"Post-dated for rent","branch_id":"0","created_at":"2026-02-05 05:46:15"}
+
+DISTINCT_VALUES:
+Type: [Outgoing] | Status: [Issued]
+Type: [Incoming] | Status: [Cleared]
+Type: [Incoming] | Status: [Bounced]
+Type: [Outgoing] | Status: [Cleared]

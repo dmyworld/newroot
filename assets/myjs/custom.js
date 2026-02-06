@@ -654,7 +654,12 @@ function updatewoodOverallCubicFeetTotal() {
         totalwoodCubicFeet += parseFloat($(this).text()) || 0;
     });
     $('[id^="result3wood-"]').each(function () {
-        totalwoodCubicFeet += parseFloat($(this).text()) || 0;
+        var id = $(this).attr('id');
+        var rowNum = parseInt(id.split('-').pop());
+        // Include Row 1 and all subsequent added rows in Wood total
+        if (rowNum >= 1) {
+            totalwoodCubicFeet += parseFloat($(this).text()) || 0;
+        }
     });
 
     $('#wood_overall_cubic_feet_total').val(totalwoodCubicFeet.toFixed(2));

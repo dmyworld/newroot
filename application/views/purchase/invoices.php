@@ -326,7 +326,16 @@
 $(document).ready(function () {
     let dataTable;
     
-    function draw_data(start_date = '', end_date = '', status = '') {
+    var status = "<?php echo (isset($status) ? $status : '') ?>";
+    var branch_id = "<?php echo (isset($branch_id) ? $branch_id : '') ?>";
+    var start_date = "<?php echo (isset($start_date) ? $start_date : '') ?>";
+    var end_date = "<?php echo (isset($end_date) ? $end_date : '') ?>";
+
+    if (start_date != '') $('#start_date').val(start_date);
+    if (end_date != '') $('#end_date').val(end_date);
+    if (status != '') $('#status_filter').val(status);
+
+    function draw_data(start_date = '', end_date = '', status = '', branch_id = '') {
         if (dataTable) {
             dataTable.destroy();
         }
@@ -344,7 +353,8 @@ $(document).ready(function () {
                     '<?=$this->security->get_csrf_token_name()?>': crsf_hash,
                     start_date: start_date,
                     end_date: end_date,
-                    status: status
+                    status: status,
+                    loc: branch_id
                 }
             },
             'columnDefs': [
@@ -387,7 +397,7 @@ $(document).ready(function () {
     }
     
     // Initial load
-    draw_data();
+    draw_data(start_date, end_date, status, branch_id);
 
     // Search button
     $('#search').click(function () {
@@ -396,9 +406,9 @@ $(document).ready(function () {
         const status = $('#status_filter').val();
         
         if (start_date !== '' && end_date !== '') {
-            draw_data(start_date, end_date, status);
+            draw_data(start_date, end_date, status, ''); // Clear branch filter on manual search
         } else if (status !== '') {
-            draw_data('', '', status);
+            draw_data('', '', status, '');
         } else {
             alert("Please select date range or status to filter");
         }
