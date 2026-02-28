@@ -91,7 +91,7 @@ class Employee_model extends CI_Model
              'c_rate' => $commission,
              'bank_name' => $this->input->post('bank_name'),
              'bank_ac' => $this->input->post('bank_ac'),
-             'cola_amount' => numberClean($this->input->post('cola_amount')),
+             'cola_amount' => numberClean($this->input->post('cola_amount') ?? 0),
              'epf_no' => $this->input->post('epf_no')
         );
         if ($department > -1) {
@@ -109,7 +109,7 @@ class Employee_model extends CI_Model
                  'c_rate' => $commission,
                  'bank_name' => $this->input->post('bank_name'),
                  'bank_ac' => $this->input->post('bank_ac'),
-                 'cola_amount' => numberClean($this->input->post('cola_amount')),
+                 'cola_amount' => numberClean($this->input->post('cola_amount') ?? 0),
                  'epf_no' => $this->input->post('epf_no')
             );
         }
@@ -370,10 +370,10 @@ class Employee_model extends CI_Model
             'dept' => $department,
               'salary' => $salary,
             'c_rate' => $commission,
-            'bank_name' => $this->input->post('bank_name'),
-            'bank_ac' => $this->input->post('bank_ac'),
-            'cola_amount' => numberClean($this->input->post('cola_amount')),
-            'epf_no' => $this->input->post('epf_no')
+            'bank_name' => $this->input->post('bank_name') ?? '',
+            'bank_ac' => $this->input->post('bank_ac') ?? '',
+            'cola_amount' => numberClean($this->input->post('cola_amount') ?? 0),
+            'epf_no' => $this->input->post('epf_no') ?? ''
         );
 
 

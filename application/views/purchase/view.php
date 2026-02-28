@@ -173,7 +173,7 @@
 
                     </div>
                     <div class="offset-md-3 col-md-3 col-sm-12 text-xs-center text-md-left">
-                        <?php echo '<p><span class="text-muted">' . $this->lang->line('Order Date') . ' :</span> ' . dateformat($invoice['invoicedate']) . '</p> <p><span class="text-muted">' . $this->lang->line('Due Date') . ' :</span> ' . dateformat($invoice['invoiceduedate']) . '</p>  <p><span class="text-muted">' . $this->lang->line('Terms') . ' :</span> ' . $invoice['termtit'] . '</p>';
+                        <?php echo '<p><span class="text-muted">' . $this->lang->line('Order Date') . ' :</span> ' . dateformat_time($invoice['invoicedate']) . '</p> <p><span class="text-muted">' . $this->lang->line('Due Date') . ' :</span> ' . dateformat($invoice['invoiceduedate']) . '</p>  <p><span class="text-muted">' . $this->lang->line('Terms') . ' :</span> ' . $invoice['termtit'] . '</p>';
                         ?>
                     </div>
                 </div>
@@ -650,7 +650,11 @@
                             <label for="account"><?php echo $this->lang->line('Account') ?></label>
                             <select name="account" class="form-control">
                                 <?php foreach ($acclist as $row) {
-                                    echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                    $sel = "";
+                                    if (isset($default_account['url']) && $default_account['url'] == $row['id']) {
+                                        $sel = "selected";
+                                    }
+                                    echo '<option value="' . $row['id'] . '" ' . $sel . '>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 }
                                 ?>
                             </select>

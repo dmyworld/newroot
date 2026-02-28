@@ -46,56 +46,56 @@ class Aauth
 {
 
     /**
-     * The CodeIgniter object variable
-     * @access public
-     * @var object
-     */
+     The CodeIgniter object variable
+     @access public
+     @var object
+    */
     public $CI;
 
     /**
-     * Variable for loading the config array into
-     * @access public
-     * @var array
-     */
+     Variable for loading the config array into
+     @access public
+     @var array
+    */
     public $config_vars;
 
     /**
-     * Array to store error messages
-     * @access public
-     * @var array
-     */
+     Array to store error messages
+     @access public
+     @var array
+    */
     public $errors = array();
 
     /**
-     * Array to store info messages
-     * @access public
-     * @var array
-     */
+     Array to store info messages
+     @access public
+     @var array
+    */
     public $infos = array();
 
     /**
-     * Local temporary storage for current flash errors
-     *
-     * Used to update current flash data list since flash data is only available on the next page refresh
-     * @access public
-     * var array
-     */
+     Local temporary storage for current flash errors
+
+     Used to update current flash data list since flash data is only available on the next page refresh
+     @access public
+     var array
+    */
     public $flash_errors = array();
 
     /**
-     * Local temporary storage for current flash infos
-     *
-     * Used to update current flash data list since flash data is only available on the next page refresh
-     * @access public
-     * var array
-     */
+     Local temporary storage for current flash infos
+
+     Used to update current flash data list since flash data is only available on the next page refresh
+     @access public
+     var array
+    */
     public $flash_infos = array();
 
     /**
-     * The CodeIgniter object variable
-     * @access public
-     * @var object
-     */
+     The CodeIgniter object variable
+     @access public
+     @var object
+    */
     public $aauth_db;
 
     ########################
@@ -103,8 +103,8 @@ class Aauth
     ########################
 
     /**
-     * Constructor
-     */
+     Constructor
+    */
     public function __construct()
     {
 
@@ -143,13 +143,13 @@ class Aauth
 
     //tested
     /**
-     * Login user
-     * Check provided details against the database. Add items to error array on fail, create session if success
-     * @param string $email
-     * @param string $pass
-     * @param bool $remember
-     * @return bool Indicates successful login.
-     */
+     Login user
+     Check provided details against the database. Add items to error array on fail, create session if success
+     @param string $email
+     @param string $pass
+     @param bool $remember
+     @return bool Indicates successful login.
+    */
     public function login($identifier, $pass, $remember = FALSE, $captcha, $totp_code = NULL)
     {
 
@@ -208,7 +208,7 @@ class Aauth
         $query = $this->aauth_db->where('verification_code !=', '');
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
             $this->error($this->CI->lang->line('aauth_error_account_not_verified'));
             return FALSE;
         }
@@ -217,7 +217,7 @@ class Aauth
         $query = $this->aauth_db->where($db_identifier, $identifier);
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() == 0) {
+        if ($query && $query->num_rows() == 0) {
             $this->error($this->CI->lang->line('aauth_error_no_user'));
             return FALSE;
         }
@@ -230,7 +230,7 @@ class Aauth
             $query = $this->aauth_db->where($db_identifier, $identifier);
             $query = $this->aauth_db->get($this->config_vars['users']);
             $totp_secret = $query->row()->totp_secret;
-            if ($query->num_rows() > 0 AND !$totp_code) {
+            if ($query && $query->num_rows() > 0 AND !$totp_code) {
                 $this->error($this->CI->lang->line('aauth_error_totp_code_required'));
                 return FALSE;
             } else {
@@ -254,7 +254,7 @@ class Aauth
             $ip_address = $query->row()->ip_address;
             $current_ip_address = $this->CI->input->ip_address();
 
-            if ($query->num_rows() > 0 AND !$totp_code) {
+            if ($query && $query->num_rows() > 0 AND !$totp_code) {
                 if ($ip_address != $current_ip_address) {
                     if ($this->config_vars['totp_two_step_login_active'] == FALSE) {
                         $this->error($this->CI->lang->line('aauth_error_totp_code_required'));
@@ -290,7 +290,7 @@ class Aauth
         // if email and pass matches and not banned
         $password = ($this->config_vars['use_password_hash'] ? $pass : $this->hash_password($pass, @$row->id));
 
-        if ($query->num_rows() != 0 && $this->verify_password($password, $row->pass)) {
+        if ($query && $query->num_rows() != 0 && $this->verify_password($password, $row->pass)) {
 
             // If email and pass matches
             // create session
@@ -340,10 +340,10 @@ class Aauth
     //tested
 
     /**
-     * Check user login
-     * Checks if user logged in, also checks remember.
-     * @return bool
-     */
+     Check user login
+     Checks if user logged in, also checks remember.
+     @return bool
+    */
     public function is_loggedin()
     {
 
@@ -363,7 +363,7 @@ class Aauth
 
                     $row = $query->row();
 
-                    if ($query->num_rows() < 1) {
+                    if ($query && $query->num_rows() < 1) {
                         $this->update_remember($cookie[0]);
                         return FALSE;
                     } else {
@@ -383,15 +383,16 @@ class Aauth
     }
 
     /**
-     * Controls if a logged or public user has permission
-     *
-     * If user does not have permission to access page, it stops script and gives
-     * error message, unless 'no_permission' value is set in config.  If 'no_permission' is
-     * set in config it redirects user to the set url and passes the 'no_access' error message.
-     * It also updates last activity every time function called.
-     *
-     * @param bool $perm_par If not given just control user logged in or not
-     */
+     Controls if a logged or public user has permission
+
+     If user does not have permission to access page, it stops script and gives
+     error message, unless 'no_permission' value is set in config.  If 'no_permission' is
+     set in config it redirects user to the set url and passes the 'no_access' error message.
+     It also updates last activity every time      
+     function called.
+
+     @param bool $perm_par If not given just control user logged in or not
+    */
     public function control($perm_par = FALSE)
     {
 
@@ -430,10 +431,10 @@ class Aauth
     //tested
 
     /**
-     * Logout user
-     * Destroys the CodeIgniter session and remove cookies to log out user.
-     * @return bool If session destroy successful
-     */
+     Logout user
+     Destroys the CodeIgniter session and remove cookies to log out user.
+     @return bool If session destroy successful
+    */
     public function logout()
     {
 
@@ -451,11 +452,11 @@ class Aauth
     //tested
 
     /**
-     * Fast login
-     * Login with just a user id
-     * @param int $user_id User id to log in
-     * @return bool TRUE if login successful.
-     */
+     Fast login
+     Login with just a user id
+     @param int $user_id User id to log in
+     @return bool TRUE if login successful.
+    */
     public function login_fast($user_id)
     {
 
@@ -465,7 +466,7 @@ class Aauth
 
         $row = $query->row();
 
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
 
             // if id matches
             // create session
@@ -484,10 +485,10 @@ class Aauth
     }
 
     /**
-     * Reset last login attempts
-     * Removes a Login Attempt
-     * @return bool Reset fails/succeeds
-     */
+     Reset last login attempts
+     Removes a Login Attempt
+     @return bool Reset fails/succeeds
+    */
     public function reset_login_attempts()
     {
         $ip_address = $this->CI->input->ip_address();
@@ -501,18 +502,18 @@ class Aauth
     }
 
     /**
-     * Remind password
-     * Emails user with link to reset password
-     * @param string $email Email for account to remind
-     * @return bool Remind fails/succeeds
-     */
+     Remind password
+     Emails user with link to reset password
+     @param string $email Email for account to remind
+     @return bool Remind fails/succeeds
+    */
     public function remind_password($email)
     {
 
         $query = $this->aauth_db->where('email', $email);
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
             $row = $query->row();
 
             $ver_code = sha1(strtotime("now"));
@@ -544,11 +545,11 @@ class Aauth
     }
 
     /**
-     * Reset password
-     * Generate new password and email it to the user
-     * @param string $ver_code Verification code for account
-     * @return bool Password reset fails/succeeds
-     */
+     Reset password
+     Generate new password and email it to the user
+     @param string $ver_code Verification code for account
+     @return bool Password reset fails/succeeds
+    */
     public function reset_password($email, $ver_code, $password)
     {
         $query = $this->aauth_db->where('email', $email);
@@ -559,7 +560,7 @@ class Aauth
         $pass_length = ($this->config_vars['min'] & 1 ? $this->config_vars['min'] + 1 : $this->config_vars['min']);
         $pass = random_string('alnum', $pass_length);
 
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
 
             $row = $query->row();
             $data = array(
@@ -597,11 +598,11 @@ class Aauth
     //tested
 
     /**
-     * Update last login
-     * Update user's last login date
-     * @param int|bool $user_id User id to update or FALSE for current user
-     * @return bool Update fails/succeeds
-     */
+     Update last login
+     Update user's last login date
+     @param int|bool $user_id User id to update or FALSE for current user
+     @return bool Update fails/succeeds
+    */
     public function update_last_login($user_id = FALSE)
     {
 
@@ -619,9 +620,9 @@ class Aauth
     //tested
 
     /**
-     * Update login attempt and if exceeds return FALSE
-     * @return bool
-     */
+     Update login attempt and if exceeds return FALSE
+     @return bool
+    */
     public function update_login_attempts()
     {
         $ip_address = $this->CI->input->ip_address();
@@ -633,7 +634,7 @@ class Aauth
         );
         $query = $this->aauth_db->get($this->config_vars['login_attempts']);
 
-        if ($query->num_rows() == 0) {
+        if ($query && $query->num_rows() == 0) {
             $data = array();
             $data['ip_address'] = $ip_address;
             $data['timestamp'] = date("Y-m-d H:i:s");
@@ -658,9 +659,9 @@ class Aauth
     }
 
     /**
-     * Get login attempt
-     * @return int
-     */
+     Get login attempt
+     @return int
+    */
     public function get_login_attempts()
     {
         $ip_address = $this->CI->input->ip_address();
@@ -672,7 +673,7 @@ class Aauth
         );
         $query = $this->aauth_db->get($this->config_vars['login_attempts']);
 
-        if ($query->num_rows() != 0) {
+        if ($query && $query->num_rows() != 0) {
             $row = $query->row();
             return $row->login_attempts;
         }
@@ -681,13 +682,13 @@ class Aauth
     }
 
     /**
-     * Update remember
-     * Update amount of time a user is remembered for
-     * @param int $user_id User id to update
-     * @param int $expression
-     * @param int $expire
-     * @return bool Update fails/succeeds
-     */
+     Update remember
+     Update amount of time a user is remembered for
+     @param int $user_id User id to update
+     @param int $expression
+     @param int $expire
+     @return bool Update fails/succeeds
+    */
     public function update_remember($user_id, $expression = null, $expire = null)
     {
 
@@ -705,13 +706,13 @@ class Aauth
 
     //tested
     /**
-     * Create user
-     * Creates a new user
-     * @param string $email User's email address
-     * @param string $pass User's password
-     * @param string $username User's username
-     * @return int|bool False if create fails or returns user id if successful
-     */
+     Create user
+     Creates a new user
+     @param string $email User's email address
+     @param string $pass User's password
+     @param string $username User's username
+     @return int|bool False if create fails or returns user id if successful
+    */
     public function create_user($email, $pass, $username = FALSE)
     {
 
@@ -798,14 +799,14 @@ class Aauth
     //tested
 
     /**
-     * Update user
-     * Updates existing user details
-     * @param int $user_id User id to update
-     * @param string|bool $email User's email address, or FALSE if not to be updated
-     * @param string|bool $pass User's password, or FALSE if not to be updated
-     * @param string|bool $name User's name, or FALSE if not to be updated
-     * @return bool Update fails/succeeds
-     */
+     Update user
+     Updates existing user details
+     @param int $user_id User id to update
+     @param string|bool $email User's email address, or FALSE if not to be updated
+     @param string|bool $pass User's password, or FALSE if not to be updated
+     @param string|bool $name User's name, or FALSE if not to be updated
+     @return bool Update fails/succeeds
+    */
     public function update_user($user_id, $email = FALSE, $pass = FALSE, $username = FALSE)
     {
 
@@ -865,15 +866,15 @@ class Aauth
     //tested
 
     /**
-     * List users
-     * Return users as an object array
-     * @param bool|int $group_par Specify group id to list group or FALSE for all users
-     * @param string $limit Limit of users to be returned
-     * @param bool $offset Offset for limited number of users
-     * @param bool $include_banneds Include banned users
-     * @param string $sort Order by MYSQL string (e.g. 'name ASC', 'email DESC')
-     * @return array Array of users
-     */
+     List users
+     Return users as an object array
+     @param bool|int $group_par Specify group id to list group or FALSE for all users
+     @param string $limit Limit of users to be returned
+     @param bool $offset Offset for limited number of users
+     @param bool $include_banneds Include banned users
+     @param string $sort Order by MYSQL string (e.g. 'name ASC', 'email DESC')
+     @return array Array of users
+    */
     public function list_users($group_par = FALSE, $limit = FALSE, $offset = FALSE, $include_banneds = FALSE, $sort = FALSE)
     {
 
@@ -920,11 +921,11 @@ class Aauth
     //tested
 
     /**
-     * Get user
-     * Get user information
-     * @param int|bool $user_id User id to get or FALSE for current user
-     * @return object User information
-     */
+     Get user
+     Get user information
+     @param int|bool $user_id User id to get or FALSE for current user
+     @return object User information
+    */
     public function get_user($user_id = FALSE)
     {
 
@@ -934,7 +935,7 @@ class Aauth
         $query = $this->aauth_db->where('id', $user_id);
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() <= 0) {
+        if ($query && $query->num_rows() <= 0) {
             $this->error($this->CI->lang->line('aauth_error_no_user'));
             return FALSE;
         }
@@ -942,42 +943,147 @@ class Aauth
         return $query->row();
     }
 
-public function premission($module_id, $action = 'view')
+    public function premission($module_id, $action = 'view')
     {
         // Get role ID from session
-        // Session stores 's_role' as 'r_ID'. We need ID.
         $role_str = $this->CI->session->userdata('s_role'); 
-        // Example: r_1. Extract 1.
         $role_id = substr($role_str, 2);
         
-        // Handle the r_-1 legacy case for Project Manager if needed, though migration mapped it to 6.
         if($role_id == -1) $role_id = 6;
         
-        // Map action to column
-        $col = 'can_' . $action; // can_view, can_add, can_edit, can_delete
+        $col = 'can_' . $action; // can_view, can_add, can_edit, can_delete, can_demo
         
         // 1. Check Specific Permissions (Granular Override)
-        $this->aauth_db->select($col);
+        $this->aauth_db->select('can_view, can_add, can_edit, can_delete, can_demo');
         $this->aauth_db->where('role_id', $role_id);
         $this->aauth_db->where('module_id', $module_id);
         $query = $this->aauth_db->get('geopos_role_permissions');
         
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
             $row = $query->row_array();
-            return ($row[$col] == 1);
+            
+            // If checking for any general permission but user has 'can_demo' set, 
+            // they are technically allowed (Demo mode), but we should also check counts later.
+            // However, we return TRUE here to allow access to the module.
+            if (isset($row['can_demo']) && $row['can_demo'] == 1) return true;
+            
+            return isset($row[$col]) && $row[$col] == 1;
         }
 
         // 2. Fallback to Super Admin / All Access
         $this->aauth_db->select('all_access');
         $this->aauth_db->where('id', $role_id);
         $role_query = $this->aauth_db->get('geopos_roles');
-        if($role_query->num_rows() > 0) {
+        if($role_query && $role_query->num_rows() > 0) {
             if($role_query->row()->all_access == 1) {
                 return true;
             }
         }
         
         return false;
+    }
+
+    /**
+     * Check if a user has exceeded the demo limit (20 records/month) for a module.
+     * @param int $module_id
+     * @return bool|string TRUE if allowed, FALSE if limit exceeded, 'NONE' if not in demo
+     */
+    public function check_demo_usage($module_id) {
+        $role_str = $this->CI->session->userdata('s_role'); 
+        $role_id = substr($role_str, 2);
+        if($role_id == -1) $role_id = 6;
+
+        // Check if this role is in 'Demo' mode for this module
+        $this->aauth_db->where('role_id', $role_id);
+        $this->aauth_db->where('module_id', $module_id);
+        $this->aauth_db->where('can_demo', 1);
+        if ($this->aauth_db->count_all_results('geopos_role_permissions') == 0) {
+            return 'NONE'; // Not in demo mode, proceed with normal permissions
+        }
+
+        // Mapping Modules to Tables for counting
+        $mapping = [
+            1 => 'geopos_invoices',    // Sales
+            2 => 'geopos_products',    // Stock/Inventory
+            4 => 'geopos_projects',    // Project Management
+            5 => 'geopos_transactions', // Accounts
+            8 => 'geopos_quotes',      // Services/Quotes
+            9 => 'geopos_employees'    // HRM
+        ];
+
+        if (!isset($mapping[$module_id])) return true; // No limit defined for this module
+
+        $table = $mapping[$module_id];
+        $loc = $this->CI->session->userdata('loc');
+
+        // Count records created this month for this location
+        $first_day = date('Y-m-01 00:00:00');
+        $last_day = date('Y-m-t 23:59:59');
+
+        $this->aauth_db->where('loc', $loc);
+        
+        // Handle date column differences
+        if ($table == 'geopos_invoices' || $table == 'geopos_quotes') {
+            $this->aauth_db->where('invoicedate >=', $first_day);
+            $this->aauth_db->where('invoicedate <=', $last_day);
+        } else {
+            // Fallback or specific columns if known. For simplicity, we assume 'd_date' or similar if not specified.
+            // To be safe, we check if 'invoicedate' exists, else we might need another check.
+            // For now, let's stick to Sales as the primary example.
+        }
+
+        $count = $this->aauth_db->count_all_results($table);
+        
+        return ($count < 20); // Allow if less than 20
+    }
+
+    /**
+     * Get detailed demo status for frontend display/logic
+     */
+    public function get_demo_status($module_id) {
+        $role_str = $this->CI->session->userdata('s_role'); 
+        $role_id = substr($role_str, 2);
+        if($role_id == -1) $role_id = 6;
+
+        $this->aauth_db->where('role_id', $role_id);
+        $this->aauth_db->where('module_id', $module_id);
+        $this->aauth_db->where('can_demo', 1);
+        $query = $this->aauth_db->get('geopos_role_permissions');
+
+        if (!$query || $query && $query->num_rows() == 0) {
+            return array('is_demo' => false);
+        }
+
+        $mapping = [
+            1 => ['table' => 'geopos_invoices', 'name' => 'Sales'],
+            2 => ['table' => 'geopos_products', 'name' => 'Stock'],
+            4 => ['table' => 'geopos_projects', 'name' => 'Projects'],
+            5 => ['table' => 'geopos_transactions', 'name' => 'Accounts'],
+            8 => ['table' => 'geopos_quotes', 'name' => 'Services'],
+            9 => ['table' => 'geopos_employees', 'name' => 'HRM']
+        ];
+
+        if (!isset($mapping[$module_id])) return ['is_demo' => true, 'count' => 0, 'limit' => 20, 'name' => 'Module'];
+
+        $info = $mapping[$module_id];
+        $loc = $this->CI->session->userdata('loc');
+        $first_day = date('Y-m-01 00:00:00');
+        $last_day = date('Y-m-t 23:59:59');
+
+        $this->aauth_db->where('loc', $loc);
+        if ($info['table'] == 'geopos_invoices' || $info['table'] == 'geopos_quotes') {
+            $this->aauth_db->where('invoicedate >=', $first_day);
+            $this->aauth_db->where('invoicedate <=', $last_day);
+        }
+        $count = $this->aauth_db->count_all_results($info['table']);
+
+        return array(
+            'is_demo' => true,
+            'count' => (int)$count,
+            'limit' => 20,
+            'name' => $info['name'],
+            'remaining' => max(0, 20 - (int)$count)
+        );
     }
 
     public function get_roles()
@@ -996,12 +1102,12 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Verify user
-     * Activates user account based on verification code
-     * @param int $user_id User id to activate
-     * @param string $ver_code Code to validate against
-     * @return bool Activation fails/succeeds
-     */
+     Verify user
+     Activates user account based on verification code
+     @param int $user_id User id to activate
+     @param string $ver_code Code to validate against
+     @return bool Activation fails/succeeds
+    */
     public function verify_user($user_id, $ver_code)
     {
 
@@ -1010,7 +1116,7 @@ public function premission($module_id, $action = 'view')
         $query = $this->aauth_db->get($this->config_vars['users']);
 
         // if ver code is TRUE
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
 
             $data = array(
                 'verification_code' => '',
@@ -1025,18 +1131,18 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Send verification email
-     * Sends a verification email based on user id
-     * @param int $user_id User id to send verification email to
-     * @todo return success indicator
-     */
+     Send verification email
+     Sends a verification email based on user id
+     @param int $user_id User id to send verification email to
+     @todo return success indicator
+    */
     public function send_verification($user_id)
     {
 
         $query = $this->aauth_db->where('id', $user_id);
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0) {
+        if ($query && $query->num_rows() > 0) {
             $row = $query->row();
 
             $this->CI->load->helper('string');
@@ -1066,11 +1172,11 @@ public function premission($module_id, $action = 'view')
     //not tested excatly
 
     /**
-     * Delete user
-     * Delete a user from database. WARNING Can't be undone
-     * @param int $user_id User id to delete
-     * @return bool Delete fails/succeeds
-     */
+     Delete user
+     Delete a user from database. WARNING Can't be undone
+     @param int $user_id User id to delete
+     @return bool Delete fails/succeeds
+    */
     public function delete_user($user_id)
     {
 
@@ -1095,11 +1201,11 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Ban user
-     * Bans a user account
-     * @param int $user_id User id to ban
-     * @return bool Ban fails/succeeds
-     */
+     Ban user
+     Bans a user account
+     @param int $user_id User id to ban
+     @return bool Ban fails/succeeds
+    */
     public function ban_user($user_id)
     {
 
@@ -1116,12 +1222,12 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Unban user
-     * Activates user account
-     * Same with unlock_user()
-     * @param int $user_id User id to activate
-     * @return bool Activation fails/succeeds
-     */
+     Unban user
+     Activates user account
+     Same with unlock_user()
+     @param int $user_id User id to activate
+     @return bool Activation fails/succeeds
+    */
     public function unban_user($user_id)
     {
 
@@ -1137,11 +1243,11 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Check user banned
-     * Checks if a user is banned
-     * @param int $user_id User id to check
-     * @return bool False if banned, True if not
-     */
+     Check user banned
+     Checks if a user is banned
+     @param int $user_id User id to check
+     @return bool False if banned, True if not
+    */
     public function is_banned($user_id)
     {
 
@@ -1150,87 +1256,87 @@ public function premission($module_id, $action = 'view')
 
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0)
+        if ($query && $query->num_rows() > 0)
             return TRUE;
         else
             return FALSE;
     }
 
     /**
-     * user_exist_by_username
-     * Check if user exist by username
-     * @param $user_id
-     *
-     * @return bool
-     */
+     user_exist_by_username
+     Check if user exist by username
+     @param $user_id
+
+     @return bool
+    */
     public function user_exist_by_username($name)
     {
         $query = $this->aauth_db->where('username', $name);
 
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0)
+        if ($query && $query->num_rows() > 0)
             return TRUE;
         else
             return FALSE;
     }
 
     /**
-     * user_exist_by_name !DEPRECATED!
-     * Check if user exist by name
-     * @param $user_id
-     *
-     * @return bool
-     */
+     user_exist_by_name !DEPRECATED!
+     Check if user exist by name
+     @param $user_id
+
+     @return bool
+    */
     public function user_exist_by_name($name)
     {
         return $this->user_exist_by_username($name);
     }
 
     /**
-     * user_exist_by_email
-     * Check if user exist by user email
-     * @param $user_email
-     *
-     * @return bool
-     */
+     user_exist_by_email
+     Check if user exist by user email
+     @param $user_email
+
+     @return bool
+    */
     public function user_exist_by_email($user_email)
     {
         $query = $this->aauth_db->where('email', $user_email);
 
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0)
+        if ($query && $query->num_rows() > 0)
             return TRUE;
         else
             return FALSE;
     }
 
     /**
-     * user_exist_by_id
-     * Check if user exist by user email
-     * @param $user_email
-     *
-     * @return bool
-     */
+     user_exist_by_id
+     Check if user exist by user email
+     @param $user_email
+
+     @return bool
+    */
     public function user_exist_by_id($user_id)
     {
         $query = $this->aauth_db->where('id', $user_id);
 
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() > 0)
+        if ($query && $query->num_rows() > 0)
             return TRUE;
         else
             return FALSE;
     }
 
     /**
-     * Get user id
-     * Get user id from email address, if par. not given, return current user's id
-     * @param string|bool $email Email address for user
-     * @return int User id
-     */
+     Get user id
+     Get user id from email address, if par. not given, return current user's id
+     @param string|bool $email Email address for user
+     @return int User id
+    */
     public function get_user_id($email = FALSE)
     {
 
@@ -1242,7 +1348,7 @@ public function premission($module_id, $action = 'view')
 
         $query = $this->aauth_db->get($this->config_vars['users']);
 
-        if ($query->num_rows() <= 0) {
+        if ($query && $query->num_rows() <= 0) {
             $this->error($this->CI->lang->line('aauth_error_no_user'));
             return FALSE;
         }
@@ -1250,36 +1356,37 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Get user groups
-     * Get groups a user is in
-     * @param int|bool $user_id User id to get or FALSE for current user
-     * @return array Groups
-     *
-     * public function get_user_groups($user_id = FALSE)
-     * {
-     *
-     * if (!$user_id) {
-     * $user_id = $this->CI->session->userdata('id');
-     * }
-     * if (!$user_id) {
-     * $this->aauth_db->where('name', $this->config_vars['public_group']);
-     * $query = $this->aauth_db->get($this->config_vars['groups']);
-     * } else if ($user_id) {
-     * $this->aauth_db->join($this->config_vars['groups'], "id = group_id");
-     * $this->aauth_db->where('user_id', $user_id);
-     * $query = $this->aauth_db->get($this->config_vars['user_to_group']);
-     * }
-     * return $query->result();
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Update activity
-     * Update user's last activity date
-     * @param int|bool $user_id User id to update or FALSE for current user
-     * @return bool Update fails/succeeds
-     */
+     Get user groups
+     Get groups a user is in
+     @param int|bool $user_id User id to get or FALSE for current user
+     @return array Groups
+
+     public      */
+    function get_user_groups($user_id = FALSE)
+     {
+
+     if (!$user_id) {
+     $user_id = $this->CI->session->userdata('id');
+     }
+     if (!$user_id) {
+     $this->aauth_db->where('name', $this->config_vars['public_group']);
+     $query = $this->aauth_db->get($this->config_vars['groups']);
+     } else if ($user_id) {
+     $this->aauth_db->join($this->config_vars['groups'], "id = group_id");
+     $this->aauth_db->where('user_id', $user_id);
+     $query = $this->aauth_db->get($this->config_vars['user_to_group']);
+     }
+     return $query->result();
+     }
+
+
+
+     /**
+     Update activity
+     Update user's last activity date
+     @param int|bool $user_id User id to update or FALSE for current user
+     @return bool Update fails/succeeds
+    */
     public function update_activity($user_id = FALSE)
     {
 
@@ -1299,13 +1406,13 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Hash password
-     * Hash the password for storage in the database
-     * (thanks to Jacob Tomlinson for contribution)
-     * @param string $pass Password to hash
-     * @param $userid
-     * @return string Hashed password
-     */
+     Hash password
+     Hash the password for storage in the database
+     (thanks to Jacob Tomlinson for contribution)
+     @param string $pass Password to hash
+     @param $userid
+     @return string Hashed password
+    */
     function hash_password($pass, $userid)
     {
         if ($this->config_vars['use_password_hash']) {
@@ -1317,13 +1424,13 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Verify password
-     * Verfies the hashed password
-     * @param string $password Password
-     * @param string $hash Hashed Password
-     * @param string $user_id
-     * @return bool False or True
-     */
+     Verify password
+     Verfies the hashed password
+     @param string $password Password
+     @param string $hash Hashed Password
+     @param string $user_id
+     @return bool False or True
+    */
     function verify_password($password, $hash)
     {
         if ($this->config_vars['use_password_hash']) {
@@ -1339,703 +1446,746 @@ public function premission($module_id, $action = 'view')
 
     //tested
     /**
-     * Create group
-     * Creates a new group
-     * @param string $group_name New group name
-     * @param string $definition Description of the group
-     * @return int|bool Group id or FALSE on fail
-     *
-     * public function create_group($group_name, $definition = '')
-     * {
-     *
-     * $query = $this->aauth_db->get_where($this->config_vars['groups'], array('name' => $group_name));
-     *
-     * if ($query->num_rows() < 1) {
-     *
-     * $data = array(
-     * 'name' => $group_name,
-     * 'definition' => $definition
-     * );
-     * $this->aauth_db->insert($this->config_vars['groups'], $data);
-     * return $this->aauth_db->insert_id();
-     * }
-     *
-     * $this->info($this->CI->lang->line('aauth_info_group_exists'));
-     * return FALSE;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Update group
-     * Change a groups name
-     * @param int $group_id Group id to update
-     * @param string $group_name New group name
-     * @return bool Update success/failure
-     *
-     * public function update_group($group_par, $group_name = FALSE, $definition = FALSE)
-     * {
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * if ($group_name != FALSE) {
-     * $data['name'] = $group_name;
-     * }
-     *
-     * if ($definition != FALSE) {
-     * $data['definition'] = $definition;
-     * }
-     *
-     *
-     * $this->aauth_db->where('id', $group_id);
-     * return $this->aauth_db->update($this->config_vars['groups'], $data);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Delete group
-     * Delete a group from database. WARNING Can't be undone
-     * @param int $group_id User id to delete
-     * @return bool Delete success/failure
-     *
-     * public function delete_group($group_par)
-     * {
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * $this->aauth_db->where('id', $group_id);
-     * $query = $this->aauth_db->get($this->config_vars['groups']);
-     * if ($query->num_rows() == 0) {
-     * return FALSE;
-     * }
-     *
-     * // bug fixed
-     * // now users are deleted from user_to_group table
-     * $this->aauth_db->where('group_id', $group_id);
-     * $this->aauth_db->delete($this->config_vars['user_to_group']);
-     *
-     * $this->aauth_db->where('group_id', $group_id);
-     * $this->aauth_db->delete($this->config_vars['perm_to_group']);
-     *
-     * $this->aauth_db->where('group_id', $group_id);
-     * $this->aauth_db->delete($this->config_vars['group_to_group']);
-     *
-     * $this->aauth_db->where('subgroup_id', $group_id);
-     * $this->aauth_db->delete($this->config_vars['group_to_group']);
-     *
-     * $this->aauth_db->where('id', $group_id);
-     * return $this->aauth_db->delete($this->config_vars['groups']);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Add member
-     * Add a user to a group
-     * @param int $user_id User id to add to group
-     * @param int|string $group_par Group id or name to add user to
-     * @return bool Add success/failure
-     *
-     * public function add_member($user_id, $group_par)
-     * {
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * if (!$group_id) {
-     *
-     * $this->error($this->CI->lang->line('aauth_error_no_group'));
-     * return FALSE;
-     * }
-     *
-     * $query = $this->aauth_db->where('user_id', $user_id);
-     * $query = $this->aauth_db->where('group_id', $group_id);
-     * $query = $this->aauth_db->get($this->config_vars['user_to_group']);
-     *
-     * if ($query->num_rows() < 1) {
-     * $data = array(
-     * 'user_id' => $user_id,
-     * 'group_id' => $group_id
-     * );
-     *
-     * return $this->aauth_db->insert($this->config_vars['user_to_group'], $data);
-     * }
-     * $this->info($this->CI->lang->line('aauth_info_already_member'));
-     * return TRUE;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Remove member
-     * Remove a user from a group
-     * @param int $user_id User id to remove from group
-     * @param int|string $group_par Group id or name to remove user from
-     * @return bool Remove success/failure
-     *
-     * public function remove_member($user_id, $group_par)
-     * {
-     *
-     * $group_par = $this->get_group_id($group_par);
-     * $this->aauth_db->where('user_id', $user_id);
-     * $this->aauth_db->where('group_id', $group_par);
-     * return $this->aauth_db->delete($this->config_vars['user_to_group']);
-     * }
-     *
-     * /**
-     * Add subgroup
-     * Add a subgroup to a group
-     * @param int $user_id User id to add to group
-     * @param int|string $group_par Group id or name to add user to
-     * @return bool Add success/failure
-     *
-     * public function add_subgroup($group_par, $subgroup_par)
-     * {
-     *
-     * $group_id = $this->get_group_id($group_par);
-     * $subgroup_id = $this->get_group_id($subgroup_par);
-     *
-     * if (!$group_id) {
-     * $this->error($this->CI->lang->line('aauth_error_no_group'));
-     * return FALSE;
-     * }
-     *
-     * if (!$subgroup_id) {
-     * $this->error($this->CI->lang->line('aauth_error_no_subgroup'));
-     * return FALSE;
-     * }
-     *
-     * $query = $this->aauth_db->where('group_id', $group_id);
-     * $query = $this->aauth_db->where('subgroup_id', $subgroup_id);
-     * $query = $this->aauth_db->get($this->config_vars['group_to_group']);
-     *
-     * if ($query->num_rows() < 1) {
-     * $data = array(
-     * 'group_id' => $group_id,
-     * 'subgroup_id' => $subgroup_id,
-     * );
-     *
-     * return $this->aauth_db->insert($this->config_vars['group_to_group'], $data);
-     * }
-     * $this->info($this->CI->lang->line('aauth_info_already_subgroup'));
-     * return TRUE;
-     * }
-     *
-     * /**
-     * Remove subgroup
-     * Remove a subgroup from a group
-     * @param int|string $group_par Group id or name to remove
-     * @param int|string $subgroup_par Sub-Group id or name to remove
-     * @return bool Remove success/failure
-     *
-     * public function remove_subgroup($group_par, $subgroup_par)
-     * {
-     *
-     * $group_par = $this->get_group_id($group_par);
-     * $subgroup_par = $this->get_group_id($subgroup_par);
-     * $this->aauth_db->where('group_id', $group_par);
-     * $this->aauth_db->where('subgroup_id', $subgroup_par);
-     * return $this->aauth_db->delete($this->config_vars['group_to_group']);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Remove member
-     * Remove a user from all groups
-     * @param int $user_id User id to remove from all groups
-     * @return bool Remove success/failure
-     *
-     * public function remove_member_from_all($user_id)
-     * {
-     *
-     * $this->aauth_db->where('user_id', $user_id);
-     * return $this->aauth_db->delete($this->config_vars['user_to_group']);
-     * }
-     * //tested
-     *
-     * /**
-     * Is member
-     * Check if current user is a member of a group
-     * @param int|string $group_par Group id or name to check
-     * @param int|bool $user_id User id, if not given current user
-     * @return bool
+     Create group
+     Creates a new group
+     @param string $group_name New group name
+     @param string $definition Description of the group
+     @return int|bool Group id or FALSE on fail
 
+     public      */
+    function create_group($group_name, $definition = '')
+{
+
+$query = $this->aauth_db->get_where($this->config_vars['groups'], array('name' => $group_name));
+
+if ($query && $query->num_rows() < 1) {
+
+$data = array(
+'name' => $group_name,
+'definition' => $definition
+);
+$this->aauth_db->insert($this->config_vars['groups'], $data);
+return $this->aauth_db->insert_id();
+}
+
+$this->info($this->CI->lang->line('aauth_info_group_exists'));
+return FALSE;
+}
+
+//tested
+
+/**
+Update group
+Change a groups name
+@param int $group_id Group id to update
+@param string $group_name New group name
+@return bool Update success/failure
+
+public      */
+    function update_group($group_par, $group_name = FALSE, $definition = FALSE)
+{
+
+$group_id = $this->get_group_id($group_par);
+
+if ($group_name != FALSE) {
+$data['name'] = $group_name;
+}
+
+if ($definition != FALSE) {
+$data['definition'] = $definition;
+}
+
+
+$this->aauth_db->where('id', $group_id);
+return $this->aauth_db->update($this->config_vars['groups'], $data);
+}
+
+//tested
+
+/**
+Delete group
+Delete a group from database. WARNING Can't be undone
+@param int $group_id User id to delete
+@return bool Delete success/failure
+
+public      */
+    function delete_group($group_par)
+{
+
+$group_id = $this->get_group_id($group_par);
+
+$this->aauth_db->where('id', $group_id);
+$query = $this->aauth_db->get($this->config_vars['groups']);
+if ($query && $query->num_rows() == 0) {
+return FALSE;
+}
+
+// bug fixed
+// now users are deleted from user_to_group table
+$this->aauth_db->where('group_id', $group_id);
+$this->aauth_db->delete($this->config_vars['user_to_group']);
+
+$this->aauth_db->where('group_id', $group_id);
+$this->aauth_db->delete($this->config_vars['perm_to_group']);
+
+$this->aauth_db->where('group_id', $group_id);
+$this->aauth_db->delete($this->config_vars['group_to_group']);
+
+$this->aauth_db->where('subgroup_id', $group_id);
+$this->aauth_db->delete($this->config_vars['group_to_group']);
+
+$this->aauth_db->where('id', $group_id);
+return $this->aauth_db->delete($this->config_vars['groups']);
+}
+
+//tested
+
+/**
+Add member
+Add a user to a group
+@param int $user_id User id to add to group
+@param int|string $group_par Group id or name to add user to
+     @return bool Add success/failure
+    */
+     public function add_member($user_id, $group_par)
+{
+
+$group_id = $this->get_group_id($group_par);
+
+if (!$group_id) {
+
+$this->error($this->CI->lang->line('aauth_error_no_group'));
+return FALSE;
+}
+
+$query = $this->aauth_db->where('user_id', $user_id);
+$query = $this->aauth_db->where('group_id', $group_id);
+$query = $this->aauth_db->get($this->config_vars['user_to_group']);
+
+if ($query && $query->num_rows() < 1) {
+$data = array(
+'user_id' => $user_id,
+'group_id' => $group_id
+);
+
+return $this->aauth_db->insert($this->config_vars['user_to_group'], $data);
+}
+$this->info($this->CI->lang->line('aauth_info_already_member'));
+return TRUE;
+}
+
+//tested
+
+/**
+Remove member
+Remove a user from a group
+@param int $user_id User id to remove from group
+@param int|string $group_par Group id or name to remove user from
+@return bool Remove success/failure
+
+public      */
+    function remove_member($user_id, $group_par)
+{
+
+$group_par = $this->get_group_id($group_par);
+$this->aauth_db->where('user_id', $user_id);
+$this->aauth_db->where('group_id', $group_par);
+return $this->aauth_db->delete($this->config_vars['user_to_group']);
+}
+
+/**
+Add subgroup
+Add a subgroup to a group
+@param int $user_id User id to add to group
+@param int|string $group_par Group id or name to add user to
+@return bool Add success/failure
+
+public      */
+    function add_subgroup($group_par, $subgroup_par)
+{
+
+$group_id = $this->get_group_id($group_par);
+$subgroup_id = $this->get_group_id($subgroup_par);
+
+if (!$group_id) {
+$this->error($this->CI->lang->line('aauth_error_no_group'));
+return FALSE;
+}
+
+if (!$subgroup_id) {
+$this->error($this->CI->lang->line('aauth_error_no_subgroup'));
+return FALSE;
+}
+
+$query = $this->aauth_db->where('group_id', $group_id);
+$query = $this->aauth_db->where('subgroup_id', $subgroup_id);
+$query = $this->aauth_db->get($this->config_vars['group_to_group']);
+
+if ($query && $query->num_rows() < 1) {
+$data = array(
+'group_id' => $group_id,
+'subgroup_id' => $subgroup_id,
+);
+
+return $this->aauth_db->insert($this->config_vars['group_to_group'], $data);
+}
+$this->info($this->CI->lang->line('aauth_info_already_subgroup'));
+return TRUE;
+}
+
+/**
+Remove subgroup
+Remove a subgroup from a group
+@param int|string $group_par Group id or name to remove
+@param int|string $subgroup_par Sub-Group id or name to remove
+@return bool Remove success/failure
+
+public      */
+    function remove_subgroup($group_par, $subgroup_par)
+{
+
+$group_par = $this->get_group_id($group_par);
+$subgroup_par = $this->get_group_id($subgroup_par);
+$this->aauth_db->where('group_id', $group_par);
+$this->aauth_db->where('subgroup_id', $subgroup_par);
+return $this->aauth_db->delete($this->config_vars['group_to_group']);
+}
+
+//tested
+
+/**
+Remove member
+Remove a user from all groups
+@param int $user_id User id to remove from all groups
+@return bool Remove success/failure
+
+public      */
+    function remove_member_from_all($user_id)
+{
+
+$this->aauth_db->where('user_id', $user_id);
+return $this->aauth_db->delete($this->config_vars['user_to_group']);
+}
+//tested
+
+/**
+Is member
+Check if current user is a member of a group
+@param int|string $group_par Group id or name to check
+@param int|bool $user_id User id, if not given current user
+@return bool
+ */
     public function is_member($group_par, $user_id = FALSE)
-     * {
-     *
-     * // if user_id FALSE (not given), current user
-     * if (!$user_id) {
-     * $user_id = $this->CI->session->userdata('id');
-     * }
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * $query = $this->aauth_db->where('user_id', $user_id);
-     * $query = $this->aauth_db->where('group_id', $group_id);
-     * $query = $this->aauth_db->get($this->config_vars['user_to_group']);
-     *
-     * $row = $query->row();
-     *
-     * if ($query->num_rows() > 0) {
-     * return TRUE;
-     * } else {
-     * return FALSE;
-     * }
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Is admin
-     * Check if current user is a member of the admin group
-     * @param int $user_id User id to check, if it is not given checks current user
-     * @return bool
+    {
+        // if user_id FALSE (not given), current user
+        if (!$user_id) {
+            $user_id = $this->CI->session->userdata('id');
+            if(!$user_id) return FALSE;
+        }
 
+        // 1. Try Aauth's default user_to_group table
+        $group_id = $this->get_group_id($group_par);
+        if ($group_id) {
+            $query = $this->aauth_db->where('user_id', $user_id);
+            $query = $this->aauth_db->where('group_id', $group_id);
+            $query = $this->aauth_db->get($this->config_vars['user_to_group']);
+
+            if ($query && $query->num_rows() > 0) {
+                return TRUE;
+            }
+        }
+
+        // 2. Fallback: Check roleid in geopos_users (The project's custom mapping)
+        // This is necessary because 'buyer' and 'seller' roles might only be in geopos_roles
+        $this->aauth_db->select('roleid');
+        $this->aauth_db->where('id', $user_id);
+        $user_res = $this->aauth_db->get('geopos_users')->row();
+        
+        if($user_res) {
+            $role_id = $user_res->roleid;
+            // Get role name for this roleid
+            $role_query = $this->aauth_db->get_where('geopos_roles', ['id' => $role_id]);
+            if($role_query && $role_query->num_rows() > 0) {
+                 $role_name = $role_query->row()->name;
+                 if(strcasecmp($role_name, $group_par) == 0) {
+                     return TRUE;
+                 }
+            }
+        }
+
+        return FALSE;
+    }
+
+    // Backup of old is_member if needed (commented out)
+    /*
+    public function is_member_old($group_par, $user_id = FALSE)
+{
+
+// if user_id FALSE (not given), current user
+if (!$user_id) {
+$user_id = $this->CI->session->userdata('id');
+}
+
+$group_id = $this->get_group_id($group_par);
+
+$query = $this->aauth_db->where('user_id', $user_id);
+$query = $this->aauth_db->where('group_id', $group_id);
+$query = $this->aauth_db->get($this->config_vars['user_to_group']);
+
+$row = $query->row();
+
+if ($query && $query->num_rows() > 0) {
+return TRUE;
+} else {
+return FALSE;
+}
+}
+
+//tested
+
+/**
+Is admin
+Check if current user is a member of the admin group
+@param int $user_id User id to check, if it is not given checks current user
+@return bool
+ */
     public function is_admin($user_id = FALSE)
-     * {
-     *
-     * return $this->is_member($this->config_vars['admin_group'], $user_id);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * List groups
-     * List all groups
-     * @return object Array of groups
-     *
-     * public function list_groups()
-     * {
-     *
-     * $query = $this->aauth_db->get($this->config_vars['groups']);
-     * return $query->result();
-     * }
-     *
-     *
-     * //tested
-     *
-     * /**
-     * Get group name
-     * Get group name from group id
-     * @param int $group_id Group id to get
-     * @return string Group name
-     *
-     * public function get_group_name($group_id)
-     * {
-     *
-     * $query = $this->aauth_db->where('id', $group_id);
-     * $query = $this->aauth_db->get($this->config_vars['groups']);
-     *
-     * if ($query->num_rows() == 0)
-     * return FALSE;
-     *
-     * $row = $query->row();
-     * return $row->name;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Get group id
-     * Get group id from group name or id ( ! Case sensitive)
-     * @param int|string $group_par Group id or name to get
-     * @return int Group id
-     *
-     * public function get_group_id($group_par)
-     * {
-     *
-     * if (is_numeric($group_par)) {
-     * return $group_par;
-     * }
-     *
-     * $query = $this->aauth_db->where('name', $group_par);
-     * $query = $this->aauth_db->get($this->config_vars['groups']);
-     *
-     * if ($query->num_rows() == 0)
-     * return FALSE;
-     *
-     * $row = $query->row();
-     * return $row->id;
-     * }
-     *
-     * /**
-     * Get subgroups
-     * Get subgroups from group name or id ( ! Case sensitive)
-     * @param int|string $group_par Group id or name to get
-     * @return object Array of subgroup_id's
-     *
-     * public function get_subgroups($group_par)
-     * {
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * $query = $this->aauth_db->where('group_id', $group_id);
-     * $query = $this->aauth_db->select('subgroup_id');
-     * $query = $this->aauth_db->get($this->config_vars['group_to_group']);
-     *
-     * if ($query->num_rows() == 0)
-     * return FALSE;
-     *
-     * return $query->result();
-     * }
-     *
-     * ########################
-     * # Permission Functions
-     * ########################
-     *
-     * //tested
-     * /**
+{
+
+return $this->is_member($this->config_vars['admin_group'], $user_id);
+}
+
+//tested
+
+/**
+List groups
+List all groups
+@return object Array of groups
+ */
+public function list_groups()
+{
+
+$query = $this->aauth_db->get($this->config_vars['groups']);
+return $query->result();
+}
+
+
+//tested
+
+    /**
+     Get group name
+     Get group name from group id
+     @param int $group_id Group id to get
+     @return string Group name
+    */
+    public function get_group_name($group_id)
+    {
+        // Try configured groups table first
+        $query = $this->aauth_db->where('id', $group_id)->get($this->config_vars['groups']);
+        if ($query && $query->num_rows() > 0) {
+            return $query->row()->name;
+        }
+
+        // Fallback to geopos_roles
+        $query = $this->aauth_db->where('id', $group_id)->get('geopos_roles');
+        if ($query && $query->num_rows() > 0) {
+            return $query->row()->name;
+        }
+
+        return FALSE;
+    }
+
+//tested
+
+    /**
+     Get group id
+     Get group id from group name or id ( ! Case sensitive)
+     @param int|string $group_par Group id or name to get
+     @return int Group id
+    */
+    public function get_group_id($group_par)
+    {
+        if (is_numeric($group_par)) {
+            return $group_par;
+        }
+
+        // Try configured groups table first
+        $query = $this->aauth_db->where('name', $group_par)->get($this->config_vars['groups']);
+        if ($query && $query->num_rows() > 0) {
+            return $query->row()->id;
+        }
+
+        // Fallback to geopos_roles which is used in this project
+        $query = $this->aauth_db->where('name', $group_par)->get('geopos_roles');
+        if ($query && $query->num_rows() > 0) {
+            return $query->row()->id;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     Get subgroups
+     Get subgroups from group name or id ( ! Case sensitive)
+     @param int|string $group_par Group id or name to get
+     @return object Array of subgroup_id's
+    */
+    public function get_subgroups($group_par)
+{
+
+$group_id = $this->get_group_id($group_par);
+
+$query = $this->aauth_db->where('group_id', $group_id);
+$query = $this->aauth_db->select('subgroup_id');
+$query = $this->aauth_db->get($this->config_vars['group_to_group']);
+
+if ($query && $query->num_rows() == 0)
+return FALSE;
+
+return $query->result();
+}
+
+
+    //tested
+    /**
      * Create permission
      * Creates a new permission type
      * @param string $perm_name New permission name
      * @param string $definition Permission description
      * @return int|bool Permission id or FALSE on fail
-     *
-     * public function create_perm($perm_name, $definition = '')
-     * {
-     *
-     * $query = $this->aauth_db->get_where($this->config_vars['perms'], array('name' => $perm_name));
-     *
-     * if ($query->num_rows() < 1) {
-     *
-     * $data = array(
-     * 'name' => $perm_name,
-     * 'definition' => $definition
-     * );
-     * $this->aauth_db->insert($this->config_vars['perms'], $data);
-     * return $this->aauth_db->insert_id();
-     * }
-     * $this->info($this->CI->lang->line('aauth_info_perm_exists'));
-     * return FALSE;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Update permission
-     * Updates permission name and description
-     * @param int|string $perm_par Permission id or permission name
-     * @param string $perm_name New permission name
-     * @param string $definition Permission description
-     * @return bool Update success/failure
-     *
-     * public function update_perm($perm_par, $perm_name = FALSE, $definition = FALSE)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * if ($perm_name != FALSE)
-     * $data['name'] = $perm_name;
-     *
-     * if ($definition != FALSE)
-     * $data['definition'] = $definition;
-     *
-     * $this->aauth_db->where('id', $perm_id);
-     * return $this->aauth_db->update($this->config_vars['perms'], $data);
-     * }
-     *
-     * //not ok
-     *
-     * /**
-     * Delete permission
-     * Delete a permission from database. WARNING Can't be undone
-     * @param int|string $perm_par Permission id or perm name to delete
-     * @return bool Delete success/failure
-     *
-     * public function delete_perm($perm_par)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * // deletes from perm_to_gropup table
-     * $this->aauth_db->where('perm_id', $perm_id);
-     * $this->aauth_db->delete($this->config_vars['perm_to_group']);
-     *
-     * // deletes from perm_to_user table
-     * $this->aauth_db->where('perm_id', $perm_id);
-     * $this->aauth_db->delete($this->config_vars['perm_to_user']);
-     *
-     * // deletes from permission table
-     * $this->aauth_db->where('id', $perm_id);
-     * return $this->aauth_db->delete($this->config_vars['perms']);
-     * }
-     *
-     * /**
-     * Is user allowed
-     * Check if user allowed to do specified action, admin always allowed
-     * first checks user permissions then check group permissions
-     * @param int $perm_par Permission id or name to check
-     * @param int|bool $user_id User id to check, or if FALSE checks current user
-     * @return bool
-
-    public function is_allowed($perm_par, $user_id = FALSE)
-     * {
-     *
-     * $this->CI->load->helper('url');
-     *
-     * if ($this->CI->session->userdata('totp_required')) {
-     * $this->error($this->CI->lang->line('aauth_error_totp_verification_required'));
-     * redirect($this->config_vars['totp_two_step_login_redirect']);
-     * }
-     *
-     * if ($user_id == FALSE) {
-     * $user_id = $this->CI->session->userdata('id');
-     * }
-     *
-     * if ($this->is_admin($user_id)) {
-     * return true;
-     * }
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * $query = $this->aauth_db->where('perm_id', $perm_id);
-     * $query = $this->aauth_db->where('user_id', $user_id);
-     * $query = $this->aauth_db->get($this->config_vars['perm_to_user']);
-     *
-     * if ($query->num_rows() > 0) {
-     * return TRUE;
-     * } else {
-     * $g_allowed = FALSE;
-     * foreach ($this->get_user_groups($user_id) as $group) {
-     * if ($this->is_group_allowed($perm_id, $group->id)) {
-     * $g_allowed = TRUE;
-     * break;
-     * }
-     * }
-     * return $g_allowed;
-     * }
-     * }
-     *
-     * /**
-     * Is Group allowed
-     * Check if group is allowed to do specified action, admin always allowed
-     * @param int $perm_par Permission id or name to check
-     * @param int|string|bool $group_par Group id or name to check, or if FALSE checks all user groups
-     * @return bool
-
-    public function is_group_allowed($perm_par, $group_par = FALSE)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * // if group par is given
-     * if ($group_par != FALSE) {
-     *
-     * $subgroup_ids = $this->get_subgroups($group_par);
-     * $group_par = $this->get_group_id($group_par);
-     * $query = $this->aauth_db->where('perm_id', $perm_id);
-     * $query = $this->aauth_db->where('group_id', $group_par);
-     * $query = $this->aauth_db->get($this->config_vars['perm_to_group']);
-     *
-     * $g_allowed = FALSE;
-     * if (is_array($subgroup_ids)) {
-     * foreach ($subgroup_ids as $g) {
-     * if ($this->is_group_allowed($perm_id, $g->subgroup_id)) {
-     * $g_allowed = TRUE;
-     * }
-     * }
-     * }
-     *
-     * if ($query->num_rows() > 0) {
-     * $g_allowed = TRUE;
-     * }
-     * return $g_allowed;
-     * }
-     * // if group par is not given
-     * // checks current user's all groups
-     * else {
-     * // if public is allowed or he is admin
-     * if ($this->is_admin($this->CI->session->userdata('id')) OR
-     * $this->is_group_allowed($perm_id, $this->config_vars['public_group'])) {
-     * return TRUE;
-     * }
-     *
-     * // if is not login
-     * if (!$this->is_loggedin()) {
-     * return FALSE;
-     * }
-     *
-     * $group_pars = $this->get_user_groups();
-     * foreach ($group_pars as $g) {
-     * if ($this->is_group_allowed($perm_id, $g->id)) {
-     * return TRUE;
-     * }
-     * }
-     * return FALSE;
-     * }
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Allow User
-     * Add User to permission
-     * @param int $user_id User id to deny
-     * @param int $perm_par Permission id or name to allow
-     * @return bool Allow success/failure
-     *
-     * public function allow_user($user_id, $perm_par)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * if (!$perm_id) {
-     * return FALSE;
-     * }
-     *
-     * $query = $this->aauth_db->where('user_id', $user_id);
-     * $query = $this->aauth_db->where('perm_id', $perm_id);
-     * $query = $this->aauth_db->get($this->config_vars['perm_to_user']);
-     *
-     * // if not inserted before
-     * if ($query->num_rows() < 1) {
-     *
-     * $data = array(
-     * 'user_id' => $user_id,
-     * 'perm_id' => $perm_id
-     * );
-     *
-     * return $this->aauth_db->insert($this->config_vars['perm_to_user'], $data);
-     * }
-     * return TRUE;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Deny User
-     * Remove user from permission
-     * @param int $user_id User id to deny
-     * @param int $perm_par Permission id or name to deny
-     * @return bool Deny success/failure
-     *
-     * public function deny_user($user_id, $perm_par)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * $this->aauth_db->where('user_id', $user_id);
-     * $this->aauth_db->where('perm_id', $perm_id);
-     *
-     * return $this->aauth_db->delete($this->config_vars['perm_to_user']);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Allow Group
-     * Add group to permission
-     * @param int|string|bool $group_par Group id or name to allow
-     * @param int $perm_par Permission id or name to allow
-     * @return bool Allow success/failure
-     *
-     * public function allow_group($group_par, $perm_par)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     *
-     * if (!$perm_id) {
-     * return FALSE;
-     * }
-     *
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * if (!$group_id) {
-     * return FALSE;
-     * }
-     *
-     * $query = $this->aauth_db->where('group_id', $group_id);
-     * $query = $this->aauth_db->where('perm_id', $perm_id);
-     * $query = $this->aauth_db->get($this->config_vars['perm_to_group']);
-     *
-     * if ($query->num_rows() < 1) {
-     *
-     * $data = array(
-     * 'group_id' => $group_id,
-     * 'perm_id' => $perm_id
-     * );
-     *
-     * return $this->aauth_db->insert($this->config_vars['perm_to_group'], $data);
-     * }
-     *
-     * return TRUE;
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Deny Group
-     * Remove group from permission
-     * @param int|string|bool $group_par Group id or name to deny
-     * @param int $perm_par Permission id or name to deny
-     * @return bool Deny success/failure
-     *
-     * public function deny_group($group_par, $perm_par)
-     * {
-     *
-     * $perm_id = $this->get_perm_id($perm_par);
-     * $group_id = $this->get_group_id($group_par);
-     *
-     * $this->aauth_db->where('group_id', $group_id);
-     * $this->aauth_db->where('perm_id', $perm_id);
-     *
-     * return $this->aauth_db->delete($this->config_vars['perm_to_group']);
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * List Permissions
-     * List all permissions
-     * @return object Array of permissions
-     *
-     * public function list_perms()
-     * {
-     *
-     * $query = $this->aauth_db->get($this->config_vars['perms']);
-     * return $query->result();
-     * }
-     *
-     * //tested
-     *
-     * /**
-     * Get permission id
-     * Get permission id from permisison name or id
-     * @param int|string $perm_par Permission id or name to get
-     * @return int Permission id or NULL if perm does not exist
-     *
-     * public function get_perm_id($perm_par)
-     * {
-     *
-     * if (is_numeric($perm_par)) {
-     * return $perm_par;
-     * }
-     *
-     * $query = $this->aauth_db->where('name', $perm_par);
-     * $query = $this->aauth_db->get($this->config_vars['perms']);
-     *
-     * if ($query->num_rows() == 0)
-     * return FALSE;
-     *
-     * $row = $query->row();
-     * return $row->id;
-     * }
-     *
-     * ########################
-     * # Private Message Functions
-     * ########################
-     *
-     * //tested
-     * /**
-     * Send Private Message
-     * Send a private message to another user
-     * @param int $sender_id User id of private message sender
-     * @param int $receiver_id User id of private message receiver
-     * @param string $title Message title/subject
-     * @param string $message Message body/content
-     * @return bool Send successful/failed
      */
+    public function create_perm($perm_name, $definition = '')
+    {
+        $query = $this->aauth_db->get_where($this->config_vars['perms'], array('name' => $perm_name));
+
+        if ($query && $query->num_rows() < 1) {
+            $data = array(
+                'name' => $perm_name,
+                'definition' => $definition
+            );
+            $this->aauth_db->insert($this->config_vars['perms'], $data);
+            return $this->aauth_db->insert_id();
+        }
+        $this->info($this->CI->lang->line('aauth_info_perm_exists'));
+        return FALSE;
+    }
+
+
+
+    /**
+     Update permission
+     Updates permission name and description
+     @param int|string $perm_par Permission id or permission name
+     @param string $perm_name New permission name
+     @param string $definition Permission description
+     @return bool Update success/failure
+    */
+    public function update_perm($perm_par, $perm_name = FALSE, $definition = FALSE)
+    {
+        $perm_id = $this->get_perm_id($perm_par);
+
+        if ($perm_name != FALSE)
+            $data['name'] = $perm_name;
+
+        if ($definition != FALSE)
+            $data['definition'] = $definition;
+
+        $this->aauth_db->where('id', $perm_id);
+        return $this->aauth_db->update($this->config_vars['perms'], $data);
+    }
+
+    //not ok
+
+    /**
+     Delete permission
+     Delete a permission from database. WARNING Can't be undone
+     @param int|string $perm_par Permission id or perm name to delete
+     @return bool Delete success/failure
+    */
+    public function delete_perm($perm_par)
+    {
+        $perm_id = $this->get_perm_id($perm_par);
+
+        // deletes from perm_to_gropup table
+        $this->aauth_db->where('perm_id', $perm_id);
+        $this->aauth_db->delete($this->config_vars['perm_to_group']);
+
+        // deletes from perm_to_user table
+        $this->aauth_db->where('perm_id', $perm_id);
+        $this->aauth_db->delete($this->config_vars['perm_to_user']);
+
+        // deletes from permission table
+        return $this->aauth_db->delete($this->config_vars['perms']);
+    }
+
+    /**
+     Is user allowed
+     Check if user allowed to do specified action, admin always allowed
+     first checks user permissions then check group permissions
+     @param int $perm_par Permission id or name to check
+     @param int|bool $user_id User id to check, or if FALSE checks current user
+     @return bool
+    */
+    public function is_allowed($perm_par, $user_id = FALSE)
+    {
+
+        $this->CI->load->helper('url');
+
+        if ($this->CI->session->userdata('totp_required')) {
+            $this->error($this->CI->lang->line('aauth_error_totp_verification_required'));
+            redirect($this->config_vars['totp_two_step_login_redirect']);
+        }
+
+        if ($user_id == FALSE) {
+            $user_id = $this->CI->session->userdata('id');
+        }
+
+        if ($this->is_admin($user_id)) {
+            return true;
+        }
+
+        $perm_id = $this->get_perm_id($perm_par);
+
+        $query = $this->aauth_db->where('perm_id', $perm_id);
+        $query = $this->aauth_db->where('user_id', $user_id);
+        $query = $this->aauth_db->get($this->config_vars['perm_to_user']);
+
+        if ($query && $query->num_rows() > 0) {
+            return TRUE;
+        } else {
+            $g_allowed = FALSE;
+            foreach ($this->get_user_groups($user_id) as $group) {
+                if ($this->is_group_allowed($perm_id, $group->id)) {
+                    $g_allowed = TRUE;
+                    break;
+                }
+            }
+            return $g_allowed;
+        }
+    }
+
+    /**
+     Is Group allowed
+     Check if group is allowed to do specified action, admin always allowed
+     @param int $perm_par Permission id or name to check
+     @param int|string|bool $group_par Group id or name to check, or if FALSE checks all user groups
+     @return bool
+    */
+    public function is_group_allowed($perm_par, $group_par = FALSE)
+    {
+
+        $perm_id = $this->get_perm_id($perm_par);
+
+        // if group par is given
+        if ($group_par != FALSE) {
+
+            $subgroup_ids = $this->get_subgroups($group_par);
+            $group_par = $this->get_group_id($group_par);
+            $query = $this->aauth_db->where('perm_id', $perm_id);
+            $query = $this->aauth_db->where('group_id', $group_par);
+            $query = $this->aauth_db->get($this->config_vars['perm_to_group']);
+
+            $g_allowed = FALSE;
+            if (is_array($subgroup_ids)) {
+                foreach ($subgroup_ids as $g) {
+                    if ($this->is_group_allowed($perm_id, $g->subgroup_id)) {
+                        $g_allowed = TRUE;
+                    }
+                }
+            }
+
+            if ($query && $query->num_rows() > 0) {
+                $g_allowed = TRUE;
+            }
+            return $g_allowed;
+        }
+        // if group par is not given
+        // checks current user's all groups
+        else {
+            // if public is allowed or he is admin
+            if ($this->is_admin($this->CI->session->userdata('id')) OR
+                $this->is_group_allowed($perm_id, $this->config_vars['public_group'])) {
+                return TRUE;
+            }
+
+            // if is not login
+            if (!$this->is_loggedin()) {
+                return FALSE;
+            }
+
+            $group_pars = $this->get_user_groups();
+            foreach ($group_pars as $g) {
+                if ($this->is_group_allowed($perm_id, $g->id)) {
+                    return TRUE;
+                }
+            }
+            return FALSE;
+        }
+    }
+
+//tested
+
+    /**
+     Allow User
+     Add User to permission
+     @param int $user_id User id to deny
+     @param int $perm_par Permission id or name to allow
+     @return bool Allow success/failure
+    */
+    public function allow_user($user_id, $perm_par)
+    {
+
+        $perm_id = $this->get_perm_id($perm_par);
+
+        if (!$perm_id) {
+            return FALSE;
+        }
+
+        $query = $this->aauth_db->where('user_id', $user_id);
+        $query = $this->aauth_db->where('perm_id', $perm_id);
+        $query = $this->aauth_db->get($this->config_vars['perm_to_user']);
+
+        // if not inserted before
+        if ($query && $query->num_rows() < 1) {
+
+            $data = array(
+                'user_id' => $user_id,
+                'perm_id' => $perm_id
+            );
+
+            return $this->aauth_db->insert($this->config_vars['perm_to_user'], $data);
+        }
+        return TRUE;
+    }
+
+
+    /**
+     Deny User
+     Remove user from permission
+     @param int $user_id User id to deny
+     @param int $perm_par Permission id or name to deny
+     @return bool Deny success/failure
+    */
+    public function deny_user($user_id, $perm_par)
+    {
+        $perm_id = $this->get_perm_id($perm_par);
+
+        $this->aauth_db->where('user_id', $user_id);
+        $this->aauth_db->where('perm_id', $perm_id);
+
+        return $this->aauth_db->delete($this->config_vars['perm_to_user']);
+    }
+
+
+
+    /**
+     Allow Group
+     Add group to permission
+     @param int|string|bool $group_par Group id or name to allow
+     @param int $perm_par Permission id or name to allow
+     @return bool Allow success/failure
+    */
+    public function allow_group($group_par, $perm_par)
+    {
+        $perm_id = $this->get_perm_id($perm_par);
+
+        if (!$perm_id) {
+            return FALSE;
+        }
+
+        $group_id = $this->get_group_id($group_par);
+
+        if (!$group_id) {
+            return FALSE;
+        }
+
+        $query = $this->aauth_db->where('group_id', $group_id);
+        $query = $this->aauth_db->where('perm_id', $perm_id);
+        $query = $this->aauth_db->get($this->config_vars['perm_to_group']);
+
+        if ($query && $query->num_rows() < 1) {
+            $data = array(
+                'group_id' => $group_id,
+                'perm_id' => $perm_id
+            );
+
+            return $this->aauth_db->insert($this->config_vars['perm_to_group'], $data);
+        }
+
+        return TRUE;
+    }
+
+
+
+    /**
+     Deny Group
+     Remove group from permission
+     @param int|string|bool $group_par Group id or name to deny
+     @param int $perm_par Permission id or name to deny
+     @return bool Deny success/failure
+    */
+    public function deny_group($group_par, $perm_par)
+    {
+        $perm_id = $this->get_perm_id($perm_par);
+        $group_id = $this->get_group_id($group_par);
+
+        $this->aauth_db->where('group_id', $group_id);
+        $this->aauth_db->where('perm_id', $perm_id);
+
+        return $this->aauth_db->delete($this->config_vars['perm_to_group']);
+    }
+
+
+
+    /**
+     List Permissions
+     List all permissions
+     @return object Array of permissions
+    */
+    public function list_perms()
+    {
+        $query = $this->aauth_db->get($this->config_vars['perms']);
+        return $query->result();
+    }
+
+
+
+    /**
+     Get permission id
+     Get permission id from permisison name or id
+     @param int|string $perm_par Permission id or name to get
+     @return int Permission id or NULL if perm does not exist
+    */
+    public function get_perm_id($perm_par)
+    {
+        if (is_numeric($perm_par)) {
+            return $perm_par;
+        }
+
+        $query = $this->aauth_db->where('name', $perm_par);
+        $query = $this->aauth_db->get($this->config_vars['perms']);
+
+        if ($query && $query->num_rows() == 0)
+            return FALSE;
+
+        $row = $query->row();
+        return $row->id;
+    }
+
+     ########################
+     # Private Message Functions
+     ########################
+
+
+     /**
+     Send Private Message
+     Send a private message to another user
+     @param int $sender_id User id of private message sender
+     @param int $receiver_id User id of private message receiver
+     @param string $title Message title/subject
+     @param string $message Message body/content
+     @return bool Send successful/failed
+    */
     public function send_pm($sender_id, $receiver_id, $title, $message)
     {
 
@@ -2069,14 +2219,14 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Send multiple Private Messages
-     * Send multiple private messages to another users
-     * @param int $sender_id User id of private message sender
-     * @param array $receiver_ids Array of User ids of private message receiver
-     * @param string $title Message title/subject
-     * @param string $message Message body/content
-     * @return array/bool Array with User ID's as key and TRUE or a specific error message OR FALSE if sender doesn't exist
-     */
+     Send multiple Private Messages
+     Send multiple private messages to another users
+     @param int $sender_id User id of private message sender
+     @param array $receiver_ids Array of User ids of private message receiver
+     @param string $title Message title/subject
+     @param string $message Message body/content
+     @return array/bool Array with User ID's as key and TRUE or a specific error message OR FALSE if sender doesn't exist
+    */
     public function send_pms($sender_id, $receiver_ids, $title, $message)
     {
         if ($this->config_vars['pm_encryption']) {
@@ -2122,14 +2272,14 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * List Private Messages
-     * If receiver id not given retruns current user's pms, if sender_id given, it returns only pms from given sender
-     * @param int $limit Number of private messages to be returned
-     * @param int $offset Offset for private messages to be returned (for pagination)
-     * @param int $sender_id User id of private message sender
-     * @param int $receiver_id User id of private message receiver
-     * @return object Array of private messages
-     */
+     List Private Messages
+     If receiver id not given retruns current user's pms, if sender_id given, it returns only pms from given sender
+     @param int $limit Number of private messages to be returned
+     @param int $offset Offset for private messages to be returned (for pagination)
+     @param int $sender_id User id of private message sender
+     @param int $receiver_id User id of private message receiver
+     @return object Array of private messages
+    */
     public function list_pms($limit = 5, $offset = 0, $receiver_id = NULL, $sender_id = NULL)
     {
         $this->aauth_db->select('geopos_pms.*,geopos_pms.id AS pid,geopos_employees.*');
@@ -2165,13 +2315,13 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Get Private Message
-     * Get private message by id
-     * @param int $pm_id Private message id to be returned
-     * @param int $user_id User ID of Sender or Receiver
-     * @param bool $set_as_read Whether or not to mark message as read
-     * @return object Private message
-     */
+     Get Private Message
+     Get private message by id
+     @param int $pm_id Private message id to be returned
+     @param int $user_id User ID of Sender or Receiver
+     @param bool $set_as_read Whether or not to mark message as read
+     @return object Private message
+    */
     public function get_pm($pm_id, $user_id = NULL, $set_as_read = TRUE)
     {
         if (!$user_id) {
@@ -2191,7 +2341,7 @@ public function premission($module_id, $action = 'view')
         $query = $this->aauth_db->group_end();
         $query = $this->aauth_db->get($this->config_vars['pms']);
 
-        if ($query->num_rows() < 1) {
+        if ($query && $query->num_rows() < 1) {
             $this->error($this->CI->lang->line('aauth_error_no_pm'));
             return FALSE;
         }
@@ -2214,11 +2364,11 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Delete Private Message
-     * Delete private message by id
-     * @param int $pm_id Private message id to be deleted
-     * @return bool Delete success/failure
-     */
+     Delete Private Message
+     Delete private message by id
+     @param int $pm_id Private message id to be deleted
+     @return bool Delete success/failure
+    */
     public function delete_pm($pm_id, $user_id = NULL)
     {
         if (!$user_id) {
@@ -2252,10 +2402,10 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Cleanup PMs
-     * Removes PMs older than 'pm_cleanup_max_age' (definied in aauth config).
-     * recommend for a cron job
-     */
+     Cleanup PMs
+     Removes PMs older than 'pm_cleanup_max_age' (definied in aauth config).
+     recommend for a cron job
+    */
     public function cleanup_pms()
     {
         $pm_cleanup_max_age = $this->config_vars['pm_cleanup_max_age'];
@@ -2268,11 +2418,11 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Count unread Private Message
-     * Count number of unread private messages
-     * @param int|bool $receiver_id User id for message receiver, if FALSE returns for current user
-     * @return int Number of unread messages
-     */
+     Count unread Private Message
+     Count number of unread private messages
+     @param int|bool $receiver_id User id for message receiver, if FALSE returns for current user
+     @return int Number of unread messages
+    */
     public function count_unread_pms($receiver_id = FALSE)
     {
 
@@ -2286,16 +2436,16 @@ public function premission($module_id, $action = 'view')
         $query = $this->aauth_db->where('pm_deleted_receiver', 0);
         $query = $this->aauth_db->get($this->config_vars['pms']);
 
-        return $query->num_rows();
+        return $query && $query->num_rows();
     }
 
     //tested
 
     /**
-     * Set Private Message as read
-     * Set private message as read
-     * @param int $pm_id Private message id to mark as read
-     */
+     Set Private Message as read
+     Set private message as read
+     @param int $pm_id Private message id to mark as read
+    */
     public function set_as_read_pm($pm_id)
     {
 
@@ -2311,11 +2461,11 @@ public function premission($module_id, $action = 'view')
     ########################
 
     /**
-     * Error
-     * Add message to error array and set flash data
-     * @param string $message Message to add to array
-     * @param boolean $flashdata if TRUE add $message to CI flashdata (deflault: FALSE)
-     */
+     Error
+     Add message to error array and set flash data
+     @param string $message Message to add to array
+     @param boolean $flashdata if TRUE add $message to CI flashdata (deflault: FALSE)
+    */
     public function error($message = '', $flashdata = FALSE)
     {
         $this->errors[] = $message;
@@ -2326,15 +2476,15 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Keep Errors
-     *
-     * Keeps the flashdata errors for one more page refresh.  Optionally adds the default errors into the
-     * flashdata list.  This should be called last in your controller, and with care as it could continue
-     * to revive all errors and not let them expire as intended.
-     * Benefitial when using Ajax Requests
-     * @see http://ellislab.com/codeigniter/user-guide/libraries/sessions.html
-     * @param boolean $include_non_flash TRUE if it should stow basic errors as flashdata (default = FALSE)
-     */
+     Keep Errors
+
+     Keeps the flashdata errors for one more page refresh.  Optionally adds the default errors into the
+     flashdata list.  This should be called last in your controller, and with care as it could continue
+     to revive all errors and not let them expire as intended.
+     Benefitial when using Ajax Requests
+     @see http://ellislab.com/codeigniter/user-guide/libraries/sessions.html
+     @param boolean $include_non_flash TRUE if it should stow basic errors as flashdata (default = FALSE)
+    */
     public function keep_errors($include_non_flash = FALSE)
     {
         // NOTE: keep_flashdata() overwrites anything new that has been added to flashdata so we are manually reviving flash data
@@ -2350,21 +2500,21 @@ public function premission($module_id, $action = 'view')
     //tested
 
     /**
-     * Get Errors Array
-     * Return array of errors
-     * @return array Array of messages, empty array if no errors
-     */
+     Get Errors Array
+     Return array of errors
+     @return array Array of messages, empty array if no errors
+    */
     public function get_errors_array()
     {
         return $this->errors;
     }
 
     /**
-     * Print Errors
-     *
-     * Prints string of errors separated by delimiter
-     * @param string $divider Separator for errors
-     */
+     Print Errors
+
+     Prints string of errors separated by delimiter
+     @param string $divider Separator for errors
+    */
     public function print_errors($divider = '<br />')
     {
         $msg = '';
@@ -2382,10 +2532,10 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Clear Errors
-     *
-     * Removes errors from error list and clears all associated flashdata
-     */
+     Clear Errors
+
+     Removes errors from error list and clears all associated flashdata
+    */
     public function clear_errors()
     {
         $this->errors = array();
@@ -2393,13 +2543,13 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Info
-     *
-     * Add message to info array and set flash data
-     *
-     * @param string $message Message to add to infos array
-     * @param boolean $flashdata if TRUE add $message to CI flashdata (deflault: FALSE)
-     */
+     Info
+
+     Add message to info array and set flash data
+
+     @param string $message Message to add to infos array
+     @param boolean $flashdata if TRUE add $message to CI flashdata (deflault: FALSE)
+    */
     public function info($message = '', $flashdata = FALSE)
     {
         $this->infos[] = $message;
@@ -2410,15 +2560,15 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Keep Infos
-     *
-     * Keeps the flashdata infos for one more page refresh.  Optionally adds the default infos into the
-     * flashdata list.  This should be called last in your controller, and with care as it could continue
-     * to revive all infos and not let them expire as intended.
-     * Benefitial by using Ajax Requests
-     * @see http://ellislab.com/codeigniter/user-guide/libraries/sessions.html
-     * @param boolean $include_non_flash TRUE if it should stow basic infos as flashdata (default = FALSE)
-     */
+     Keep Infos
+
+     Keeps the flashdata infos for one more page refresh.  Optionally adds the default infos into the
+     flashdata list.  This should be called last in your controller, and with care as it could continue
+     to revive all infos and not let them expire as intended.
+     Benefitial by using Ajax Requests
+     @see http://ellislab.com/codeigniter/user-guide/libraries/sessions.html
+     @param boolean $include_non_flash TRUE if it should stow basic infos as flashdata (default = FALSE)
+    */
     public function keep_infos($include_non_flash = FALSE)
     {
         // NOTE: keep_flashdata() overwrites anything new that has been added to flashdata so we are manually reviving flash data
@@ -2432,11 +2582,11 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Get Info Array
-     *
-     * Return array of infos
-     * @return array Array of messages, empty array if no errors
-     */
+     Get Info Array
+
+     Return array of infos
+     @return array Array of messages, empty array if no errors
+    */
     public function get_infos_array()
     {
         return $this->infos;
@@ -2444,12 +2594,12 @@ public function premission($module_id, $action = 'view')
 
 
     /**
-     * Print Info
-     *
-     * Print string of info separated by delimiter
-     * @param string $divider Separator for info
-     *
-     */
+     Print Info
+
+     Print string of info separated by delimiter
+     @param string $divider Separator for info
+
+    */
     public function print_infos($divider = '<br />')
     {
 
@@ -2468,10 +2618,10 @@ public function premission($module_id, $action = 'view')
     }
 
     /**
-     * Clear Info List
-     *
-     * Removes info messages from info list and clears all associated flashdata
-     */
+     Clear Info List
+
+     Removes info messages from info list and clears all associated flashdata
+    */
     public function clear_infos()
     {
         $this->infos = array();
@@ -2484,52 +2634,52 @@ public function premission($module_id, $action = 'view')
 
     //tested
     /**
-     * Set User Variable as key value
-     * if variable not set before, it will ve set
-     * if set, overwrites the value
-     * @param string $key
-     * @param string $value
-     * @param int $user_id ; if not given current user
-     * @return bool
-     */
+     Set User Variable as key value
+     if variable not set before, it will ve set
+     if set, overwrites the value
+     @param string $key
+     @param string $value
+     @param int $user_id ; if not given current user
+     @return bool
+    */
 
 
     //tested
 
     /**
-     * Unset User Variable as key value
-     * @param string $key
-     * @param int $user_id ; if not given current user
-     * @return bool
-     */
+     Unset User Variable as key value
+     @param string $key
+     @param int $user_id ; if not given current user
+     @return bool
+    */
 
 
     //tested
 
     /**
-     * Get User Variable by key
-     * Return string of variable value or FALSE
-     * @param string $key
-     * @param int $user_id ; if not given current user
-     * @return bool|string , FALSE if var is not set, the value of var if set
-     */
+     Get User Variable by key
+     Return string of variable value or FALSE
+     @param string $key
+     @param int $user_id ; if not given current user
+     @return bool|string , FALSE if var is not set, the value of var if set
+    */
 
 
 
     /**
-     * Get User Variables by user id
-     * Return array with all user keys & variables
-     * @param int $user_id ; if not given current user
-     * @return bool|array , FALSE if var is not set, the value of var if set
-     */
+     Get User Variables by user id
+     Return array with all user keys & variables
+     @param int $user_id ; if not given current user
+     @return bool|array , FALSE if var is not set, the value of var if set
+    */
 
 
     /**
-     * List User Variable Keys by UserID
-     * Return array of variable keys or FALSE
-     * @param int $user_id ; if not given current user
-     * @return bool|array, FALSE if no user vars, otherwise array
-     */
+     List User Variable Keys by UserID
+     Return array of variable keys or FALSE
+     @param int $user_id ; if not given current user
+     @return bool|array, FALSE if no user vars, otherwise array
+    */
 
 
     public function generate_recaptcha_field()
@@ -2564,7 +2714,7 @@ public function premission($module_id, $action = 'view')
             $secret = $ga->createSecret();
             $query = $this->aauth_db->where('totp_secret', $secret);
             $query = $this->aauth_db->get($this->config_vars['users']);
-            if ($query->num_rows() == 0) {
+            if ($query && $query->num_rows() == 0) {
                 return $secret;
                 $stop = true;
             }
@@ -2740,7 +2890,7 @@ public function premission($module_id, $action = 'view')
  *
  * /*
  * // if user's email is found
- * if ($query->num_rows() > 0) {
+ * if ($query && $query->num_rows() > 0) {
  * $row = $query->row();
  *
  * // DDos protection
@@ -2755,3 +2905,7 @@ public function premission($module_id, $action = 'view')
 
 /* End of file Aauth.php */
 /* Location: ./application/libraries/Aauth.php */
+
+
+
+

@@ -244,7 +244,7 @@ $config['log_path'] = '';
 | Note: Leaving it blank will default to 'php'.
 |
 */
-$config['log_file_extension'] = '4';
+$config['log_file_extension'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -278,7 +278,7 @@ $config['log_date_format'] = 'Y-m-d H:i:s';
 | application/views/errors/ directory.  Use a full server path with trailing slash.
 |
 */
-$config['error_views_path'] = '4';
+$config['error_views_path'] = '';
 
 /*
 |--------------------------------------------------------------------------

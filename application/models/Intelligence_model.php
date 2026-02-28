@@ -28,7 +28,8 @@ class Intelligence_model extends CI_Model
             $this->db->where('eid', $sid);
             $this->db->where('DATE(invoicedate)', $date);
             $this->db->where_not_in('status', ['canceled', 'pending']);
-            $sales_data = $this->db->get()->row();
+            $sales_query = $this->db->get();
+            $sales_data = ($sales_query && $sales_query->num_rows() > 0) ? $sales_query->row() : null;
             $sales_count = $sales_data->sales_count ?? 0;
             $sales_amount = $sales_data->sales_amount ?? 0.00;
             
@@ -42,7 +43,6 @@ class Intelligence_model extends CI_Model
             $this->db->from('geopos_movers');
             $this->db->where('d_type', '2'); // Return type
             $this->db->where('DATE(d_time)', $date);
-            // Note: movers table may not have user ID, so this is approximate
             $return_count = $this->db->count_all_results();
             
             // 4. Error Count (billing errors - proxy via canceled)
@@ -55,7 +55,7 @@ class Intelligence_model extends CI_Model
             
             // Delete existing score for this staff on this date
             $this->db->where('staff_id', $sid);
-            $this->db->where('last_calculated >=', date('Y-m-d 00:00:00'));
+            $this->db->where('date', $date);
             $this->db->delete('geopos_staff_scores');
             
             // Insert new score
@@ -68,7 +68,7 @@ class Intelligence_model extends CI_Model
                 'void_count' => $void_count,
                 'return_count' => $return_count,
                 'error_count' => $error_count,
-                'last_calculated' => date('Y-m-d H:i:s')
+                'date' => $date
             );
             
             $this->db->insert('geopos_staff_scores', $data);
@@ -78,41 +78,31 @@ class Intelligence_model extends CI_Model
     public function generate_business_health_index()
     {
         $date = date('Y-m-d');
-
-        // Get daily sales for scaling
         $sales = $this->get_aggregated_sales($date);
         
-        // 1. Sales Score (Target: 10,000 daily sales = 100% score)
         $sales_score = ($sales > 10000) ? 100 : (($sales / 10000) * 100);
         if($sales_score < 0) $sales_score = 0;
         
-        // 2. Profit Score (Target: 5,000 daily profit = 100% score)
         $daily_profit = $this->get_aggregated_profit($date);
         $profit_score = ($daily_profit > 5000) ? 100 : (($daily_profit / 5000) * 100);
         if($profit_score < 0) $profit_score = 0;
 
-        // 3. Cash Flow Score (Cash > 2000 => 100)
         $cash = $this->get_aggregated_cash($date);
         $cash_score = ($cash > 2000) ? 100 : (($cash / 2000) * 100);
         if($cash_score < 0) $cash_score = 0;
 
-        // 4. Staff Score (Average staff trust)
         $staff_score = $this->get_avg_staff_trust();
 
-        // FORMULA: (sales*0.25) + (profit*0.35) + (cash*0.20) + (staff*0.20)
         $health_index = ($sales_score * 0.25) + ($profit_score * 0.35) + ($cash_score * 0.20) + ($staff_score * 0.20);
-        
         $health_rounded = round($health_index);
         
-        // Delete existing record for today
         $this->db->where('date', $date);
-        $this->db->where('branch_id', 0); // Global/All branches
+        $this->db->where('branch_id', 0); 
         $this->db->delete('geopos_business_health');
         
-        // Insert new health index
         $data = array(
             'date' => $date,
-            'branch_id' => 0, // 0 = All branches (global)
+            'branch_id' => 0,
             'health_index' => $health_rounded,
             'sales_score' => round($sales_score),
             'profit_score' => round($profit_score),
@@ -120,134 +110,119 @@ class Intelligence_model extends CI_Model
             'staff_score' => round($staff_score)
         );
         $this->db->insert('geopos_business_health', $data);
-        
         return $health_rounded;
     }
 
-    public function get_business_health()
+    public function get_business_health($branch_id = 0)
     {
-        $this->db->select('health_index');
-        $this->db->where('date', date('Y-m-d'));
-        $this->db->where('branch_id', 0); // Global score
-        $this->db->order_by('created_at', 'DESC');
-        $this->db->limit(1);
-        $query = $this->db->get('geopos_business_health');
-        if (!$query) return 85; // Default if query fails
-        $result = $query->row();
-        return $result ? $result->health_index : 85; // Default if no data
+        if ($branch_id == 0) {
+            $this->db->select('health_index');
+            $this->db->where('date', date('Y-m-d'));
+            $this->db->where('branch_id', 0); 
+            $this->db->order_by('created_at', 'DESC');
+            $this->db->limit(1);
+            $query = $this->db->get('geopos_business_health');
+            if (!$query) return 85; 
+            $result = $query->row();
+            return $result ? $result->health_index : 85; 
+        } else {
+            $date = date('Y-m-d');
+            $sales = $this->get_aggregated_sales($date, $branch_id);
+            $sales_score = ($sales > 10000) ? 100 : (($sales / 10000) * 100);
+            $profit = $this->get_aggregated_profit($date, $branch_id);
+            $profit_score = ($profit > 5000) ? 100 : (($profit / 5000) * 100);
+            $cash = $this->get_aggregated_cash($date, $branch_id);
+            $cash_score = ($cash > 2000) ? 100 : (($cash / 2000) * 100);
+            $staff_score = $this->get_avg_staff_trust($branch_id);
+            $health_index = ($sales_score * 0.25) + ($profit_score * 0.35) + ($cash_score * 0.20) + ($staff_score * 0.20);
+            return round($health_index);
+        }
     }
 
-    public function get_avg_staff_trust()
+    public function get_avg_staff_trust($branch_id = 0)
     {
         $this->db->select_avg('trust_score');
-        $this->db->where('DATE(last_calculated)', date('Y-m-d'));
+        $this->db->where('date', date('Y-m-d'));
+        if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
         $query = $this->db->get('geopos_staff_scores');
-        if (!$query) return 100; // Default if query fails
+        if (!$query) return 100;
         $result = $query->row();
         $score = $result ? $result->trust_score : null;
         return $score ? round($score) : 100;
     }
-
-    // New Aggregation Methods for Owner Dashboard
 
     public function get_aggregated_sales($date, $branch_id = 0)
     {
         $this->db->select_sum('total');
         $this->db->from('geopos_invoices');
         $this->db->where('DATE(invoicedate)', $date);
-        
-        if ($branch_id > 0) {
-            $this->db->where('loc', $branch_id);
-        }
-        
+        if ($branch_id > 0) $this->db->where('loc', $branch_id);
         $query = $this->db->get();
-        if (!$query) return 0.00; // Default if query fails
+        if (!$query) return 0.00;
         $result = $query->row();
         return $result && isset($result->total) ? $result->total : 0.00;
     }
 
     public function get_aggregated_profit($date, $branch_id = 0)
     {
-        // Profit calculation typically involves geopos_metadata type 9
         $this->db->select_sum('geopos_metadata.col1');
         $this->db->from('geopos_metadata');
         $this->db->join('geopos_invoices', 'geopos_metadata.rid=geopos_invoices.id', 'left');
         $this->db->where('geopos_metadata.type', 9);
         $this->db->where('DATE(geopos_metadata.d_date)', $date);
-
-        if ($branch_id > 0) {
-            $this->db->where('geopos_invoices.loc', $branch_id);
-        }
-        
+        if ($branch_id > 0) $this->db->where('geopos_invoices.loc', $branch_id);
         $query = $this->db->get();
-        if (!$query) return 0.00; // Default if query fails
+        if (!$query) return 0.00;
         $result = $query->row();
         return $result && isset($result->col1) ? $result->col1 : 0.00;
     }
+
     public function get_aggregated_cash($date, $branch_id = 0)
     {
-       // RENAMED LOGIC: Total Liquidity (Cash + Bank/Cheque)
        $this->db->select_sum('credit');
        $this->db->select_sum('debit');
        $this->db->from('geopos_transactions');
        $this->db->where('DATE(date)', $date);
-       
-       if ($branch_id > 0) {
-           $this->db->where('loc', $branch_id);
-       }
-       
+       if ($branch_id > 0) $this->db->where('loc', $branch_id);
        $query = $this->db->get();
-       if (!$query) return 0.00; // Default if query fails
+       if (!$query) return 0.00;
        $result = $query->row();
-       
        $income = $result && isset($result->credit) ? $result->credit : 0.00;
        $expense = $result && isset($result->debit) ? $result->debit : 0.00;
-       
        return ($income - $expense);
     }
+
     public function get_top_staff_trust($limit = 5, $branch_id = 0)
     {
-        // Get staff with trust scores for today
         $this->db->select('geopos_staff_scores.*, geopos_users.username, geopos_users.id as user_id');
         $this->db->from('geopos_staff_scores');
         $this->db->join('geopos_users', 'geopos_staff_scores.staff_id = geopos_users.id');
-        $this->db->where('DATE(geopos_staff_scores.last_calculated)', date('Y-m-d'));
-        
-        if ($branch_id > 0) {
-            $this->db->where('geopos_staff_scores.branch_id', $branch_id);
-        }
-        
+        $this->db->where('geopos_staff_scores.date', date('Y-m-d'));
+        if ($branch_id > 0) $this->db->where('geopos_staff_scores.branch_id', $branch_id);
         $this->db->order_by('trust_score', 'DESC');
         $this->db->limit($limit);
         $query = $this->db->get();
         $staff_list = $query ? $query->result_array() : array();
         
-        // Enhance each staff member with Sales, Errors, Returns
         foreach ($staff_list as &$staff) {
             $staff_id = $staff['staff_id'];
-            
-            // 1. Calculate SALES (This Month)
             $this->db->select_sum('total');
             $this->db->from('geopos_invoices');
-            $this->db->where('eid', $staff_id); // Employee ID
+            $this->db->where('eid', $staff_id);
             $this->db->where('DATE(invoicedate) >=', date('Y-m-01'));
             $this->db->where('status !=', 'canceled');
             if ($branch_id > 0) $this->db->where('loc', $branch_id);
-            $sales_result = $this->db->get()->row();
+            $sales_query = $this->db->get();
+            $sales_result = ($sales_query && $sales_query->num_rows() > 0) ? $sales_query->row() : null;
             $staff['sales'] = $sales_result->total ?? 0;
             
-            // 2. Calculate ERRORS (Voids + Canceled invoices this month)
             $this->db->where('eid', $staff_id);
             $this->db->where('status', 'canceled');
             $this->db->where('DATE(invoicedate) >=', date('Y-m-01'));
             if ($branch_id > 0) $this->db->where('loc', $branch_id);
-            $errors = $this->db->count_all_results('geopos_invoices');
-            $staff['errors'] = $errors;
-            
-            // 3. Calculate RETURNS (from geopos_movers with d_type=2, this month)
+            $staff['errors'] = $this->db->count_all_results('geopos_invoices');
             $staff['returns'] = $staff['return_count'] ?? 0;
 
-            // 4. Calculate PRICE OVERRIDES (Items where price != product base price)
             $this->db->select('COUNT(*) as overrides');
             $this->db->from('geopos_invoice_items');
             $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid');
@@ -255,20 +230,16 @@ class Intelligence_model extends CI_Model
             $this->db->where('geopos_invoices.eid', $staff_id);
             $this->db->where('geopos_invoice_items.subtotal / geopos_invoice_items.qty != geopos_products.product_price', NULL, FALSE);
             $this->db->where('date(geopos_invoices.invoicedate) >=', date('Y-m-01'));
-            $overrides = $this->db->get()->row()->overrides ?? 0;
-            $staff['overrides'] = $overrides;
+            $q_overrides = $this->db->get();
+            $staff['overrides'] = ($q_overrides && $q_overrides->num_rows() > 0) ? $q_overrides->row()->overrides : 0;
         }
-        
         return $staff_list;
     }
 
-    // --- Phase 10: Financial & Liability Metrics ---
-
     public function get_customer_due($branch_id = 0, $start_date = '', $end_date = '')
     {
-        // Sum of all invoices where status is 'due' or 'partial' (case-insensitive)
         $this->db->select_sum('total');
-        $this->db->select_sum('pamnt'); // Paid amount to subtract
+        $this->db->select_sum('pamnt');
         $this->db->from('geopos_invoices');
         $this->db->group_start();
         $this->db->where_in('status', array('due', 'partial', 'Due', 'Partial'));
@@ -276,16 +247,16 @@ class Intelligence_model extends CI_Model
         
         if ($branch_id > 0) {
             $this->db->where('loc', $branch_id);
+        } elseif ($branch_id == -1) {
+            // All
+        } elseif (!BDATA) {
+            $this->db->where('loc', 0);
         }
 
-        // Dues are cumulative liabilities. We usually ignore start_date 
-        // to show total outstanding AS OF the end_date.
-        if ($end_date) {
-            $this->db->where('DATE(invoicedate) <=', $end_date);
-        }
+        if ($end_date) $this->db->where('DATE(invoicedate) <=', $end_date);
         
         $query = $this->db->get();
-        if (!$query) return 0.00; // Default if query fails
+        if (!$query) return 0.00;
         $result = $query->row();
         if (!$result) return 0.00;
         $total = isset($result->total) ? $result->total : 0.00;
@@ -295,48 +266,45 @@ class Intelligence_model extends CI_Model
 
     public function get_supplier_due($branch_id = 0, $start_date = '', $end_date = '') 
     {
-        // 1. General Purchase
         $this->db->select_sum('total');
-        $this->db->select_sum('pamnt'); // Paid amount
+        $this->db->select_sum('pamnt');
         $this->db->from('geopos_purchase');
         $this->db->group_start();
         $this->db->where_in('status', array('due', 'partial', 'Due', 'Partial'));
         $this->db->group_end();
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($end_date) {
-            $this->db->where('DATE(invoicedate) <=', $end_date);
+
+        if ($branch_id > 0) {
+            $this->db->where('loc', $branch_id);
+        } elseif ($branch_id == -1) {
+            // All
+        } elseif (!BDATA) {
+            $this->db->where('loc', 0);
         }
+        if ($end_date) $this->db->where('DATE(invoicedate) <=', $end_date);
         $query = $this->db->get();
         $due_general = 0.00;
-        if ($query) {
-           $result = $query->row();
-            if ($result) {
-                $total = isset($result->total) ? $result->total : 0.00;
-                $paid = isset($result->pamnt) ? $result->pamnt : 0.00;
-                $due_general = ($total - $paid);
-            }
+        if ($query && $result = $query->row()) {
+            $due_general = ($result->total ?? 0) - ($result->pamnt ?? 0);
         }
 
-        // 2. Timber Logs Purchase (New Phase 19)
         $this->db->select_sum('total');
         $this->db->select_sum('pamnt'); 
-        $this->db->from('geopos_purchase_logs'); // Logs Table
+        $this->db->from('geopos_purchase_logs');
         $this->db->group_start();
         $this->db->where_in('status', array('due', 'partial', 'Due', 'Partial'));
         $this->db->group_end();
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($end_date) {
-            $this->db->where('DATE(invoicedate) <=', $end_date);
+        if ($branch_id > 0) {
+            $this->db->where('loc', $branch_id);
+        } elseif ($branch_id == -1) {
+            // All
+        } elseif (!BDATA) {
+            $this->db->where('loc', 0);
         }
+        if ($end_date) $this->db->where('DATE(invoicedate) <=', $end_date);
         $query_logs = $this->db->get();
         $due_logs = 0.00;
-        if ($query_logs) {
-            $result_logs = $query_logs->row();
-            if ($result_logs) {
-                $total = isset($result_logs->total) ? $result_logs->total : 0.00;
-                $paid = isset($result_logs->pamnt) ? $result_logs->pamnt : 0.00;
-                $due_logs = ($total - $paid);
-            }
+        if ($query_logs && $result_logs = $query_logs->row()) {
+            $due_logs = ($result_logs->total ?? 0) - ($result_logs->pamnt ?? 0);
         }
 
         return ($due_general + $due_logs);
@@ -349,91 +317,58 @@ class Intelligence_model extends CI_Model
             'expense' => array('Cash' => 0, 'Bank' => 0, 'Cheque' => 0, 'Total' => 0)
         );
 
-        // 1. Get Income Breakdown (Credit transactions) from Transactions
-        $this->db->select('method, SUM(credit) as total');
-        $this->db->from('geopos_transactions');
-        $this->db->where('credit >', 0);
-        // CI standard where_not_in doesn't support functions, use string where
-        $this->db->where("LOWER(method) NOT IN ('cheque', 'check')", NULL, FALSE);
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($start_date && $end_date) {
-            $this->db->where('DATE(date) >=', $start_date);
-            $this->db->where('DATE(date) <=', $end_date);
+        // 1. Get Income Breakdown
+        $this->db->select('t.method, SUM(t.credit) as total');
+        $this->db->from('geopos_transactions t');
+        $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
+        $this->db->where('t.credit >', 0);
+        $this->db->where('a.account_type', 'Income');
+        
+        if ($branch_id > 0) {
+            $this->db->group_start();
+            $this->db->where('t.loc', $branch_id);
+            $this->db->or_where('a.loc', $branch_id);
+            $this->db->group_end();
+        } elseif ($branch_id == -1) {
+            // All
+        } else {
+            $this->db->where('t.loc', 0);
         }
-        $this->db->group_by('method');
+
+        if ($start_date && $end_date) {
+            $this->db->where('DATE(t.date) >=', $start_date);
+            $this->db->where('DATE(t.date) <=', $end_date);
+        }
+        $this->db->group_by('t.method');
         $query = $this->db->get();
         $income_query = $query ? $query->result_array() : array();
 
-        // 2. Get Expense Breakdown (Debit transactions) from Transactions
-        $this->db->select('method, SUM(debit) as total');
-        $this->db->from('geopos_transactions');
-        $this->db->where('debit >', 0);
-        $this->db->where("LOWER(method) NOT IN ('cheque', 'check')", NULL, FALSE);
-        if ($branch_id > 0) $this->db->where('loc', $branch_id);
-        if ($start_date && $end_date) {
-            $this->db->where('DATE(date) >=', $start_date);
-            $this->db->where('DATE(date) <=', $end_date);
+        // 2. Get Expense Breakdown
+        $this->db->select('t.method, SUM(t.debit) as total');
+        $this->db->from('geopos_transactions t');
+        $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
+        $this->db->where('t.debit >', 0);
+        $this->db->where('a.account_type', 'Expenses');
+        
+        if ($branch_id > 0) {
+            $this->db->group_start();
+            $this->db->where('t.loc', $branch_id);
+            $this->db->or_where('a.loc', $branch_id);
+            $this->db->group_end();
+        } elseif ($branch_id == -1) {
+            // All
+        } else {
+            $this->db->where('t.loc', 0);
         }
-        $this->db->group_by('method');
+
+        if ($start_date && $end_date) {
+            $this->db->where('DATE(t.date) >=', $start_date);
+            $this->db->where('DATE(t.date) <=', $end_date);
+        }
+        $this->db->group_by('t.method');
         $query = $this->db->get();
         $expense_query = $query ? $query->result_array() : array();
 
-        // 3. Get Cheque Specifics (Clearing transactions + PDC - Returned)
-        if ($this->db->table_exists('geopos_cheques')) {
-            // Income Cheques (Receivables)
-            $this->db->select('status, SUM(amount) as total');
-            $this->db->from('geopos_cheques');
-            $this->db->where('LOWER(type)', 'incoming');
-            if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
-            if ($start_date && $end_date) {
-                $this->db->where('DATE(issue_date) >=', $start_date);
-                $this->db->where('DATE(issue_date) <=', $end_date);
-            }
-            $this->db->group_by('status');
-            $query = $this->db->get();
-            $cheque_income_query = $query ? $query->result_array() : array();
-
-            // Expense Cheques (Payables)
-            $this->db->select('status, SUM(amount) as total');
-            $this->db->from('geopos_cheques');
-            $this->db->where('LOWER(type)', 'outgoing');
-            if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
-            if ($start_date && $end_date) {
-                $this->db->where('DATE(issue_date) >=', $start_date);
-                $this->db->where('DATE(issue_date) <=', $end_date);
-            }
-            $this->db->group_by('status');
-            $query = $this->db->get();
-            $cheque_expense_query = $query ? $query->result_array() : array();
-
-            // Process Cheque Income with Bounce Deduction
-            foreach ($cheque_income_query as $row) {
-                $s = strtolower($row['status']);
-                if (in_array($s, array('pdc', 'cleared', 'issued', 'pending'))) {
-                    $metrics['income']['Cheque'] += (float)$row['total'];
-                    $metrics['income']['Total'] += (float)$row['total'];
-                } elseif (in_array($s, array('returned', 'bounced'))) {
-                    // Bounce Deduction
-                    $metrics['income']['Cheque'] -= (float)$row['total'];
-                    $metrics['income']['Total'] -= (float)$row['total'];
-                }
-            }
-
-            // Process Cheque Expense with Bounce Deduction
-            foreach ($cheque_expense_query as $row) {
-                 $s = strtolower($row['status']);
-                 if (in_array($s, array('pdc', 'cleared', 'issued', 'pending'))) {
-                    $metrics['expense']['Cheque'] += (float)$row['total'];
-                    $metrics['expense']['Total'] += (float)$row['total'];
-                } elseif (in_array($s, array('returned', 'bounced'))) {
-                    // Bounce Deduction
-                    $metrics['expense']['Cheque'] -= (float)$row['total'];
-                    $metrics['expense']['Total'] -= (float)$row['total'];
-                }
-            }
-        }
-
-        // Process Standard Income
         foreach ($income_query as $row) {
             $method = $this->_map_payment_method($row['method']);
             if (isset($metrics['income'][$method])) {
@@ -445,7 +380,6 @@ class Intelligence_model extends CI_Model
             }
         }
 
-        // Process Standard Expense
         foreach ($expense_query as $row) {
             $method = $this->_map_payment_method($row['method']);
             if (isset($metrics['expense'][$method])) {
@@ -465,386 +399,303 @@ class Intelligence_model extends CI_Model
         $method = strtolower($method);
         if (strpos($method, 'cash') !== false) return 'Cash';
         if (strpos($method, 'cheque') !== false || strpos($method, 'check') !== false) return 'Cheque';
-        // Everything else (Card, Bank Transfer, Online) usually goes to 'Bank'
         return 'Bank';
     }
 
     public function get_cheque_status($branch_id = 0)
     {
-        $stats = array(
-            'pdc_in' => 0,
-            'pdc_out' => 0,
-            'cleared' => 0,
-            'returned' => 0,
-            'pending_receivable' => 0,
-            'pending_payable' => 0,
-            'returned_count' => 0
-        );
-
+        $stats = array('pdc_in' => 0, 'pdc_out' => 0, 'cleared' => 0, 'returned' => 0, 'pending_receivable' => 0, 'pending_payable' => 0, 'returned_count' => 0);
         if (!$this->db->table_exists('geopos_cheques')) return $stats;
 
-        // 1. Pending Receivables (PDC In)
+        // Pending Receivables
         $this->db->select_sum('amount');
         $this->db->from('geopos_cheques');
         $this->db->where('LOWER(type)', 'incoming');
         $this->db->where_in('LOWER(status)', array('pdc', 'pending'));
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('branch_id', 0);
         $query = $this->db->get();
         if ($query && $row = $query->row()) {
             $stats['pdc_in'] = $row->amount ?: 0;
             $stats['pending_receivable'] = $stats['pdc_in'];
         }
 
-        // 2. Pending Payables (PDC Out)
+        // Pending Payables
         $this->db->select_sum('amount');
         $this->db->from('geopos_cheques');
         $this->db->where('LOWER(type)', 'outgoing');
         $this->db->where_in('LOWER(status)', array('pdc', 'pending'));
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('branch_id', 0);
         $query = $this->db->get();
         if ($query && $row = $query->row()) {
             $stats['pdc_out'] = $row->amount ?: 0;
             $stats['pending_payable'] = $stats['pdc_out'];
         }
 
-        // 3. Total Cleared (Count)
+        // Cleared
         $this->db->where('LOWER(status)', 'cleared');
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('branch_id', 0);
         $stats['cleared'] = $this->db->count_all_results('geopos_cheques');
 
-        // 4. Total Returned/Bounced (Count)
+        // Returned
         $this->db->where_in('LOWER(status)', array('returned', 'bounced'));
         if ($branch_id > 0) $this->db->where('branch_id', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('branch_id', 0);
         $stats['returned'] = $this->db->count_all_results('geopos_cheques');
         $stats['returned_count'] = $stats['returned'];
 
         return $stats;
     }
-    
-    /**
-     * Generate daily business insights logic
-     */
+
     public function generate_daily_insights()
     {
         $today = date('Y-m-d');
-        
-        // Check if insights already generated for today
         $this->db->where('DATE(created_at)', $today);
-        $count = $this->db->count_all_results('geopos_system_insights');
-        if ($count > 0) return true; // Already generated
+        if ($this->db->count_all_results('geopos_system_insights') > 0) return true;
         
-        // 1. Sales Trend Analysis (Last 7 days vs Previous 7 days)
-        $date_start_current = date('Y-m-d', strtotime('-7 days'));
-        $date_end_current = $today;
-        $date_start_prev = date('Y-m-d', strtotime('-14 days'));
-        $date_end_prev = date('Y-m-d', strtotime('-7 days'));
-        
-        // Current period sales
-        $this->db->select_sum('total');
-        $this->db->from('geopos_invoices');
-        $this->db->where('invoicedate >=', $date_start_current);
-        $this->db->where('invoicedate <=', $date_end_current);
-        $curr_sales = $this->db->get()->row()->total ?? 0;
-        
-        // Previous period sales
-        $this->db->select_sum('total');
-        $this->db->from('geopos_invoices');
-        $this->db->where('invoicedate >=', $date_start_prev);
-        $this->db->where('invoicedate <=', $date_end_prev);
-        $prev_sales = $this->db->get()->row()->total ?? 0;
+        $curr_sales = $this->dashboard_model->rangeSales(date('Y-m-d', strtotime('-7 days')), $today);
+        $prev_sales = $this->dashboard_model->rangeSales(date('Y-m-d', strtotime('-14 days')), date('Y-m-d', strtotime('-7 days')));
         
         if ($prev_sales > 0) {
             $growth = (($curr_sales - $prev_sales) / $prev_sales) * 100;
-            if ($growth > 10) {
-                $this->_add_insight('sales_trend', 'Sales increased by ' . number_format($growth, 1) . '% compared to last week.', 'low');
-            } elseif ($growth < -10) {
-                $this->_add_insight('sales_trend', 'Sales dropped by ' . number_format(abs($growth), 1) . '% compared to last week.', 'medium');
-            }
+            if ($growth > 10) $this->_add_insight('sales_trend', 'Sales increased by ' . number_format($growth, 1) . '% compared to last week.', 'low');
+            elseif ($growth < -10) $this->_add_insight('sales_trend', 'Sales dropped by ' . number_format(abs($growth), 1) . '% compared to last week.', 'medium');
         }
         
-        // 2. Profit Margin Alert
-        $this->load->model('dashboard_model');
         $profit = $this->dashboard_model->todayProfit($today);
         $sales = $this->dashboard_model->todaySales($today);
         $margin = ($sales > 0) ? ($profit / $sales) * 100 : 0;
+        if ($sales > 5000 && $margin < 10) $this->_add_insight('profit_margin', 'Low profit margin detected today (' . number_format($margin, 1) . '%). Check expense ratios.', 'high');
         
-        if ($sales > 5000 && $margin < 10) {
-             $this->_add_insight('profit_margin', 'Low profit margin detected today (' . number_format($margin, 1) . '%). Check expense ratios.', 'high');
-        }
-        
-        // 3. Low Stock Alert
         $this->db->where('qty < alert');
-        $low_stock_count = $this->db->count_all_results('geopos_products');
-        
-        if ($low_stock_count > 5) {
-            $this->_add_insight('inventory', "There are $low_stock_count items running low on stock. Restock advised.", 'medium');
-        }
-        
-        // 4. Staff Performance Insight
-        $top_staff = $this->get_top_staff_trust(1);
-        if (!empty($top_staff) && $top_staff[0]['trust_score'] > 95) {
-             $this->_add_insight('staff', 'Staff member ' . $top_staff[0]['username'] . ' is performing exceptionally well (Trust Score: ' . number_format($top_staff[0]['trust_score'], 1) . ').', 'low');
-        }
+        if ($this->db->count_all_results('geopos_products') > 5) $this->_add_insight('inventory', "Critical stock levels detected for multiple items.", 'medium');
         
         return true;
     }
-    
-    // Helper to add insight
+
     private function _add_insight($type, $message, $priority)
     {
-        $data = array(
-            'insight_type' => $type,
-            'message' => $message,
-            'priority' => $priority,
-            'created_at' => date('Y-m-d H:i:s')
-        );
-        $this->db->insert('geopos_system_insights', $data);
+        $this->db->insert('geopos_system_insights', array('insight_type' => $type, 'message' => $message, 'priority' => $priority, 'created_at' => date('Y-m-d H:i:s')));
     }
-    
-    /**
-     * Get recent business insights
-     */
-    /**
-     * Get recent business insights
-     */
+
     public function get_recent_insights($limit = 5)
     {
-        $this->db->select('*');
-        $this->db->from('geopos_system_insights');
         $this->db->order_by('created_at', 'DESC');
         $this->db->limit($limit);
-        $query = $this->db->get();
+        $query = $this->db->get('geopos_system_insights');
         return $query ? $query->result_array() : array();
     }
-    
-    /**
-     * Get dead stock analysis
-     * Dead stock = products with no movement in last 90 days
-     */
+
     public function get_dead_stock($branch_id = 0, $days_threshold = 30)
     {
         $cutoff_date = date('Y-m-d', strtotime("-{$days_threshold} days"));
-        
-        // Get products with their last sale date
-        $query = "
-            SELECT 
-                p.id,
-                p.product_name,
-                p.product_code,
-                p.qty,
-                p.price,
-                p.warehouse,
-                w.title as warehouse_name,
-                MAX(ii.invoicedate) as last_sale_date,
-                DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale,
-                (p.qty * p.price) as dead_stock_value
-            FROM geopos_products p
-            LEFT JOIN geopos_warehouse w ON p.warehouse = w.id
-            LEFT JOIN geopos_invoice_items i ON p.id = i.product
-            LEFT JOIN geopos_invoices ii ON i.tid = ii.id
-        ";
-        
-        $where = " WHERE p.qty > 0 ";
-        
-        if ($branch_id > 0) {
-            $where .= " AND w.loc = {$branch_id} ";
-        } elseif (!BDATA) {
-            $where .= " AND w.loc = 0 ";
-        }
-        
-        $query .= $where;
-        $query .= " GROUP BY p.id ";
-        $query .= " HAVING (last_sale_date IS NULL OR last_sale_date < '{$cutoff_date}') ";
-        $query .= " ORDER BY dead_stock_value DESC ";
-        
+        $where = " WHERE p.qty > 0 " . ($branch_id > 0 ? " AND w.loc = {$branch_id} " : ($branch_id == 0 && !BDATA ? " AND w.loc = 0 " : ""));
+        $query = "SELECT p.pid as id, p.product_name, p.product_code, p.qty, p.product_price, w.title as warehouse_name, MAX(ii.invoicedate) as last_sale_date, DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale, (p.qty * p.product_price) as dead_stock_value FROM geopos_products p LEFT JOIN geopos_warehouse w ON p.warehouse = w.id LEFT JOIN geopos_invoice_items i ON p.pid = i.product LEFT JOIN geopos_invoices ii ON i.tid = ii.id $where GROUP BY p.pid HAVING (last_sale_date IS NULL OR last_sale_date < '{$cutoff_date}') ORDER BY dead_stock_value DESC";
         $result = $this->db->query($query);
         return $result ? $result->result_array() : array();
     }
-    
-    /**
-     * Get slow moving stock
-     * Slow moving = products with sales frequency below average
-     */
+
     public function get_slow_moving_stock($branch_id = 0, $days_threshold = 30)
     {
         $cutoff_date = date('Y-m-d', strtotime("-{$days_threshold} days"));
-        
-        $query = "
-            SELECT 
-                p.id,
-                p.product_name,
-                p.product_code,
-                p.qty,
-                p.price,
-                COUNT(DISTINCT ii.id) as sales_count,
-                DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale,
-                (p.qty * p.price) as stock_value
-            FROM geopos_products p
-            LEFT JOIN geopos_warehouse w ON p.warehouse = w.id
-            LEFT JOIN geopos_invoice_items i ON p.id = i.product
-            LEFT JOIN geopos_invoices ii ON i.tid = ii.id AND ii.invoicedate >= '{$cutoff_date}'
-        ";
-        
-        $where = " WHERE p.qty > 0 ";
-        
-        if ($branch_id > 0) {
-            $where .= " AND w.loc = {$branch_id} ";
-        } elseif (!BDATA) {
-            $where .= " AND w.loc = 0 ";
-        }
-        
-        $query .= $where;
-        $query .= " GROUP BY p.id ";
-        $query .= " HAVING sales_count < 2 "; // Less than 2 sales in the period
-        $query .= " ORDER BY sales_count ASC, stock_value DESC ";
-        
+        $where = " WHERE p.qty > 0 " . ($branch_id > 0 ? " AND w.loc = {$branch_id} " : ($branch_id == 0 && !BDATA ? " AND w.loc = 0 " : ""));
+        $query = "SELECT p.pid as id, p.product_name, p.product_code, p.qty, p.product_price, COUNT(DISTINCT ii.id) as sales_count, DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale, (p.qty * p.product_price) as stock_value FROM geopos_products p LEFT JOIN geopos_warehouse w ON p.warehouse = w.id LEFT JOIN geopos_invoice_items i ON p.pid = i.product LEFT JOIN geopos_invoices ii ON i.tid = ii.id AND ii.invoicedate >= '{$cutoff_date}' $where GROUP BY p.pid HAVING sales_count < 2 ORDER BY sales_count ASC, stock_value DESC";
         $result = $this->db->query($query);
         return $result ? $result->result_array() : array();
     }
-    
-    /**
-     * Get dead stock summary statistics
-     */
+
     public function get_dead_stock_summary($branch_id = 0)
     {
-        $dead_stock = $this->get_dead_stock($branch_id);
-        $slow_moving = $this->get_slow_moving_stock($branch_id);
-        
-        $dead_stock_value = 0;
-        foreach ($dead_stock as $item) {
-            $dead_stock_value += $item['dead_stock_value'];
-        }
-        
-        $slow_moving_value = 0;
-        foreach ($slow_moving as $item) {
-            $slow_moving_value += $item['stock_value'];
-        }
-        
-        return array(
-            'dead_stock_count' => count($dead_stock),
-            'dead_stock_value' => $dead_stock_value,
-            'slow_moving_count' => count($slow_moving),
-            'slow_moving_value' => $slow_moving_value,
-            'total_risk_value' => $dead_stock_value + $slow_moving_value
-        );
+        $dead = $this->get_dead_stock($branch_id); $slow = $this->get_slow_moving_stock($branch_id);
+        $dv = 0; foreach($dead as $i) $dv += $i['dead_stock_value'];
+        $sv = 0; foreach($slow as $i) $sv += $i['stock_value'];
+        return array('dead_stock_count' => count($dead), 'dead_stock_value' => $dv, 'slow_moving_count' => count($slow), 'slow_moving_value' => $sv, 'total_risk_value' => $dv + $sv);
     }
-    
-    /**
-     * Get fast-moving stock
-     * Fast-moving = products with high sales frequency (10+ sales in last 30 days)
-     */
+
     public function get_fast_moving_stock($branch_id = 0, $days_threshold = 30, $min_sales = 5)
     {
         $cutoff_date = date('Y-m-d', strtotime("-{$days_threshold} days"));
-        
-        $query = "
-            SELECT 
-                p.id,
-                p.product_name,
-                p.product_code,
-                p.qty,
-                p.price,
-                p.alert as reorder_point,
-                COUNT(DISTINCT ii.id) as sales_count,
-                SUM(i.qty) as total_qty_sold,
-                AVG(i.qty) as avg_qty_per_sale,
-                MAX(ii.invoicedate) as last_sale_date,
-                DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale,
-                (p.qty * p.price) as stock_value
-            FROM geopos_products p
-            LEFT JOIN geopos_warehouse w ON p.warehouse = w.id
-            LEFT JOIN geopos_invoice_items i ON p.id = i.product
-            LEFT JOIN geopos_invoices ii ON i.tid = ii.id AND ii.invoicedate >= '{$cutoff_date}'
-        ";
-        
-        $where = " WHERE 1=1 ";
-        
-        if ($branch_id > 0) {
-            $where .= " AND w.loc = {$branch_id} ";
-        } elseif (!BDATA) {
-            $where .= " AND w.loc = 0 ";
-        }
-        
-        $query .= $where;
-        $query .= " GROUP BY p.id ";
-        $query .= " HAVING sales_count >= {$min_sales} "; // 10+ sales in the period
-        $query .= " ORDER BY sales_count DESC, total_qty_sold DESC ";
-        
+        $where = " WHERE 1=1 " . ($branch_id > 0 ? " AND w.loc = {$branch_id} " : ($branch_id == 0 && !BDATA ? " AND w.loc = 0 " : ""));
+        $query = "SELECT p.pid as id, p.product_name, p.product_code, p.qty, p.product_price, p.alert as reorder_point, COUNT(DISTINCT ii.id) as sales_count, SUM(i.qty) as total_qty_sold, MAX(ii.invoicedate) as last_sale_date, (p.qty * p.product_price) as stock_value FROM geopos_products p LEFT JOIN geopos_warehouse w ON p.warehouse = w.id LEFT JOIN geopos_invoice_items i ON p.pid = i.product LEFT JOIN geopos_invoices ii ON i.tid = ii.id AND ii.invoicedate >= '{$cutoff_date}' $where GROUP BY p.pid HAVING sales_count >= {$min_sales} ORDER BY sales_count DESC";
         $result = $this->db->query($query);
         return $result ? $result->result_array() : array();
     }
-    
-    /**
-     * Get fast-moving stock summary statistics
-     */
+
     public function get_fast_moving_summary($branch_id = 0)
     {
-        $fast_moving = $this->get_fast_moving_stock($branch_id);
-        
-        $fast_moving_value = 0;
-        $total_sales = 0;
-        
-        foreach ($fast_moving as $item) {
-            $fast_moving_value += $item['stock_value'];
-            $total_sales += $item['sales_count'];
+        $fast = $this->get_fast_moving_stock($branch_id); $fv = 0; $ts = 0;
+        foreach($fast as $i){ $fv += $i['stock_value']; $ts += $i['sales_count']; }
+        return array('fast_moving_count' => count($fast), 'fast_moving_value' => $fv, 'total_sales' => $ts, 'avg_sales_per_product' => count($fast) > 0 ? $ts / count($fast) : 0);
+    }
+
+    public function get_inventory_valuation($branch_id = 0)
+    {
+        $this->db->select('SUM(qty * product_price) as retail_value, SUM(qty * fproduct_price) as wholesale_value, SUM(qty * fproduct_cost) as cost_value', FALSE);
+        $this->db->from('geopos_products p');
+        $this->db->join('geopos_warehouse w', 'p.warehouse = w.id', 'left');
+        if ($branch_id > 0) $this->db->where('w.loc', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('w.loc', 0);
+        return $this->db->get()->row_array() ?: array('retail_value' => 0, 'wholesale_value' => 0, 'cost_value' => 0);
+    }
+
+    public function get_payroll_intel($branch_id = 0)
+    {
+        $current_month_start = date('Y-m-01');
+        $current_month_end = date('Y-m-t');
+        $this->db->select('SUM(i.gross_pay) as monthly_gross');
+        $this->db->from('geopos_payroll_items i');
+        $this->db->join('geopos_payroll_runs r', 'i.run_id = r.id', 'left');
+        $this->db->where('r.start_date >=', $current_month_start);
+        $this->db->where('r.start_date <=', $current_month_end);
+        if ($branch_id > 0) {
+            $this->db->join('geopos_employees e', 'i.employee_id = e.id', 'left');
+            $this->db->join('geopos_users u', 'e.id = u.id', 'left');
+            $this->db->where('u.loc', $branch_id);
         }
+        $query = $this->db->get();
+        $payroll_total = ($query && $query->num_rows() > 0) ? ($query->row()->monthly_gross ?? 0) : 0;
+
+        $this->db->from('geopos_payroll_runs');
+        $this->db->where_in('status', ['Draft', 'Pending']);
+        if ($branch_id > 0) {
+              if ($this->db->field_exists('loc', 'geopos_payroll_runs')) $this->db->where('loc', $branch_id);
+        }
+        $pending_approvals = $this->db->count_all_results();
+
+        $this->db->select('e.dept, SUM(i.gross_pay) as total_gross');
+        $this->db->from('geopos_payroll_items i');
+        $this->db->join('geopos_payroll_runs r', 'i.run_id = r.id', 'left');
+        $this->db->join('geopos_employees e', 'i.employee_id = e.id', 'left');
+        $this->db->where('r.start_date >=', $current_month_start);
+        $this->db->where('r.start_date <=', $current_month_end);
+        if ($branch_id > 0) {
+            $this->db->join('geopos_users u', 'e.id = u.id', 'left');
+            $this->db->where('u.loc', $branch_id);
+        }
+        $this->db->group_by('e.dept');
+        $this->db->order_by('total_gross', 'DESC');
+        $this->db->limit(3);
+        $query = $this->db->get();
+        $dept_dist_raw = ($query) ? $query->result_array() : array();
+        $dept_dist = array();
+        foreach($dept_dist_raw as $row) {
+             $dept_dist[] = array('dept' => $this->get_dept_name($row['dept']), 'total_gross' => $row['total_gross']);
+        }
+        return array('monthly_gross' => $payroll_total, 'pending_approvals' => $pending_approvals, 'dept_distribution' => $dept_dist);
+    }
+
+
+
+    public function get_dept_name($dept_id)
+    {
+        if (empty($dept_id)) return "General";
+        $this->db->select('val1');
+        $this->db->from('geopos_hrm');
+        $this->db->where('id', $dept_id);
+        $this->db->where('typ', 1);
+        $query = $this->db->get();
+        return ($query && $query->num_rows() > 0) ? $query->row()->val1 : "Dept #" . $dept_id;
+    }
+
+    public function get_detailed_financial_position($branch_id = 0)
+    {
+        $assets = $this->_get_balance_by_type('Assets', $branch_id);
+        $liabilities = $this->_get_balance_by_type('Liabilities', $branch_id);
+        $equity = $this->_get_balance_by_type('Equity', $branch_id);
+        return array('assets' => $assets, 'liabilities' => $liabilities, 'equity' => $equity);
+    }
+    
+    public function _get_balance_by_type($type, $branch_id, $holder_match = '')
+    {
+         if ($branch_id === 0) $branch_id = -1;
+         $this->db->select_sum('lastbal');
+         $this->db->from('geopos_accounts');
+         $this->db->where('account_type', $type);
+         if ($holder_match) {
+             $this->db->group_start();
+             $this->db->like('holder', $holder_match, 'both');
+             if ($holder_match == 'Cash') $this->db->or_like('holder', 'Petty Cash', 'both');
+             $this->db->group_end();
+         }
+         if ($branch_id > 0) {
+             $this->db->group_start();
+             $this->db->where('loc', $branch_id);
+             $this->db->or_where('loc', 0);
+             $this->db->group_end();
+         } elseif ($branch_id == -1) { }
+         else { $this->db->where('loc', 0); }
+         
+         $query = $this->db->get();
+         $result = $query->row();
+         $bal = ($result && isset($result->lastbal)) ? (float)$result->lastbal : 0.00;
+         
+         if ($type == 'Assets' || $type == 'Expenses') return -1 * $bal;
+         return $bal;
+    }
+
+    public function get_recent_journal_entries($branch_id = 0, $limit = 10)
+    {
+        $this->db->select('geopos_transactions.*, geopos_accounts.acn as account_number, geopos_accounts.holder as account_name');
+        $this->db->from('geopos_transactions');
+        $this->db->join('geopos_accounts', 'geopos_transactions.acid = geopos_accounts.id', 'left');
+        if ($branch_id > 0) {
+            $this->db->group_start();
+            $this->db->where('geopos_transactions.loc', $branch_id);
+            $this->db->or_where('geopos_transactions.loc', 0);
+            $this->db->or_where('geopos_accounts.loc', $branch_id); 
+            $this->db->group_end();
+        } elseif ($branch_id == -1) { }
+        else { $this->db->where('geopos_transactions.loc', 0); }
+        $this->db->order_by('geopos_transactions.id', 'DESC');
+        $this->db->limit($limit);
+        return $this->db->get()->result_array() ?: array();
+    }
+
+    public function get_strategic_indicators($branch_id = 0, $start_date = '', $end_date = '')
+    {
+        $this->load->model('dashboard_model');
+        $total_sales = $this->dashboard_model->rangeSales($start_date, $end_date, $branch_id == 0 ? -1 : $branch_id);
+        $profit = $this->get_dual_entry_profit($branch_id, $start_date, $end_date);
+        $fin_pos = $this->get_detailed_financial_position($branch_id);
         
+        $this->db->where('DATE(invoicedate) >=', $start_date); $this->db->where('DATE(invoicedate) <=', $end_date);
+        if ($branch_id > 0) $this->db->where('loc', $branch_id);
+        $invoice_count = $this->db->count_all_results('geopos_invoices');
+
         return array(
-            'fast_moving_count' => count($fast_moving),
-            'fast_moving_value' => $fast_moving_value,
-            'total_sales' => $total_sales,
-            'avg_sales_per_product' => count($fast_moving) > 0 ? $total_sales / count($fast_moving) : 0
+            'net_profit_margin' => ($total_sales > 0) ? ($profit / $total_sales) * 100 : 0,
+            'current_ratio' => ($fin_pos['liabilities'] > 0) ? ($fin_pos['assets'] / $fin_pos['liabilities']) : ($fin_pos['assets'] > 0 ? 10.0 : 0),
+            'roe' => ($fin_pos['equity'] > 0) ? ($profit / $fin_pos['equity']) * 100 : ($profit > 0 ? 100.0 : 0),
+            'debt_to_equity' => ($fin_pos['equity'] > 0) ? ($fin_pos['liabilities'] / $fin_pos['equity']) : ($fin_pos['liabilities'] > 0 ? 1.0 : 0),
+            'avg_order_value' => ($invoice_count > 0) ? ($total_sales / $invoice_count) : 0
         );
     }
 
-    /**
-     * Get sample data for Demo Mode
-     */
-    public function get_sample_data($type, $branch_id = 0)
+    public function get_total_cash_in_hand($branch_id = 0) { return $this->_get_balance_by_type('Assets', $branch_id, 'Cash'); }
+    public function get_total_bank_balance($branch_id = 0) { return $this->_get_balance_by_type('Assets', $branch_id, 'Bank'); }
+    public function get_total_receivables($branch_id = 0) { return $this->get_customer_due($branch_id, '', date('Y-m-d')); }
+    public function get_total_payables($branch_id = 0) { return $this->get_supplier_due($branch_id, '', date('Y-m-d')); }
+    public function get_today_total_sales($branch_id = 0) { return $this->get_aggregated_sales(date('Y-m-d'), $branch_id); }
+
+    public function get_dual_entry_profit($branch_id = 0, $start_date = '', $end_date = '')
     {
-        if ($type == 'dead') {
-            return array(
-                array(
-                    'id' => 101, 'product_name' => 'Premium Office Desk (DEMO)', 'product_code' => 'D001', 'qty' => 5, 
-                    'price' => 25000, 'warehouse_name' => 'Main Warehouse', 'last_sale_date' => date('Y-m-d', strtotime('-120 days')), 
-                    'days_since_sale' => 120, 'dead_stock_value' => 125000
-                ),
-                array(
-                    'id' => 102, 'product_name' => 'Ergonomic Chair - Black (DEMO)', 'product_code' => 'C005', 'qty' => 12, 
-                    'price' => 8500, 'warehouse_name' => 'Main Warehouse', 'last_sale_date' => date('Y-m-d', strtotime('-95 days')), 
-                    'days_since_sale' => 95, 'dead_stock_value' => 102000
-                )
-            );
-        } elseif ($type == 'slow') {
-            return array(
-                array(
-                    'id' => 103, 'product_name' => 'Designer Coffee Table (DEMO)', 'product_code' => 'T003', 'qty' => 8, 
-                    'price' => 15000, 'sales_count' => 1, 'days_since_sale' => 45, 'stock_value' => 120000
-                ),
-                array(
-                    'id' => 104, 'product_name' => 'LED Table Lamp - Silver (DEMO)', 'product_code' => 'L009', 'qty' => 15, 
-                    'price' => 3500, 'sales_count' => 0, 'days_since_sale' => 60, 'stock_value' => 52500
-                )
-            );
-        } elseif ($type == 'fast') {
-            return array(
-                array(
-                    'id' => 105, 'product_name' => 'Solid Teak Wood Plank (DEMO)', 'product_code' => 'W-TEAK-S', 'qty' => 4, 
-                    'price' => 12000, 'reorder_point' => 10, 'sales_count' => 45, 'total_qty_sold' => 180, 
-                    'avg_qty_per_sale' => 4.0, 'last_sale_date' => date('Y-m-d'), 'days_since_sale' => 0, 'stock_value' => 48000
-                ),
-                array(
-                    'id' => 106, 'product_name' => 'Stainless Steel Hinge - 4 inch (DEMO)', 'product_code' => 'H-SS4', 'qty' => 85, 
-                    'price' => 450, 'reorder_point' => 50, 'sales_count' => 32, 'total_qty_sold' => 450, 
-                    'avg_qty_per_sale' => 14.0, 'last_sale_date' => date('Y-m-d', strtotime('-1 days')), 'days_since_sale' => 1, 'stock_value' => 38250
-                ),
-                array(
-                    'id' => 107, 'product_name' => 'Universal Wood Glue - 1kg (DEMO)', 'product_code' => 'G-UNIV1', 'qty' => 12, 
-                    'price' => 1250, 'reorder_point' => 20, 'sales_count' => 28, 'total_qty_sold' => 42, 
-                    'avg_qty_per_sale' => 1.5, 'last_sale_date' => date('Y-m-d'), 'days_since_sale' => 0, 'stock_value' => 15000
-                )
-            );
+        if ($start_date && $end_date) {
+            $this->db->select_sum('t.credit'); $this->db->select_sum('t.debit');
+            $this->db->from('geopos_transactions t');
+            $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
+            $this->db->group_start();
+            $this->db->where('a.account_type', 'Income'); $this->db->or_where('a.account_type', 'Expenses');
+            $this->db->group_end();
+            if ($branch_id > 0) {
+                $this->db->group_start(); $this->db->where('t.loc', $branch_id); $this->db->or_where('a.loc', $branch_id); $this->db->group_end();
+            }
+            $this->db->where('DATE(t.date) >=', $start_date); $this->db->where('DATE(t.date) <=', $end_date);
+            $result = $this->db->get()->row();
+            return ($result->credit ?? 0) - ($result->debit ?? 0);
+        } else {
+            return ($this->_get_balance_by_type('Income', $branch_id) - $this->_get_balance_by_type('Expenses', $branch_id));
         }
-        return array();
     }
 }

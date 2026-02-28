@@ -1363,6 +1363,11 @@ if (($_GET['id'] ?? null) == 'v2') {
     }
 
     $(document).ready(function () {
+        // Select Cash Account by default
+        $("#p_account option").filter(function() {
+            return $(this).text().includes("Cash Account");
+        }).prop('selected', true);
+
         Mousetrap.bind('alt+x', function () {
             $('#search_bar').focus();
         });

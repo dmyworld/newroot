@@ -52,14 +52,79 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'user';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
-/*
-| -------------------------------------------------------------------------
-| Sample REST API Routes
-| -------------------------------------------------------------------------
-*/
-// Add these routes
+
+/* ------ Dashboard ------ */
+$route['dashboard'] = 'OwnerDashboard';
+$route['dashboard/(:any)'] = 'OwnerDashboard/$1';
+
+/* ------ Stock Transfer ------ */
 $route['stock_transfer'] = 'stock_transfer/index';
 $route['stock_transfer/search_product'] = 'stock_transfer/search_product';
 $route['stock_transfer/process_transfer'] = 'stock_transfer/process_transfer';
-$route['api/example/users/(:num)'] = 'api/example/users/id/$1'; // Example 4
-$route['api/example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/example/users/id/$1/format/$3$4'; // Example 8
+
+/* =========================================================
+ * REST API Routes   /api/{controller}/{method}
+ * ========================================================= */
+
+/* -- Auth -- */
+$route['api/auth/login']           = 'api/Auth/login';
+$route['api/auth/register']        = 'api/Auth/register';
+$route['api/auth/me']              = 'api/Auth/me';
+$route['api/auth/update']          = 'api/Auth/update';
+
+/* -- Timber Marketplace -- */
+$route['api/timber/listings']      = 'api/Timber/listings';
+$route['api/timber/lot']           = 'api/Timber/lot';
+$route['api/timber/add_listing']   = 'api/Timber/add_listing';
+$route['api/timber/bid']           = 'api/Timber/bid';
+$route['api/timber/buy_now']       = 'api/Timber/buy_now';
+$route['api/timber/my_listings']   = 'api/Timber/my_listings';
+$route['api/timber/my_bids']       = 'api/Timber/my_bids';
+$route['api/inventory/branch']     = 'api/Timber/branch_stock';
+
+/* -- Calculator -- */
+$route['api/calculator/log_volume']     = 'api/Calculator/log_volume';
+$route['api/calculator/sawn_volume']    = 'api/Calculator/sawn_volume';
+$route['api/calculator/wastage']        = 'api/Calculator/wastage';
+$route['api/calculator/price_estimate'] = 'api/Calculator/price_estimate';
+$route['api/calculator/history']        = 'api/Calculator/history';
+
+/* -- Dashboard (real-time stats, charts) -- */
+$route['api/dashboard/stats']      = 'api/Dashboard/stats';
+$route['api/dashboard/charts']     = 'api/Dashboard/charts';
+
+/* -- Audit Trail -- */
+$route['api/audit/logs']           = 'api/Dashboard/audit_logs';
+$route['api/audit/summary']        = 'api/Dashboard/audit_summary';
+
+/* -- Market Trends -- */
+$route['api/market/trends']         = 'api/Dashboard/trends';
+$route['api/market/species_prices'] = 'api/Dashboard/species_prices';
+$route['api/market/record_price']   = 'api/Dashboard/record_price';
+
+/* -- Workers -- */
+$route['api/workers/list']         = 'api/Dashboard/workers';
+
+/* =========================================================
+ * Consumer Shop Portal   /shop/*
+ * ========================================================= */
+$route['shop']                         = 'Shop/index';
+$route['shop/calculator']              = 'Shop/calculator';
+$route['shop/request_quote']           = 'Shop/request_quote';
+$route['shop/submit_quote']            = 'Shop/submit_quote';
+$route['shop/my_orders']               = 'Shop/my_orders';
+$route['shop/admin_orders']            = 'Shop/admin_orders';
+$route['shop/update_order_status']     = 'Shop/update_order_status';
+$route['shop/manage_bids']             = 'Shop/manage_bids';
+$route['shop/my_deals']               = 'Shop/my_deals';
+$route['shop/place_bid']              = 'Shop/place_bid';
+$route['shop/buy_now']                = 'Shop/buy_now';
+$route['shop/finalize_deal']          = 'Shop/finalize_deal';
+$route['shop/approve_request_buy']    = 'Shop/approve_request_buy';
+$route['shop/update_bid_status']      = 'Shop/update_bid_status';
+$route['shop/record_measurements']    = 'Shop/record_measurements';
+$route['shop/set_agreement']          = 'Shop/set_agreement';
+$route['shop/track']                   = 'Shop/track';
+$route['shop/track/(:any)']            = 'Shop/track/$1';
+$route['shop/checkout/(:any)/(:any)']  = 'Shop/checkout/$1/$2';
+$route['shop/view/(:any)/(:num)']      = 'Shop/view/$1/$2';

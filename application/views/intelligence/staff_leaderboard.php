@@ -6,7 +6,7 @@
             <small>Trust scores & performance rankings</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?= base_url('ownerdashboard') ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="<?= base_url('dashboard') ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li class="active">Staff Leaderboard</li>
         </ol>
     </section>
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <form method="get" action="<?= base_url('ownerdashboard/staff_leaderboard') ?>">
+                <form method="get" action="<?= base_url('dashboard/staff_leaderboard') ?>">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -43,7 +43,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fa fa-filter"></i> Apply Filter
                             </button>
-                            <a href="<?= base_url('ownerdashboard/staff_leaderboard') ?>" class="btn btn-default">
+                            <a href="<?= base_url('dashboard/staff_leaderboard') ?>" class="btn btn-default">
                                 <i class="fa fa-refresh"></i> Reset
                             </a>
                         </div>

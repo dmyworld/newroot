@@ -1,0 +1,41 @@
+{
+    "en": {
+        "step1_title": "Project Details",
+        "step1_desc": "Select the operating branch, customer, and project timeline.",
+        "step2_title": "Team Allocation",
+        "step2_desc": "Assign employees based on their current utilization.",
+        "step3_title": "Inventory & Tasks",
+        "step3_desc": "List tasks and reserve required timber materials.",
+        "step4_title": "Financial Preview",
+        "step4_desc": "Review estimated costs and expected profit.",
+        "location_help": "Select the operating branch.",
+        "budget_help": "Enter the total project budget.",
+        "material_help": "Link items from existing inventory."
+    },
+    "si": {
+        "step1_title": "ව්යාපෘති විස්තර",
+        "step1_desc": "ශාඛාව, පාරිභෝගිකයා සහ ව්යාපෘති කාලරාමුව තෝරන්න.",
+        "step2_title": "කණ්ඩායම් වෙන් කිරීම",
+        "step2_desc": "සේවකයින්ගේ දැනට පවතින වැඩ බර අනුව ඔවුන්ව අනුයුක්ත කරන්න.",
+        "step3_title": "තොග සහ කාර්යයන්",
+        "step3_desc": "කාර්යයන් ලැයිස්තුගත කර අවශ්ය ලී තොග වෙන් කරන්න.",
+        "step4_title": "මූල්ය පෙරදසුන",
+        "step4_desc": "ඇස්තමේන්තුගත පිරිවැය සහ අපේක්ෂිත ලාභය සමාලෝචනය කරන්න.",
+        "location_help": "ව්යාපෘතිය සිදුවන ශාඛාව තෝරන්න.",
+        "budget_help": "ව්යාපෘතියේ සම්පූර්ණ අයවැය යොදන්න.",
+        "material_help": "ගබඩාවේ ඇති බඩු මේ සඳහා වෙන් කරන්න."
+    },
+    "ta": {
+        "step1_title": "திட்ட விவரங்கள்",
+        "step1_desc": "இயக்கக் கிளை, வாடிக்கையாளர் மற்றும் திட்ட காலவரிசையைத் தேர்ந்தெடுக்கவும்.",
+        "step2_title": "குழு ஒதுக்கீடு",
+        "step2_desc": "ஊழியர்களின் தற்போதைய பயன்பாட்டின் அடிப்படையில் அவர்களை ஒதுக்கவும்.",
+        "step3_title": "சரக்கு மற்றும் பணிகள்",
+        "step3_desc": "பணிகளைப் பட்டியலிட்டு தேவையான மரப் பொருட்களை ஒதுக்கவும்.",
+        "step4_title": "நிதி மாதிரிக்காட்சி",
+        "step4_desc": "மதிப்பீட்டு செலவுகள் மற்றும் எதிர்பார்க்கப்படும் லாபத்தை மதிப்பாய்வு செய்யவும்.",
+        "location_help": "இயக்கக் கிளையைத் தேர்ந்தெடுக்கவும்.",
+        "budget_help": "மொத்தத் திட்ட வரவுசெலவுத் திட்டத்தை உள்ளிடவும்.",
+        "material_help": "ஏற்கனவே உள்ள இருப்பிலிருந்து பொருட்களை இணைக்கவும்."
+    }
+}

@@ -142,6 +142,23 @@ class Transactions_model extends CI_Model
         return $query->result_array();
     }
 
+    /**
+     * Get a mapped account ID by setting key
+     * 
+     * @param string $key Setting key (e.g., 'sales_income_acc')
+     * @return int Account ID or 0
+     */
+    public function get_mapped_account($key)
+    {
+        $this->db->select('val');
+        $this->db->from('geopos_config');
+        $this->db->where('type', 100); // System settings
+        $this->db->where('key1', $key);
+        $query = $this->db->get();
+        $row = $query->row_array();
+        return isset($row['val']) ? (int)$row['val'] : 0;
+    }
+
     public function addcat($name)
     {
         $data = array(
@@ -151,8 +168,31 @@ class Transactions_model extends CI_Model
         return $this->db->insert('geopos_trans_cat', $data);
     }
 
-    public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0, $wallet_balance = 0, $doc_id = 0, $doc_type = '')
+    /**
+     * Add a transaction entry
+     * 
+     * @param int $payer_id Payer ID
+     * @param string $payer_name Payer name
+     * @param int $pay_acc Account ID
+     * @param string $date Transaction date (Y-m-d H:i:s format for full timestamp)
+     * @param float $debit Debit amount
+     * @param float $credit Credit amount
+     * @param string $pay_type Transaction type (Income/Expense)
+     * @param string $pay_cat Transaction category
+     * @param string $paymethod Payment method
+     * @param string $note Transaction note
+     * @param int $eid Employee/User ID
+     * @param int $loc Location ID
+     * @param int $ty External type flag
+     * @param int $wallet_balance Wallet balance flag
+     * @param int $doc_id Document ID
+     * @param string $doc_type Document type
+     * @param int $link_id Link ID
+     * @return mixed Insert result
+     */
+        public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0, $wallet_balance = 0, $doc_id = 0, $doc_type = '', $link_id = 0)
     {
+        if (!$loc) $loc = $this->aauth->get_user()->loc;
 
         if ($pay_acc > 0) {
 
@@ -220,7 +260,8 @@ class Transactions_model extends CI_Model
                     'eid' => $eid,
                     'note' => $note,
                     'ext' => $ty,
-                    'loc' => $loc
+                    'loc' => $loc,
+                    'link_id' => $link_id
                 );
                 $amount = $credit - $debit;
                 $this->db->set('lastbal', "lastbal+$amount", FALSE);
@@ -231,9 +272,18 @@ class Transactions_model extends CI_Model
                 $tid = $this->db->insert_id();
 
                 // Cheque Manager Integration
-                if ($paymethod == 'Bank' || $paymethod == 'Cheque') {
+                $cheque_number = $this->input->post('cheque_number', true);
+                
+                // FORCE 'Cheque' method if a cheque number is provided
+                if (!empty($cheque_number) && $paymethod != 'Cheque') {
+                    $paymethod = 'Cheque';
+                    // Update the transaction data array before insertion if it hasn't been inserted yet
+                     $data['method'] = 'Cheque';
+                }
+
+                // Case-insensitive check for Cheque/Bank
+                if (strtolower($paymethod) == 'bank' || strtolower($paymethod) == 'cheque') {
                     $this->load->model('cheque_model');
-                    $cheque_number = $this->input->post('cheque_number', true);
                     
                     // Determine party type based on $pay_type (Income -> Customer, Expense -> Supplier)
                     $party_type = ($pay_type == 'Income') ? 'Customer' : 'Supplier';
@@ -247,6 +297,7 @@ class Transactions_model extends CI_Model
                         'tid' => $tid,
                         'doc_id' => $doc_id,
                         'doc_type' => $doc_type,
+                        'branch_id' => $this->aauth->get_user()->loc, // Save Location
                         'note' => $note
                     );
                     $this->cheque_model->create_from_payment($cheque_data);
@@ -345,31 +396,41 @@ class Transactions_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('geopos_transactions');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('loc', 0);
-            $this->db->group_end();
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
-        }
         $this->db->where('id', $id);
         $query = $this->db->get();
         $trans = $query->row_array();
 
+        if (!$trans) {
+            return array('status' => 'Error', 'message' => 'Transaction not found');
+        }
+
+        // --- FULL ROLLBACK LOGIC ---
+
+        // 1. Check for Linked Transaction (Dual-Entry)
+        if ($trans['link_id'] > 0) {
+            $this->db->select('id');
+            $this->db->from('geopos_transactions');
+            $this->db->where('link_id', $trans['link_id']);
+            $this->db->where('id !=', $id); // Find the counterpart
+            $l_query = $this->db->get();
+            $l_trans = $l_query->row_array();
+
+            if ($l_trans) {
+                // Recursively delete the counterpart (but clear link_id first to avoid infinite loop)
+                $this->db->set('link_id', 0);
+                $this->db->where('id', $l_trans['id']);
+                $this->db->update('geopos_transactions');
+                $this->delt($l_trans['id']);
+            }
+        }
+
+        // 2. Reverse Account Balance
         $amt = $trans['credit'] - $trans['debit'];
         $this->db->set('lastbal', "lastbal-$amt", FALSE);
         $this->db->where('id', $trans['acid']);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('loc', 0);
-            $this->db->group_end();
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
-        }
         $this->db->update('geopos_accounts');
 
+        // 3. Reverse Invoice Payment (if applicable)
         if ($trans['tid'] > 0 && $trans['ext'] == 0) {
             $crd = $trans['credit'];
             $this->db->set('pamnt', "pamnt-$crd", FALSE);
@@ -377,17 +438,23 @@ class Transactions_model extends CI_Model
             $this->db->where('id', $trans['tid']);
             $this->db->update('geopos_invoices');
         }
+
+        // 4. Delete Associated Cheques
+        $this->db->delete('geopos_cheques', array('tid' => $id));
+
+        // 5. Delete the Transaction itself
         $this->db->delete('geopos_transactions', array('id' => $id));
+
+        // 6. Logging/Alerts
         $alert = $this->custom->api_config(66);
         if ($alert['key2'] == 1) {
             $this->load->model('communication_model');
             $subject = $trans['payer'] . ' ' . $this->lang->line('DELETED');
             $body = $subject . '<br> ' . $this->lang->line('Credit') . ' ' . $this->lang->line('Amount') . ' ' . $trans['credit'] . '<br> ' . $this->lang->line('Debit') . ' ' . $this->lang->line('Amount') . ' ' . $trans['debit'] . '<br> ID# ' . $trans['id'];
-            $out = $this->communication_model->send_corn_email($alert['url'], $alert['url'], $subject, $body, false, '');
+            $this->communication_model->send_corn_email($alert['url'], $alert['url'], $subject, $body, false, '');
         }
+
         return array('status' => 'Success', 'message' => $this->lang->line('DELETED'));
-
-
     }
 
     public function view($id)
@@ -516,4 +583,158 @@ class Transactions_model extends CI_Model
     
 
 
+    public function category_totals($loc = 0, $s_date = '', $e_date = '')
+    {
+        $this->db->select('cat, SUM(debit) as total_debit, SUM(credit) as total_credit');
+        $this->db->from('geopos_transactions');
+        if ($loc > 0) {
+            $this->db->where('loc', $loc);
+        }
+        if ($s_date && $e_date) {
+            $this->db->where('date >=', $s_date);
+            $this->db->where('date <=', $e_date);
+        }
+        $this->db->group_by('cat');
+        $query = $this->db->get();
+        $result = $query->result_array();
+        
+        $totals = [];
+        foreach ($result as $row) {
+            $totals[$row['cat']] = $row;
+        }
+        return $totals;
+    }
+
+    /**
+     * Generate a unique formatted transaction ID
+     * Format: TRX-YYYY-NNNN (e.g., TRX-2026-0001)
+     * 
+     * @return string Unique transaction ID
+     */
+    public function get_unique_tid()
+    {
+        $year = date('Y');
+        $prefix = "TRX-$year-";
+        
+        // Get the last transaction ID for this year
+        $this->db->select('note');
+        $this->db->from('geopos_transactions');
+        $this->db->like('note', $prefix, 'after');
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        
+        if ($query->num_rows() > 0) {
+            $last_note = $query->row()->note;
+            // Extract the sequence number from the last TID
+            if (preg_match('/TRX-\d{4}-(\d+)/', $last_note, $matches)) {
+                $sequence = intval($matches[1]) + 1;
+            } else {
+                $sequence = 1;
+            }
+        } else {
+            $sequence = 1;
+        }
+        
+        return $prefix . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Add a double-entry journal entry (Debit and Credit)
+     * This ensures balanced accounting entries
+     * 
+     * @param int $debit_acc Debit account ID
+     * @param int $credit_acc Credit account ID
+     * @param float $amount Transaction amount
+     * @param string $note Transaction note/description
+     * @param int $payer_id Payer/Party ID (customer/supplier)
+     * @param string $payer_name Payer/Party name
+     * @param string $category Transaction category
+     * @param string $method Payment method
+     * @param string $date Transaction date (datetime format)
+     * @param int $loc Location/Branch ID
+     * @param int $ext External flag (0=customer, 1=supplier)
+     * @param int $link_id Link to source document (invoice, purchase, etc.)
+     * @return bool Success status
+     */
+    public function add_double_entry($debit_acc, $credit_acc, $amount, $note, $payer_id = 0, $payer_name = '', 
+                                     $category = '', $method = 'Journal', $date = '', $loc = 0, $ext = 0, $link_id = 0)
+    {
+        if (!$date) {
+            $date = date('Y-m-d H:i:s');
+        }
+        
+        if (!$loc) {
+            $loc = $this->aauth->get_user()->loc;
+        }
+        
+        $eid = $this->aauth->get_user()->id;
+        
+        // Resolve mapped accounts if keys are passed instead of IDs
+        if (is_string($debit_acc)) $debit_acc = $this->get_mapped_account($debit_acc);
+        if (is_string($credit_acc)) $credit_acc = $this->get_mapped_account($credit_acc);
+
+        if (!$debit_acc || !$credit_acc) {
+            return false; // Cannot record unbalanced entry or missing mapping
+        }
+
+        // Generate unique TID for audit trail
+        $unique_tid = $this->get_unique_tid();
+        $note_with_tid = $unique_tid . ' - ' . $note;
+        
+        $this->db->trans_start();
+        
+        // Debit Entry
+        $debit_result = $this->addtrans(
+            $payer_id,
+            $payer_name,
+            $debit_acc,
+            $date,
+            $amount,      // Debit
+            0,            // Credit
+            'Expense',    // Type (Debit increases expenses/assets)
+            $category,
+            $method,
+            $note_with_tid,
+            $eid,
+            $loc,
+            $ext,
+            0,           // wallet_balance
+            0,           // doc_id
+            '',          // doc_type
+            $link_id
+        );
+        
+        // Credit Entry
+        $credit_result = $this->addtrans(
+            $payer_id,
+            $payer_name,
+            $credit_acc,
+            $date,
+            0,            // Debit
+            $amount,      // Credit
+            'Income',     // Type (Credit increases income/liabilities)
+            $category,
+            $method,
+            $note_with_tid,
+            $eid,
+            $loc,
+            $ext,
+            0,           // wallet_balance
+            0,           // doc_id
+            '',          // doc_type
+            $link_id
+        );
+        
+        $this->db->trans_complete();
+        
+        if ($this->db->trans_status() === FALSE) {
+            return false;
+        }
+        
+        // Log to audit trail
+        $this->aauth->applog("[$unique_tid] Double Entry Recorded. Link: $link_id", $this->aauth->get_user()->username);
+        
+        return true;
+    }
 }

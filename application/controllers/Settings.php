@@ -685,24 +685,54 @@ class Settings extends CI_Controller
     public function dual_entry()
     {
         $this->load->model('accounts_model');
-        $data['acclist'] = $this->accounts_model->accountslist($this->aauth->get_user()->loc);
+        $this->load->model('locations_model');
+        $this->load->model('transactions_model', 'transactions');
         $this->load->model('plugins_model', 'plugins');
+        
+        $loc = (int)$this->input->get('branch');
+        $s_date = $this->input->get('s_date');
+        $e_date = $this->input->get('e_date');
+
+        if ($s_date) $s_date = datefordatabase($s_date);
+        if ($e_date) $e_date = datefordatabase($e_date);
+
+        $data['acclist'] = $this->accounts_model->accountslist();
+        $data['locations'] = $this->locations_model->locations_list();
+        
         $this->li_a = 'billing';
         $this->load->library("Common");
         $data['discship'] = $this->plugins->universal_api(65);
+        
         if ($this->input->post()) {
             $dual = $this->input->post('dual');
             $dual_inv = $this->input->post('dual_inv');
             $dual_pur = $this->input->post('dual_pur');
             $this->plugins->m_update_api(65, $dual, $dual_inv, $dual_pur);
-        } else {
-            $head['usernm'] = $this->aauth->get_user()->username;
-            $head['title'] = 'Dual Entry Settings';
-            $data['prefix'] = $this->settings->prefix();
-            $this->load->view('fixed/header', $head);
-            $this->load->view('settings/dual_entry', $data);
-            $this->load->view('fixed/footer');
-        }
+
+            // Category Mappings
+            $cat_mappings = $this->input->post('cat_mapping');
+            if (is_array($cat_mappings)) {
+                foreach ($cat_mappings as $cat_id => $acc_id) {
+                    $this->db->where('id', $cat_id);
+                    $this->db->update('geopos_trans_cat', ['dual_acid' => $acc_id]);
+                }
+            }
+            ob_clean();
+            header('Content-Type: application/json');
+            echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('UPDATED')));
+            exit;
+        } 
+        
+        $data['catlist'] = $this->transactions->categories();
+        $data['cat_totals'] = $this->transactions->category_totals($loc, $s_date, $e_date);
+        $data['filter'] = ['branch' => $loc, 's_date' => $s_date, 'e_date' => $e_date];
+
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $head['title'] = 'Dual Entry Settings';
+        $data['prefix'] = $this->settings->prefix();
+        $this->load->view('fixed/header', $head);
+        $this->load->view('settings/dual_entry', $data);
+        $this->load->view('fixed/footer');
     }
 
     public function misc_automail()

@@ -56,6 +56,27 @@
     <script type="text/javascript">var baseurl = '<?php echo base_url() ?>';
         var crsf_token = '<?=$this->security->get_csrf_token_name()?>';
         var crsf_hash = '<?=$this->security->get_csrf_hash(); ?>';
+        <?php 
+        $ci =& get_instance();
+        $module_id = 0;
+        $demo_status = array('is_demo' => false);
+
+        if (isset($ci->aauth) && $ci->aauth->is_loggedin()) {
+            $controller = strtolower($ci->router->fetch_class());
+            // Basic mapping for major modules
+            if (in_array($controller, array('invoices', 'pos_invoices'))) $module_id = 1;
+            elseif (in_array($controller, array('products'))) $module_id = 2;
+            elseif (in_array($controller, array('projects'))) $module_id = 4;
+            elseif (in_array($controller, array('accounts', 'transactions'))) $module_id = 5;
+            elseif (in_array($controller, array('quote'))) $module_id = 8;
+            elseif (in_array($controller, array('employee'))) $module_id = 9;
+
+            if ($module_id > 0) {
+                $demo_status = $ci->aauth->get_demo_status($module_id);
+            }
+        }
+        echo "var demo_status = " . json_encode($demo_status) . ";";
+        ?>
     </script>
     <script src="<?php echo assets_url(); ?>assets/portjs/accounting.min.js" type="text/javascript"></script>
     <?php accounting() ?>

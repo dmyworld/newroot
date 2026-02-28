@@ -68,7 +68,7 @@ class Billing_model extends CI_Model
 
         // print_r($invoice);
 
-        if(!$bill_date) $bill_date = date('Y-m-d');
+        if(!$bill_date) $bill_date = date('Y-m-d H:i:s');
 
 
         $data = array(
@@ -449,7 +449,7 @@ class Billing_model extends CI_Model
             'payer' => $invoice['name'],
             'payerid' => $invoice['csd'],
             'method' => $pmethod,
-            'date' => date('Y-m-d'),
+            'date' => date('Y-m-d H:i:s'),
             'eid' => $invoice['eid'],
             'tid' => $tid,
             'note' => $note,
@@ -460,15 +460,26 @@ class Billing_model extends CI_Model
         $trans = $this->db->insert_id();
 
         // Cheque Manager Integration
-        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+        $cheque_number = $this->input->post('cheque_number', true);
+
+        // FORCE 'Cheque' method if a cheque number is provided
+        if (!empty($cheque_number) && $pmethod != 'Cheque') {
+            $pmethod = 'Cheque';
+             // Update transaction data
+            $this->db->set('method', 'Cheque');
+            $this->db->where('id', $trans);
+            $this->db->update('geopos_transactions');
+        }
+
+        if (strtolower($pmethod) == 'bank' || strtolower($pmethod) == 'cheque') {
             $this->load->model('cheque_model');
-            $cheque_number = $this->input->post('cheque_number', true);
+            // $cheque_number already retrieved above
             $cheque_data = array(
                 'amount' => $amount,
                 'party_id' => $invoice['csd'],
                 'party_type' => 'Customer',
                 'cheque_number' => $cheque_number,
-                'date' => date('Y-m-d'),
+                'date' => date('Y-m-d H:i:s'),
                 'tid' => $trans,
                 'doc_id' => $tid,
                 'doc_type' => 'invoice',

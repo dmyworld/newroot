@@ -6,7 +6,7 @@
             <small>Products with no sales in last 45+ days</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="<?= base_url('ownerdashboard') ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="<?= base_url('dashboard') ?>"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li class="active">Dead Stock</li>
         </ol>
     </section>

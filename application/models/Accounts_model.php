@@ -126,7 +126,7 @@ class Accounts_model extends CI_Model
         $whr = ' ';
         if ($this->aauth->get_user()->loc) {
             $whr = ' WHERE loc=' . $this->aauth->get_user()->loc;
-             if(BDATA) $whr .= 'OR loc=0 ';
+             if(BDATA) $whr .= ' OR loc=0 ';
         }
 
         $query = $this->db->query("SELECT SUM(lastbal) AS balance,COUNT(id) AS count_a FROM geopos_accounts $whr");

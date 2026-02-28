@@ -66,6 +66,24 @@ class Locations_model extends CI_Model
         );
 
         if ($this->db->insert('geopos_locations', $data)) {
+            $loc_id = $this->db->insert_id();
+
+            // Automatically create a warehouse for this location if none selected or as default behavior
+            $w_data = array(
+                'title' => $name . ' - Warehouse',
+                'extra' => 'Auto-created for ' . $name,
+                'loc' => $loc_id
+            );
+            $this->db->insert('geopos_warehouse', $w_data);
+            $new_wid = $this->db->insert_id();
+
+            // Update location with the new warehouse ID if it was 0
+            if (!$wid) {
+                $this->db->set('ware', $new_wid);
+                $this->db->where('id', $loc_id);
+                $this->db->update('geopos_locations');
+            }
+
             echo json_encode(array('status' => 'Success', 'message' =>
                 $this->lang->line('ADDED')));
         } else {
@@ -143,7 +161,7 @@ class Locations_model extends CI_Model
     public function online_pay_settings($id)
     {
 
-        $this->db->select('geopos_accounts.id,geopos_accounts.holder,');
+        $this->db->select('geopos_accounts.id AS default_acid,geopos_accounts.holder,geopos_accounts.acn');
         $this->db->from('geopos_locations');
         $this->db->where('geopos_locations.id', $id);
         $this->db->join('geopos_accounts', 'geopos_locations.ext = geopos_accounts.id', 'left');
@@ -156,12 +174,12 @@ class Locations_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('geopos_warehouse');
-        $this->db->where('loc', 0);
         if ($this->aauth->get_user()->loc) {
+            $this->db->group_start();
             $this->db->where('loc', $this->aauth->get_user()->loc);
+            $this->db->or_where('loc', 0);
+            $this->db->group_end();
         }
-
-
         $query = $this->db->get();
         return $query->result_array();
     }

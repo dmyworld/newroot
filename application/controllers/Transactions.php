@@ -26,11 +26,18 @@ class Transactions extends CI_Controller
         $this->load->library("Aauth");
         $this->load->model('invoices_model');
         $this->load->model('transactions_model', 'transactions');
+        $this->load->model('customers_model', 'customers');
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
         }
         $this->load->library("Custom");
         $this->li_a = 'accounts';
+
+        // Timber Pro Hub: Buyer Restrictions
+        if ($this->aauth->is_member('buyer')) {
+             $this->session->set_flashdata('error', 'Buyers cannot access Business Transactions.');
+             redirect('dashboard'); 
+        }
     }
 
     public function index()
@@ -56,8 +63,9 @@ class Transactions extends CI_Controller
 
         }
         $data['dual'] = $this->custom->api_config(65);
-
-        $data['cat'] = $this->transactions->categories();
+        $this->db->select('id,name,dual_acid');
+        $this->db->from('geopos_trans_cat');
+        $data['cat'] = $this->db->get()->result_array();
         $data['accounts'] = $this->transactions->acc_list();
         $head['title'] = "Add Transaction";
         $head['usernm'] = $this->aauth->get_user()->username;
@@ -222,6 +230,30 @@ class Transactions extends CI_Controller
         
         
 
+        $unique_link = time() + rand(0, 9999);
+    $note_with_inv = "Invoice #$tid - $note";
+    
+    // Check if dual entry mapping for Sales is available
+    $sales_acc = $this->transactions->get_mapped_account('sales_income_acc');
+
+    if ($sales_acc > 0) {
+        // Use the new double entry method
+        $this->transactions->add_double_entry(
+            $acid,          // Debit: Bank Account (selected by user)
+            $sales_acc,     // Credit: Sales Income (from mapping)
+            $amount,
+            $note_with_inv,
+            $cid,
+            $cname,
+            'Sales',
+            $pmethod,
+            $paydate,
+            $this->aauth->get_user()->loc,
+            0,              // ext (customer)
+            $unique_link    // link_id
+        );
+    } else {
+        // Fallback to original single entry if mapping is missing
         $data = array(
             'acid' => $acid,
             'account' => $account['holder'],
@@ -235,16 +267,34 @@ class Transactions extends CI_Controller
             'eid' => $this->aauth->get_user()->id,
             'tid' => $tid,
             'note' => $note,
-            'loc' => $this->aauth->get_user()->loc
+            'loc' => $this->aauth->get_user()->loc,
+            'link_id' => $unique_link
         );
-
         $this->db->insert('geopos_transactions', $data);
-        $tttid = $this->db->insert_id();
+        
+        $amount_rev = $amount;
+        $this->db->set('lastbal', "lastbal+$amount_rev", FALSE);
+        $this->db->where('id', $acid);
+        $this->db->update('geopos_accounts');
+    }
+
+    $tttid = $this->db->insert_id();
 
         // Cheque Manager Integration
-        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+        $cheque_number = $this->input->post('cheque_number', true);
+        
+        // FORCE 'Cheque' method if a cheque number is provided
+        if (!empty($cheque_number) && $pmethod != 'Cheque') {
+            $pmethod = 'Cheque';
+             // Update transaction data
+            $this->db->set('method', 'Cheque');
+            $this->db->where('id', $tttid);
+            $this->db->update('geopos_transactions');
+        }
+
+        if (strtolower($pmethod) == 'bank' || strtolower($pmethod) == 'cheque') {
             $this->load->model('cheque_model');
-            $cheque_number = $this->input->post('cheque_number', true);
+            // $cheque_number already retrieved
             $cheque_data = array(
                 'amount' => $amount,
                 'party_id' => $cid,
@@ -254,6 +304,7 @@ class Transactions extends CI_Controller
                 'tid' => $tttid,
                 'doc_id' => $tid,
                 'doc_type' => 'invoice',
+                'branch_id' => $this->aauth->get_user()->loc, // Save Location
                 'note' => $note
             );
             $this->cheque_model->create_from_payment($cheque_data);
@@ -357,32 +408,73 @@ class Transactions extends CI_Controller
         $this->db->where('id', $acid);
         $query = $this->db->get();
         $account = $query->row_array();
-        $data = array(
-            'acid' => $acid,
-            'account' => $account['holder'],
-            'type' => 'Expense',
-            'cat' => 'Purchase',
-            'debit' => $amount,
-            'payer' => $cname,
-            'payerid' => $cid,
-            'method' => $pmethod,
-            'date' => $paydate,
-            'eid' => $this->aauth->get_user()->id,
-            'tid' => $tid,
-            'note' => $note,
-            'ext' => 1,
-            'loc' => $this->aauth->get_user()->loc
-        );
-        $this->db->insert('geopos_transactions', $data);
+        $unique_link = time() + rand(0, 9999);
+        $note_with_pur = "Purchase #$tid - $note";
+        
+        // Check if dual entry mapping for Purchases is available
+        $purchase_acc = $this->transactions->get_mapped_account('accounts_payable_acc');
+
+        if ($purchase_acc > 0) {
+            $this->transactions->add_double_entry(
+                $purchase_acc,  // Debit: Accounts Payable (or Expense)
+                $acid,          // Credit: Bank Account
+                $amount,
+                $note_with_pur,
+                $cid,
+                $cname,
+                'Purchase',
+                $pmethod,
+                $paydate,
+                $this->aauth->get_user()->loc,
+                1,              // ext (supplier)
+                $unique_link
+            );
+        } else {
+            $data = array(
+                'acid' => $acid,
+                'account' => $account['holder'],
+                'type' => 'Expense',
+                'cat' => 'Purchase',
+                'debit' => $amount,
+                'payer' => $cname,
+                'payerid' => $cid,
+                'method' => $pmethod,
+                'date' => $paydate,
+                'eid' => $this->aauth->get_user()->id,
+                'tid' => $tid,
+                'note' => $note,
+                'ext' => 1,
+                'loc' => $this->aauth->get_user()->loc,
+                'link_id' => $unique_link
+            );
+            $this->db->insert('geopos_transactions', $data);
+            
+            // Manual account update for single entry fallback
+            $this->db->set('lastbal', "lastbal-$amount", FALSE);
+            $this->db->where('id', $acid);
+            $this->db->update('geopos_accounts');
+        }
+
         $tttid = $this->db->insert_id();
 
         $dtype = $this->input->post('dtype', true) ?: 'purchase';
         $table = ($dtype == 'purchase_logs') ? 'geopos_purchase_logs' : 'geopos_purchase';
 
         // Cheque Manager Integration
-        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+        $cheque_number = $this->input->post('cheque_number', true);
+        
+        // FORCE 'Cheque' method if a cheque number is provided
+        if (!empty($cheque_number) && $pmethod != 'Cheque') {
+            $pmethod = 'Cheque';
+             // Update transaction data
+            $this->db->set('method', 'Cheque');
+            $this->db->where('id', $tttid);
+            $this->db->update('geopos_transactions');
+        }
+
+        if (strtolower($pmethod) == 'bank' || strtolower($pmethod) == 'cheque') {
             $this->load->model('cheque_model');
-            $cheque_number = $this->input->post('cheque_number', true);
+            // $cheque_number already retrieved
             $cheque_data = array(
                 'amount' => $amount,
                 'party_id' => $cid,
@@ -392,6 +484,7 @@ class Transactions extends CI_Controller
                 'tid' => $tttid,
                 'doc_id' => $tid,
                 'doc_type' => $dtype,
+                'branch_id' => $this->aauth->get_user()->loc, // Save Location
                 'note' => $note
             );
             $this->cheque_model->create_from_payment($cheque_data);
@@ -483,29 +576,70 @@ class Transactions extends CI_Controller
         $this->db->where('id', $acid);
         $query = $this->db->get();
         $account = $query->row_array();
-        $data = array(
-            'acid' => $acid,
-            'account' => $account['holder'],
-            'type' => 'Expense',
-            'cat' => 'Purchase',
-            'debit' => $amount,
-            'payer' => $cname,
-            'payerid' => $cid,
-            'method' => $pmethod,
-            'date' => $paydate,
-            'eid' => $this->aauth->get_user()->id,
-            'tid' => $tid,
-            'note' => $note,
-            'ext' => 1,
-            'loc' => $this->aauth->get_user()->loc
-        );
-        $this->db->insert('geopos_transactions', $data);
+        $unique_link = time() + rand(0, 9999);
+        $note_with_pur = "Wood Purchase #$tid - $note";
+        
+        // Use mapping for wood purchase if exists, otherwise fallback to accounts_payable_acc
+        $purchase_acc = $this->transactions->get_mapped_account('accounts_payable_acc');
+
+        if ($purchase_acc > 0) {
+            $this->transactions->add_double_entry(
+                $purchase_acc,  // Debit: Accounts Payable (or Expense)
+                $acid,          // Credit: Bank Account
+                $amount,
+                $note_with_pur,
+                $cid,
+                $cname,
+                'Purchase',
+                $pmethod,
+                $paydate,
+                $this->aauth->get_user()->loc,
+                1,              // ext (supplier)
+                $unique_link
+            );
+        } else {
+            $data = array(
+                'acid' => $acid,
+                'account' => $account['holder'],
+                'type' => 'Expense',
+                'cat' => 'Purchase',
+                'debit' => $amount,
+                'payer' => $cname,
+                'payerid' => $cid,
+                'method' => $pmethod,
+                'date' => $paydate,
+                'eid' => $this->aauth->get_user()->id,
+                'tid' => $tid,
+                'note' => $note,
+                'ext' => 1,
+                'loc' => $this->aauth->get_user()->loc,
+                'link_id' => $unique_link
+            );
+            $this->db->insert('geopos_transactions', $data);
+            
+            // Manual account update for single entry fallback
+            $this->db->set('lastbal', "lastbal-$amount", FALSE);
+            $this->db->where('id', $acid);
+            $this->db->update('geopos_accounts');
+        }
+
         $tttid = $this->db->insert_id();
 
         // Cheque Manager Integration
-        if ($pmethod == 'Bank' || $pmethod == 'Cheque') {
+        $cheque_number = $this->input->post('cheque_number', true);
+        
+        // FORCE 'Cheque' method if a cheque number is provided
+        if (!empty($cheque_number) && $pmethod != 'Cheque') {
+            $pmethod = 'Cheque';
+             // Update transaction data
+            $this->db->set('method', 'Cheque');
+            $this->db->where('id', $tttid);
+            $this->db->update('geopos_transactions');
+        }
+
+        if (strtolower($pmethod) == 'bank' || strtolower($pmethod) == 'cheque') {
             $this->load->model('cheque_model');
-            $cheque_number = $this->input->post('cheque_number', true);
+            // $cheque_number already retrieved
             $cheque_data = array(
                 'amount' => $amount,
                 'party_id' => $cid,
@@ -515,6 +649,7 @@ class Transactions extends CI_Controller
                 'tid' => $tttid,
                 'doc_id' => $tid,
                 'doc_type' => 'purchase_wood',
+                'branch_id' => $this->aauth->get_user()->loc, // Save Location
                 'note' => $note
             );
             $this->cheque_model->create_from_payment($cheque_data);
@@ -862,46 +997,61 @@ class Transactions extends CI_Controller
         } elseif ($pay_type == 'Expense') {
             $debit = $amount;
         }
-        $pay_cat = $this->input->post('pay_cat');
+        $pay_cat_id = $this->input->post('pay_cat');
+        $this->db->select('name');
+        $this->db->from('geopos_trans_cat');
+        $this->db->where('id', $pay_cat_id);
+        $q_cat = $this->db->get();
+        $r_cat = $q_cat->row_array();
+        $pay_cat = isset($r_cat['name']) ? $r_cat['name'] : 'Others';
         $paymethod = $this->input->post('paymethod');
-        $note = $this->input->post('note');
+        $note = '[' . $pay_cat . '] ' . $this->input->post('note');
         
        
         $wallet_balance=  $this->input->post('wallet_balance', true);
         
         
         $date = datefordatabase($date);
+        $link_id = time() + rand(0, 9999);
+        $payer_ty = $this->input->post('payer_ty', true);
+        $lid = $this->aauth->get_user()->loc;
+
         if ($amount > 0) {
-            if ($this->transactions->addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $this->aauth->get_user()->id, $this->aauth->get_user()->loc, $payer_ty, $wallet_balance)) {
+            if ($this->transactions->addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $this->aauth->get_user()->id, $this->aauth->get_user()->loc, $payer_ty, $wallet_balance, 0, '', $link_id)) {
                 $lid = $this->db->insert_id();
 
-                if ($dual['key1']) {
+                if ($dual['key1'] || $this->input->post('f_pay_acc')) {
                     $pay_acc = $this->input->post('f_pay_acc', true);
-                    $pay_cat = $this->input->post('f_pay_cat');
-                    $paymethod = $this->input->post('f_paymethod');
-                    $note = $this->input->post('f_note');
-                    if ($pay_type == 'Income') {
-                        $debit = $amount;
-                        $credit = 0;
-                        $pay_type_r = 'Expense';
-                    } elseif ($pay_type == 'Expense') {
-                        $credit = $amount;
-                        $debit = 0;
-                        $pay_type_r = 'Income';
+                    $pay_cat_f = $this->input->post('f_pay_cat') ?: $pay_cat;
+                    $paymethod = $this->input->post('f_paymethod') ?: $paymethod;
+                    $note = $this->input->post('f_note') ?: $note;
+
+                    // Automation: If secondary account is not provided, fetch from category mapping
+                    if (!$pay_acc || $pay_acc == 0) {
+                        $this->db->select('dual_acid');
+                        $this->db->from('geopos_trans_cat');
+                        $this->db->where('id', $pay_cat_id);
+                        $q_cat = $this->db->get();
+                        $r_cat = $q_cat->row_array();
+                        if (!empty($r_cat['dual_acid'])) {
+                            $pay_acc = $r_cat['dual_acid'];
+                        }
                     }
 
-                    $this->transactions->addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type_r, $pay_cat, $paymethod, $note, $this->aauth->get_user()->id, $this->aauth->get_user()->loc, $payer_ty, $wallet_balance);
+                    if ($pay_acc > 0) {
+                        if ($pay_type == 'Income') {
+                            $debit = $amount;
+                            $credit = 0;
+                            $pay_type_r = 'Expense';
+                        } elseif ($pay_type == 'Expense') {
+                            $credit = $amount;
+                            $debit = 0;
+                            $pay_type_r = 'Income';
+                        }
+                        $this->transactions->addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type_r, $pay_cat_f, $paymethod, $note, $this->aauth->get_user()->id, $this->aauth->get_user()->loc, $payer_ty, $wallet_balance, 0, '', $link_id);
+                    }
                     
-                     $id = $this->input->post('id');
-            $amount = $this->input->post('amount', true);
-            $this->customers->recharge($payer_id, $credit);
-                    
-                    
-                    
-                    
-                    
-                    
-                    
+                    $this->customers->recharge($payer_id, ($pay_type == 'Income' ? $amount : 0));
                 }
 
                 echo json_encode(array('status' => 'Success', 'message' =>
@@ -951,10 +1101,9 @@ class Transactions extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(5)) {
-
+        // Only Admin (Role 5+) can delete transactions
+        if ($this->aauth->get_user()->roleid < 5) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
 
         $id = $this->input->post('deleteid');

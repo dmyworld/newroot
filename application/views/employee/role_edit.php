@@ -22,6 +22,7 @@
                             <th class="text-center">Add</th>
                             <th class="text-center">Edit</th>
                             <th class="text-center">Delete</th>
+                            <th class="text-center text-danger">DEMO (20/mo)</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -32,10 +33,7 @@
                             $can_view = isset($p_map[$mid]['can_view']) && $p_map[$mid]['can_view'] ? 'checked' : '';
                             $can_add = isset($p_map[$mid]['can_add']) && $p_map[$mid]['can_add'] ? 'checked' : '';
                             $can_edit = isset($p_map[$mid]['can_edit']) && $p_map[$mid]['can_edit'] ? 'checked' : '';
-                            $can_delete = isset($p_map[$mid]['can_delete']) && $p_map[$mid]['can_delete'] ? 'checked' : '';
-                            
-                            // Super admin (ID 5) gets all checked and disabled? Or just checked.
-                            // If role['all_access'] == 1, maybe show checked disabled?
+                            $can_demo = isset($p_map[$mid]['can_demo']) && $p_map[$mid]['can_demo'] ? 'checked' : '';
                             
                             echo "<tr>
                                 <td><strong>" . $row['title'] . "</strong></td>
@@ -43,6 +41,7 @@
                                 <td class='text-center'><input type='checkbox' name='p[$mid][add]' value='1' $can_add></td>
                                 <td class='text-center'><input type='checkbox' name='p[$mid][edit]' value='1' $can_edit></td>
                                 <td class='text-center'><input type='checkbox' name='p[$mid][delete]' value='1' $can_delete></td>
+                                <td class='text-center'><input type='checkbox' name='p[$mid][demo]' value='1' $can_demo></td>
                             </tr>";
                         }
                         ?>

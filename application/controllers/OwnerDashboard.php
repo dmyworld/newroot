@@ -38,6 +38,10 @@ class OwnerDashboard extends CI_Controller
                  $branch_id = 0; 
             }
             
+            // Capture date range
+            $start_date = $this->input->get('start_date') ?: date('Y-m-01');
+            $end_date = $this->input->get('end_date') ?: date('Y-m-d');
+
             // Capture date range from filters (with fallbacks)
             $start_date = $this->input->get('start_date') ?: date('Y-m-01'); // Default: first day of current month
             $end_date = $this->input->get('end_date') ?: date('Y-m-d');       // Default: today
@@ -67,33 +71,36 @@ class OwnerDashboard extends CI_Controller
                 }
             }
             
-            // Pass date range to view for display
-            $data['start_date'] = $start_date;
-            $data['end_date'] = $end_date;
-            $data['current_branch'] = $branch_id;
+            // View Date Range Logic
+            $head['start_date'] = $start_date;
+            $head['end_date'] = $end_date;
+            $head['current_branch'] = $branch_id;
+            
+            // Logic for Dashboard Model (needs -1 for All)
+            $dash_loc = ($branch_id == 0) ? -1 : $branch_id;
             
             $today = date('Y-m-d');
             $month = date('m');
             $year = date('Y');
             
             // Dashboard Model Data - Use date range for KPIs
-            $data['incomechart'] = $this->dashboard_model->incomeChart($today, $month, $year, $branch_id);
-            $data['expensechart'] = $this->dashboard_model->expenseChart($today, $month, $year, $branch_id);
-            $data['countmonthlychart'] = $this->dashboard_model->countmonthlyChart($branch_id);
+            $data['incomechart'] = $this->dashboard_model->incomeChart($today, $month, $year, $dash_loc);
+            $data['expensechart'] = $this->dashboard_model->expenseChart($today, $month, $year, $dash_loc);
+            $data['countmonthlychart'] = $this->dashboard_model->countmonthlyChart($dash_loc);
             
             // Use date range for KPIs instead of just "today"
-            $data['todayin'] = $this->dashboard_model->rangeInvoice($start_date, $end_date, $branch_id);
-            $data['todaysales'] = $this->dashboard_model->rangeSales($start_date, $end_date, $branch_id);
-            $data['todayinexp'] = $this->dashboard_model->rangeInexp($start_date, $end_date, $branch_id);
-            $data['todayprofit'] = $this->dashboard_model->rangeProfit($start_date, $end_date, $branch_id);
-            $data['todaynewcustomers'] = $this->dashboard_model->rangeNewCustomers($start_date, $end_date, $branch_id);
+            $data['todayin'] = $this->dashboard_model->rangeInvoice($start_date, $end_date, $dash_loc);
+            $data['todaysales'] = $this->dashboard_model->rangeSales($start_date, $end_date, $dash_loc);
+            $data['todayinexp'] = $this->dashboard_model->rangeInexp($start_date, $end_date, $dash_loc);
+            $data['todayprofit'] = $this->dashboard_model->rangeProfit($start_date, $end_date, $dash_loc);
+            $data['todaynewcustomers'] = $this->dashboard_model->rangeNewCustomers($start_date, $end_date, $dash_loc);
             
-            $data['monthin'] = $this->dashboard_model->monthlyInvoice($month, $year, $branch_id);
-            $data['monthsales'] = $this->dashboard_model->monthlySales($month, $year, $branch_id);
+            $data['monthin'] = $this->dashboard_model->monthlyInvoice($month, $year, $dash_loc);
+            $data['monthsales'] = $this->dashboard_model->monthlySales($month, $year, $dash_loc);
             
-            $data['recent'] = $this->dashboard_model->recentInvoices($branch_id);
-            $data['recent_buy'] = $this->dashboard_model->recentBuyers($branch_id);
-            $data['recent_payments'] = $this->dashboard_model->recent_payments($branch_id);
+            $data['recent'] = $this->dashboard_model->recentInvoices($dash_loc);
+            $data['recent_buy'] = $this->dashboard_model->recentBuyers($dash_loc);
+            $data['recent_payments'] = $this->dashboard_model->recent_payments($dash_loc);
             
             // Tasks
             if ($this->db->table_exists('tasks')) {
@@ -107,36 +114,50 @@ class OwnerDashboard extends CI_Controller
                 $data['tasks'] = array();
             }
             
-            // Intelligence Data
-            $data['today_sales'] = array('total' => $this->intelligence_model->get_aggregated_sales($end_date, $branch_id));
-            $data['today_profit'] = $this->intelligence_model->get_aggregated_profit($end_date, $branch_id);
-            $data['cash_in_hand'] = $this->intelligence_model->get_aggregated_cash($end_date, $branch_id);
+            // Intelligence Data (0 means All)
+            // Intelligence Data (0 means All)
+            $data['today_sales'] = array('total' => $this->intelligence_model->get_aggregated_sales($end_date, $dash_loc));
             
-            $data['business_health'] = $this->intelligence_model->get_business_health(); 
-            $data['staff_trust_index'] = $this->intelligence_model->get_avg_staff_trust(); 
-            $data['dead_stock_summary'] = $this->intelligence_model->get_dead_stock_summary($branch_id);
-            $data['fast_moving_summary'] = $this->intelligence_model->get_fast_moving_summary($branch_id);
+            // Link core KPIs to Dual-Entry System
+            $data['todayprofit'] = $this->intelligence_model->get_dual_entry_profit($dash_loc, $start_date, $end_date);
+            $data['cash_in_hand'] = $this->intelligence_model->get_total_cash_in_hand($dash_loc);
+            $data['bank_balance'] = $this->intelligence_model->get_total_bank_balance($dash_loc);
+            
+            $data['business_health'] = $this->intelligence_model->get_business_health($dash_loc); 
+            $data['staff_trust_index'] = $this->intelligence_model->get_avg_staff_trust($dash_loc); 
+            $data['dead_stock_summary'] = $this->intelligence_model->get_dead_stock_summary($dash_loc);
+            $data['fast_moving_summary'] = $this->intelligence_model->get_fast_moving_summary($dash_loc);
             
             $data['risk_alerts'] = $this->risk_model->get_recent_alerts(5);
-            $data['dead_stock_val'] = $this->analytics_model->get_dead_stock_value($branch_id);
+            $data['dead_stock_val'] = $this->analytics_model->get_dead_stock_value($dash_loc);
             
             $data['loss_stats'] = array(
-                'stock_leak' => $this->loss_model->get_stock_leak_stats($branch_id),
-                'billing_error' => $this->loss_model->get_billing_errors($branch_id),
-                'return_abuse' => $this->loss_model->get_return_abuse_stats($branch_id),
-                'prevented_loss' => $this->loss_model->get_prevented_loss_today($branch_id)
+                'stock_leak' => $this->loss_model->get_stock_leak_stats($dash_loc),
+                'billing_error' => $this->loss_model->get_billing_errors($dash_loc),
+                'return_abuse' => $this->loss_model->get_return_abuse_stats($dash_loc),
+                'prevented_loss' => $this->loss_model->get_prevented_loss_today($dash_loc)
             );
             
-            $data['slow_moving_count'] = $this->analytics_model->get_slow_moving_count($branch_id);
-            $data['staff_scores_list'] = $this->intelligence_model->get_top_staff_trust(5, $branch_id);
+            $data['slow_moving_count'] = $this->analytics_model->get_slow_moving_count($dash_loc);
+            $data['staff_scores_list'] = $this->intelligence_model->get_top_staff_trust(5, $dash_loc);
             
             // New Financial Metrics with date range
-            $data['customer_due'] = $this->intelligence_model->get_customer_due($branch_id, $start_date, $end_date);
-            $data['supplier_due'] = $this->intelligence_model->get_supplier_due($branch_id, $start_date, $end_date);
-            $data['financial_metrics'] = $this->intelligence_model->get_detailed_financial_metrics($branch_id, $start_date, $end_date);
-            $data['cheque_stats'] = $this->intelligence_model->get_cheque_status($branch_id);
+            $data['customer_due'] = $this->intelligence_model->get_customer_due($dash_loc, $start_date, $end_date);
+            $data['supplier_due'] = $this->intelligence_model->get_supplier_due($dash_loc, $start_date, $end_date);
+            $data['financial_metrics'] = $this->intelligence_model->get_detailed_financial_metrics($dash_loc, $start_date, $end_date);
+            $data['cheque_stats'] = $this->intelligence_model->get_cheque_status($dash_loc);
+            $data['inventory_valuation'] = $this->intelligence_model->get_inventory_valuation($dash_loc);
+            $data['payroll_intel'] = $this->intelligence_model->get_payroll_intel($dash_loc);
+
             
-            $data['branches'] = $this->analytics_model->get_branch_performance();
+            // Phase 20: Advanced Accounting
+            $data['financial_position'] = $this->intelligence_model->get_detailed_financial_position($dash_loc);
+            $data['recent_journal_entries'] = $this->intelligence_model->get_recent_journal_entries($dash_loc, 10);
+            
+            // Phase 23: Strategic Business Analysis
+            $data['strategic_indicators'] = $this->intelligence_model->get_strategic_indicators($dash_loc, $start_date, $end_date);
+            
+            $data['branches'] = $this->analytics_model->get_branch_performance($dash_loc);
             
             // Generate and fetch insights
             $this->intelligence_model->generate_daily_insights();
@@ -225,5 +246,6 @@ class OwnerDashboard extends CI_Controller
         $this->load->view('intelligence/staff_leaderboard', $data);
         $this->load->view('fixed/footer');
     }
+
 }
 

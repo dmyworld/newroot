@@ -22,9 +22,36 @@ class Message_model extends CI_Model
 {
 
 
+    public function send_message($sender_id, $receiver_id, $subject, $message)
+    {
+        $data = array(
+            'sender_id' => $sender_id,
+            'receiver_id' => $receiver_id,
+            'title' => $subject,
+            'content' => $message,
+            'date_sent' => date('Y-m-d H:i:s'),
+            'status' => 0 // Unread
+        );
+        return $this->db->insert('geopos_pms', $data);
+    }
+
+    public function get_messages($user_id, $type = 'inbox')
+    {
+        $this->db->select('p.*, u.username as other_user');
+        $this->db->from('geopos_pms p');
+        if ($type == 'inbox') {
+            $this->db->join('geopos_users u', 'p.sender_id = u.id');
+            $this->db->where('p.receiver_id', $user_id);
+        } else {
+            $this->db->join('geopos_users u', 'p.receiver_id = u.id');
+            $this->db->where('p.sender_id', $user_id);
+        }
+        $this->db->order_by('p.date_sent', 'DESC');
+        return $this->db->get()->result_array();
+    }
+
     public function employee_details($id)
     {
-
         $this->db->select('geopos_employees.*');
         $this->db->from('geopos_employees');
         $this->db->where('geopos_pms.id', $id);
@@ -32,6 +59,4 @@ class Message_model extends CI_Model
         $query = $this->db->get();
         return $query->row_array();
     }
-
-
 }

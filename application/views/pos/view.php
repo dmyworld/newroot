@@ -237,7 +237,7 @@
 
                     </div>
                     <div class="offset-md-3 col-md-3 col-sm-12 text-xs-center text-md-left">
-                        <?php echo '<p><span class="text-muted">' . $this->lang->line('Invoice Date') . '  :</span> ' . dateformat($invoice['invoicedate']) . '</p> <p><span class="text-muted">' . $this->lang->line('Due Date') . ' :</span> ' . dateformat($invoice['invoiceduedate']) . '</p>  <p><span class="text-muted">' . $this->lang->line('Terms') . ' :</span> ' . $invoice['termtit'] . '</p>';
+                        <?php echo '<p><span class="text-muted">' . $this->lang->line('Invoice Date') . '  :</span> ' . dateformat_time($invoice['invoicedate']) . '</p> <p><span class="text-muted">' . $this->lang->line('Due Date') . ' :</span> ' . dateformat($invoice['invoiceduedate']) . '</p>  <p><span class="text-muted">' . $this->lang->line('Terms') . ' :</span> ' . $invoice['termtit'] . '</p>';
                         ?>
                     </div>
                 </div>
@@ -738,18 +738,29 @@
                     <div class="row mt-2">
                         <div class="col-md-6">
                             <label for="pmethod"><?php echo $this->lang->line('Payment Method') ?></label>
-                            <select name="pmethod" class="form-control mb-1">
+                            <select name="pmethod" id="pmethod_pos" class="form-control mb-1">
                                 <option value="Cash"><?php echo $this->lang->line('Cash') ?></option>
                                 <option value="Card"><?php echo $this->lang->line('Card') ?></option>
                                 <option value="Balance"><?php echo $this->lang->line('Client Balance') ?></option>
                                 <option value="Bank"><?php echo $this->lang->line('Bank') ?></option>
+                                <option value="Cheque"><?php echo $this->lang->line('Cheque') ?></option>
                             </select>
                         </div>
+                        <div class="col-md-6" id="cheque_number_col_pos" style="display: none;">
+                            <label for="cheque_number"><?php echo $this->lang->line('Cheque Number') ?></label>
+                            <input type="text" class="form-control" name="cheque_number" placeholder="Cheque Number">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
                         <div class="col-md-6">
                             <label for="account"><?php echo $this->lang->line('Account') ?></label>
                             <select name="account" class="form-control">
                                 <?php foreach ($acclist as $row) {
-                                    echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                    $sel = "";
+                                    if (isset($default_account['key2']) && $default_account['key2'] == $row['id']) {
+                                        $sel = "selected";
+                                    }
+                                    echo '<option value="' . $row['id'] . '" ' . $sel . '>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 } ?>
                             </select>
                         </div>
@@ -1202,6 +1213,14 @@ if (!empty($message)) {
 
     });
 
+    $('#pmethod_pos').on('change', function () {
+        var pmethod = $(this).val();
+        if (pmethod == 'Cheque') {
+            $('#cheque_number_col_pos').show();
+        } else {
+            $('#cheque_number_col_pos').hide();
+        }
+    });
 
 </script>
 

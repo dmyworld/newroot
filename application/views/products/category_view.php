@@ -1,53 +1,43 @@
 <style>
     /* ============================================
-       TIMBER ERP PROFESSIONAL DESIGN SYSTEM v2.1
-       Refined Palette & Layout
+       BLUE & LIFE GREEN - PSYCHOLOGICAL THEME
+       Based on Owner Dashboard (Style 9)
     ============================================ */
     
     :root {
-        /* Timber Brand Colors - Deep & Professional */
-        --timber-walnut: #5D4037;   /* Deep Brown */
-        --timber-oak: #D4AF37;      /* Metallic Gold/Oak */
-        --timber-forest: #2E7D32;   /* Rich Green */
-        --timber-charcoal: #37474F; /* Dark Blue-Grey */
+        /* Blue & Green Palette */
+        --psy-bg-page: #eff6ff; /* Alice Blue (Page BG) */
+        --psy-bg-card: #ffffff;
+        --psy-text-primary: #1e3a8a; /* Navy Blue 900 */
+        --psy-text-secondary: #334155; /* Slate 700 (Neutral) */
+        --psy-accent-primary: #2563eb; /* Royal Blue */
+        --psy-accent-success: #16a34a; /* Life Green */
+        --psy-accent-danger: #ef4444; /* Red (Standard Danger) */
+        --psy-accent-warning: #f59e0b; /* Amber */
+        --psy-border: #bfdbfe; /* Blue 200 */
+        --psy-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.1), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
+        --psy-glass: rgba(255, 255, 255, 0.95);
         
-        /* Background & Surface tones */
-        --bg-warm-cream: #FAF9F6;
-        --bg-paper-white: #FFFFFF;
-        --bg-soft-gray: #F5F7FA;
-        
-        /* Status Indicators */
-        --status-critical: #D32F2F;
-        --status-warning: #FFA000;
-        --status-info: #1976D2;
-        --status-success: #388E3C;
-        
-        /* UI Elements */
-        --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
-        --shadow-lifted: 0 10px 25px rgba(93, 64, 55, 0.1);
-        --glass-border: 1px solid rgba(255,255,255,0.6);
-        --radius-std: 12px;
-        --radius-lg: 20px;
+        --radius-std: 8px;
+        --radius-lg: 12px;
     }
 
-    body {
-        background-color: var(--bg-soft-gray);
+    /* Force overrides for Global Dark Mode leaks */
+    html, body, .app-content, .content-wrapper, .content-body {
+        background-color: var(--psy-bg-page) !important;
+        color: var(--psy-text-primary) !important;
         font-family: 'Montserrat', sans-serif;
-        color: var(--timber-charcoal);
     }
 
     .content-body {
         padding: 2rem;
-        background: radial-gradient(circle at 10% 10%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
     }
 
-    /* GLASSMORPHIC HEADER */
+    /* GLASSMORPHIC HEADER match Dashboard */
     .page-header-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: var(--glass-border);
-        box-shadow: var(--shadow-soft);
+        background: #ffffff;
+        border: 1px solid var(--psy-border);
+        box-shadow: var(--psy-shadow);
         border-radius: var(--radius-lg);
         padding: 1.5rem 2rem;
         margin-bottom: 2rem;
@@ -62,27 +52,27 @@
         content: '';
         position: absolute;
         bottom: 0; left: 0; width: 100%; height: 3px;
-        background: linear-gradient(90deg, var(--timber-walnut), var(--timber-oak));
+        background: linear-gradient(90deg, var(--psy-accent-primary), var(--psy-accent-success));
     }
 
     .page-title h2 {
-        color: var(--timber-walnut);
+        color: var(--psy-text-primary);
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
-        font-size: 2rem;
+        font-size: 1.8rem;
         text-transform: uppercase;
     }
 
-    /* PREMIUM BUTTONS */
+    /* PREMIUM BUTTONS MATCHING DASHBOARD */
     .btn-premium {
-        background: linear-gradient(135deg, var(--timber-walnut), #4E342E);
-        color: #fff;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 50px;
+        background: white;
+        color: var(--psy-accent-primary);
+        border: 1px solid var(--psy-border);
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(93, 64, 55, 0.3);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
@@ -91,92 +81,177 @@
 
     .btn-premium:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(93, 64, 55, 0.4);
-        background: linear-gradient(135deg, #4E342E, var(--timber-walnut));
-        color: #fff;
+        background: var(--psy-bg-page);
+        border-color: var(--psy-accent-primary);
+        color: var(--psy-accent-primary);
+        box-shadow: var(--psy-shadow);
+    }
+    
+    .btn-premium.btn-success-glass {
+        color: var(--psy-accent-success);
+        border-color: #bbf7d0; /* Green 200 */
+        background: #f0fdf4; /* Green 50 */
+    }
+    .btn-premium.btn-success-glass:hover {
+        background: #dcfce7;
+        border-color: var(--psy-accent-success);
+    }
+
+    .btn-premium.btn-primary-glass {
+        color: var(--psy-accent-primary);
+        border-color: var(--psy-border);
+        background: #eff6ff; 
+    }
+    .btn-premium.btn-primary-glass:hover {
+        background: #dbeafe;
+        border-color: var(--psy-accent-primary);
+    }
+
+    /* PREMIUM CARDS */
+    .premium-card {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--psy-border);
+        box-shadow: var(--psy-shadow);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .premium-card-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid var(--psy-border);
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .premium-card-title {
+        margin-bottom: 0;
+        color: var(--psy-text-primary);
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 0.2px;
+        text-transform: uppercase;
     }
 
     /* DATA TABLE & LIST */
-    .timber-table-card {
-        background: #fff;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-lifted);
-        padding: 0;
-        overflow: hidden;
-    }
-
     .table-responsive { overflow-x: auto; }
 
-    .table-timber {
+    .table-premium {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
     }
 
-    .table-timber thead th {
-        background: linear-gradient(to right, var(--timber-walnut), #4E342E);
-        color: #fff;
+    .table-premium thead th {
+        background: #f8fafc;
+        color: var(--psy-text-secondary);
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         letter-spacing: 1px;
-        padding: 1.2rem 1.5rem;
-        border: none;
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid var(--psy-border);
+        border-top: none;
     }
 
-    .table-timber tbody tr {
+    .table-premium tbody tr {
         transition: all 0.2s;
     }
 
-    .table-timber tbody tr:nth-child(even) { background-color: #FAFAFA; }
-    
-    .table-timber tbody tr:hover {
-        background-color: #FFF8E1; /* Light Gold tint */
-        transform: scale(1.005);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    .table-premium tbody tr:hover {
+        background-color: #f1f5f9; /* Slate 100 */
+        transform: scale(1.002);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         z-index: 5;
         position: relative;
     }
 
-    .table-timber td {
+    .table-premium td {
         padding: 1rem 1.5rem;
         vertical-align: middle;
-        border-bottom: 1px solid #F0F0F0;
-        color: #555;
+        border-bottom: 1px solid #e2e8f0;
+        color: var(--psy-text-secondary);
         font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .table-premium td h5 {
+        color: var(--psy-text-primary);
+        font-weight: 600;
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* Badge & Labels */
+    .badge-psy {
+        padding: 0.4em 0.8em;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    .badge-psy-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-psy-info { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge-psy-warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+    /* Filter Inputs */
+    .filter-input-glass {
+        background: #ffffff !important;
+        border: 1px solid var(--psy-border) !important;
+        color: var(--psy-text-primary) !important;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        padding: 0.6rem 1rem;
+        height: auto;
+    }
+    .filter-input-glass:focus {
+        border-color: var(--psy-accent-primary) !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     /* Modals */
     .modal-content {
-        border-radius: 20px;
+        border-radius: var(--radius-lg);
         border: none;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
     .modal-header {
-        background: linear-gradient(135deg, var(--timber-walnut), var(--timber-oak));
-        color: white;
-        border-radius: 20px 20px 0 0;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding: 1.5rem;
+    }
+    .modal-title {
+        color: var(--psy-text-primary);
+        font-weight: 700;
     }
     .close {
-        color: white;
-        text-shadow: none;
-        opacity: 1;
+        color: var(--psy-text-secondary);
+        opacity: 0.7;
     }
+    .close:hover { opacity: 1; }
 </style>
 
 <div class="content-body">
+    
+    <!-- HEADER -->
     <div class="page-header-glass">
         <div class="page-title">
             <h2><?php echo $this->lang->line('Products') ?></h2>
         </div>
         <div class="header-actions">
-            <a href="<?php echo base_url('products/add') ?>" class="btn-premium mr-1">
-                 <?php echo $this->lang->line('Add new') ?>
+            <!-- Note: Replaced gradients with new premium glass styles -->
+            <a href="<?php echo base_url('products/add') ?>" class="btn-premium mr-2">
+                 <i class="fa fa-plus-circle"></i> <?php echo $this->lang->line('Add new') ?>
             </a>
-            <a href="<?php echo base_url('productcategory/category_products_add') ?>" class="btn-premium mr-1" style="background: linear-gradient(135deg, #5D4037, #8D6E63);">
-                Add Timber Products
+            <a href="<?php echo base_url('productcategory/category_products_add') ?>" class="btn-premium btn-success-glass mr-2">
+                <i class="fa fa-tree"></i> Add Timber Products
             </a> 
-            <a href="<?php echo base_url('productcategory/add_sub') ?>" class="btn-premium" style="background: linear-gradient(135deg, #1976D2, #1565C0);">
-                <?php echo $this->lang->line('Add new') . ' - ' . $this->lang->line('Sub') . ' ' . $this->lang->line('Category') ?>
+            <a href="<?php echo base_url('productcategory/add_sub') ?>" class="btn-premium btn-primary-glass">
+                <i class="fa fa-folder-open"></i> <?php echo $this->lang->line('Add new') . ' - ' . $this->lang->line('Sub') . ' ' . $this->lang->line('Category') ?>
             </a>
         </div>
     </div>
@@ -186,20 +261,22 @@
         <div class="message"></div>
     </div>
 
+    <!-- SUB CATEGORIES TABLE -->
     <?php if (isset($cat[0])) { ?>
-        <h5 class="mb-2 font-weight-bold" style="color: var(--timber-walnut); padding-left: 0.5rem;">
-            <?php echo $this->lang->line('Sub') ?> <?php echo $this->lang->line('Categories') ?>
-        </h5>
-        
-        <div class="timber-table-card mb-5">
+        <div class="premium-card mb-5">
+            <div class="premium-card-header">
+                <h5 class="premium-card-title">
+                    <i class="fa fa-folder text-warning mr-2"></i><?php echo $this->lang->line('Sub') ?> <?php echo $this->lang->line('Categories') ?>
+                </h5>
+            </div>
             <div class="table-responsive">
-                <table id="catgtable" class="table table-timber">
+                <table id="catgtable" class="table table-premium">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th><?php echo $this->lang->line('Name') ?></th>
                         <th><?php echo $this->lang->line('Total Products') ?></th>
-                        <th><?php echo $this->lang->line('Stock Quantity') ?></th>
+                        <th><?php echo $this->lang->line('Total') ?> <?php echo $this->lang->line('Stock Quantity') ?></th>
                         <th>Worth (Sales/Cost)</th>
                         <th><?php echo $this->lang->line('Action') ?></th>
                     </tr>
@@ -216,60 +293,59 @@
                         $worthsum = amountExchange($row['worthsum'], 0, $this->aauth->get_user()->loc);
                         echo "<tr>
                 <td>$i</td>
-                <td><a href='" . base_url("productcategory/view?id=$cid&sub=true") . "' class='font-weight-bold' style='color: var(--timber-walnut);'>$title</a></td>
-                <td>$total</td>
-                <td>$qty</td>
-                <td>$salessum/$worthsum</td>
+                <td><a href='" . base_url("productcategory/view?id=$cid&sub=true") . "' class='font-weight-bold text-primary'>$title</a></td>
+                <td><span class='badge-psy badge-psy-info'>$total Items</span></td>
+                <td><span class='badge-psy badge-psy-warning'>$qty Units</span></td>
+                <td>$salessum / <span class='text-muted'>$worthsum</span></td>
                 <td>
-                    <a href='" . base_url("productcategory/view?id=$cid&sub=true") . "' class='btn btn-success btn-sm rounded shadow-sm'><i class='fa fa-eye'></i> " . $this->lang->line('View') . "</a>&nbsp; 
-                    <a class='btn btn-info btn-sm rounded shadow-sm' href='" . base_url() . "productcategory/report_product?id=" . $cid . "&sub=true' target='_blank'> <span class='fa fa-pie-chart'></span>" . $this->lang->line('Sales') . "</a>&nbsp; 
-                    <a href='" . base_url("productcategory/edit?id=$cid") . "' class='btn btn-warning btn-sm rounded shadow-sm'><i class='fa fa-pencil'></i> " . $this->lang->line('Edit') . "</a>&nbsp;
-                    <a href='#' data-object-id='" . $cid . "' class='btn btn-danger btn-sm rounded shadow-sm delete-object2' title='Delete'><i class='fa fa-trash'></i></a>
+                    <a href='" . base_url("productcategory/view?id=$cid&sub=true") . "' class='btn btn-outline-primary btn-sm rounded'><i class='fa fa-eye'></i></a>&nbsp; 
+                    <a class='btn btn-outline-info btn-sm rounded' href='" . base_url() . "productcategory/report_product?id=" . $cid . "&sub=true' target='_blank'> <span class='fa fa-pie-chart'></span></a>&nbsp; 
+                    <a href='" . base_url("productcategory/edit?id=$cid") . "' class='btn btn-outline-warning btn-sm rounded'><i class='fa fa-pencil'></i></a>&nbsp;
+                    <a href='#' data-object-id='" . $cid . "' class='btn btn-outline-danger btn-sm rounded delete-object2' title='Delete'><i class='fa fa-trash'></i></a>
                 </td></tr>";
                         $i++;
                     }
                     ?>
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>#</th>
-                        <th><?php echo $this->lang->line('Name') ?></th>
-                        <th><?php echo $this->lang->line('Total Products') ?></th>
-                        <th><?php echo $this->lang->line('Stock Quantity') ?></th>
-                        <th>Worth (Sales/Cost)</th>
-                        <th><?php echo $this->lang->line('Action') ?></th>
-                    </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
     <?php } ?>
 
 
-    <div class="card border border-1 shadow-sm mb-4">
+    <!-- FILTER SECTION -->
+    <div class="premium-card mb-4" style="border-left: 4px solid var(--psy-accent-primary);">
         <div class="card-body">
-            <h5 class="card-title text-primary"><i class="fa fa-filter"></i> <?php echo $this->lang->line('Filter') ?></h5>
+            <h5 class="card-title text-primary mb-3"><i class="fa fa-filter"></i> <?php echo $this->lang->line('Filter') ?> & Search</h5>
             <div class="row">
                 <div class="col-md-3">
-                    <label for="warehouse_id"><?php echo $this->lang->line('Warehouse') ?></label>
-                    <select id="warehouse_id" class="form-control">
+                    <label for="warehouse_id" class="text-uppercase font-weight-bold text-muted small"><?php echo $this->lang->line('Warehouse') ?></label>
+                    <select id="warehouse_id" class="form-control filter-input-glass">
                         <option value="0"><?php echo $this->lang->line('All') ?></option>
                         <?php foreach ($warehouse as $row) {
                             echo '<option value="' . $row['id'] . '">' . $row['title'] . '</option>';
                         } ?>
                     </select>
                 </div>
-                <!-- Date pickers removed as per request -->
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="button" id="filter" class="btn btn-primary btn-block"><i class="fa fa-search"></i> <?php echo $this->lang->line('Search') ?></button>
+                    <button type="button" id="filter" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="padding: 0.6rem;"><i class="fa fa-search"></i> <?php echo $this->lang->line('Search') ?></button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="timber-table-card">
+    <!-- MAIN PRODUCTS TABLE -->
+    <div class="premium-card">
+        <div class="premium-card-header">
+             <h5 class="premium-card-title">
+                <i class="fa fa-cubes text-info mr-2"></i><?php echo $this->lang->line('Products') ?> List
+            </h5>
+            <div class="card-actions">
+                <!-- Optional: Add table actions like export here if needed -->
+            </div>
+        </div>
         <div class="table-responsive">
-            <table id="productstable" class="table table-timber">
+            <table id="productstable" class="table table-premium">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -285,19 +361,6 @@
                 </thead>
                 <tbody>
                 </tbody>
-                <tfoot>
-                <tr>
-                    <th>#</th>
-                    <th><?php echo $this->lang->line('Name') ?></th>
-                    <th><?php echo $this->lang->line('Stock') ?></th>
-                    <th> Q Trunks Stock </th>
-                    <th><?php echo $this->lang->line('Code') ?></th>
-                    <th><?php echo $this->lang->line('Category') ?></th>
-                    <th><?php echo $this->lang->line('Warehouse') ?></th>
-                    <th><?php echo $this->lang->line('Price') ?></th>
-                    <th><?php echo $this->lang->line('Settings') ?></th>
-                </tr>
-                </tfoot>
             </table>
         </div>
     </div>
@@ -332,9 +395,13 @@
                     footer: true,
                     exportOptions: {
                         columns: [1, 2, 3, 4, 5, 6]
-                    }
+                    },
+                    className: 'btn-premium btn-sm mb-2'
                 }
             ],
+            "drawCallback": function( settings ) {
+                // Apply any JS side styling if needed after table draw
+            }
         });
 
         $('#filter').click(function () {
@@ -374,7 +441,7 @@
             <div class="modal-footer">
                 <input type="hidden" id="object-id" value="">
                 <input type="hidden" id="action-url" value="products/delete_i">
-                <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete-confirm"><?php echo $this->lang->line('Delete') ?></button>
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="delete-confirm"><?php echo $this->lang->line('Delete') ?></button>
                 <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo $this->lang->line('Cancel') ?></button>
             </div>
         </div>
@@ -418,7 +485,7 @@
             <div class="modal-footer">
                 <input type="hidden" id="object-id2" value="">
                 <input type="hidden" id="action-url2" value="productcategory/delete_i_sub">
-                <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete-confirm2"><?php echo $this->lang->line('Delete') ?></button>
+                <button type="button" data-dismiss="modal" class="btn btn-danger" id="delete-confirm2"><?php echo $this->lang->line('Delete') ?></button>
                 <button type="button" data-dismiss="modal" class="btn btn-secondary"><?php echo $this->lang->line('Cancel') ?></button>
             </div>
         </div>

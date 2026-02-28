@@ -253,11 +253,20 @@
                     <option value="canceled">Canceled</option>
                 </select>
             </div>
-            <div class="col-md-4">
-                <button type="button" name="search" id="search" class="btn btn-search mr-2">
+            <div class="col-md-2">
+                <label class="filter-label"><i class="fa fa-building mr-1"></i>Branch</label>
+                <select name="loc" id="loc" class="form-control">
+                    <option value="">All Branches</option>
+                    <?php foreach ($locations as $row) {
+                        echo '<option value="' . $row['id'] . '">' . $row['cname'] . '</option>';
+                    } ?>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="button" name="search" id="search" class="btn btn-search btn-block">
                     <i class="fa fa-search mr-1"></i>Search
                 </button>
-                <button type="button" name="reset" id="reset" class="btn btn-reset">
+                <button type="button" name="reset" id="reset" class="btn btn-reset btn-block mt-1">
                     <i class="fa fa-refresh mr-1"></i>Reset
                 </button>
             </div>
@@ -404,14 +413,9 @@ $(document).ready(function () {
         const start_date = $('#start_date').val();
         const end_date = $('#end_date').val();
         const status = $('#status_filter').val();
+        const loc = $('#loc').val();
         
-        if (start_date !== '' && end_date !== '') {
-            draw_data(start_date, end_date, status, ''); // Clear branch filter on manual search
-        } else if (status !== '') {
-            draw_data('', '', status, '');
-        } else {
-            alert("Please select date range or status to filter");
-        }
+        draw_data(start_date, end_date, status, loc);
     });
     
     // Reset button
@@ -419,6 +423,7 @@ $(document).ready(function () {
         $('#start_date').val('');
         $('#end_date').val('');
         $('#status_filter').val('');
+        $('#loc').val('');
         draw_data();
     });
     

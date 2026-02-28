@@ -63,6 +63,20 @@
                             </select>
                         </div>
                     </div>
+                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="product_cat_m">Category</label>
+                        <div class="col-sm-6">
+                            <select name="product_cat_m" id="product_cat_m" class="form-control mb-1">
+                                <option value="">Select Category</option>
+                                <?php foreach ($cat as $row) {
+                                    echo '<option value="' . $row['id'] . '">' . $row['title'] . '</option>';
+                                } ?>
+                            </select>
+                             <select name="sub_cat_m" id="sub_cat_m" class="form-control">
+                                <option value="">Select Sub Category</option>
+                            </select>
+                        </div>
+                    </div>
 
                     <hr>
                     <div class="row">
@@ -112,11 +126,14 @@
 
     $("#product_cat").on("keyup", function () {
         var keyword = $(this).val();
+        var cid = $('#product_cat_m').val();
+        var sub_cid = $('#sub_cat_m').val();
+        
         if (keyword.length > 2) {
              $.ajax({
                 type: "POST",
-                url: baseurl + "project_materials/search_products",
-                data: {keyword: keyword, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
+                url: baseurl + "project_stock/search_products",
+                data: {keyword: keyword, cid: cid, sub_cid: sub_cid, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
                 dataType: 'json',
                 success: function (products) {
                     var html = '';
@@ -136,6 +153,29 @@
             });
         } else {
             $("#product_suggestions").html('');
+        }
+    });
+
+    $('#product_cat_m').on('change', function () {
+        var id = $(this).val();
+        $('#sub_cat_m').html('<option value="">Select Sub Category</option>');
+        
+        if(id) {
+            $.ajax({
+                type: "POST",
+                url: baseurl + "project_stock/get_sub_categories",
+                data: {id: id, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
+                dataType: 'json',
+                success: function (data) {
+                    var items = "";
+                    if(data) {
+                        $.each(data, function (key, value) {
+                            items += "<option value='" + value.id + "'>" + value.title + "</option>";
+                        });
+                        $('#sub_cat_m').append(items);
+                    }
+                }
+            });
         }
     });
 

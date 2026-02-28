@@ -1,18 +1,654 @@
-DATABASE_NAME: newroot
+Stock Debug (Loc: 2)Products in Loc 2Fields: pid, pcat, warehouse, product_name, product_code, product_price, rate, fproduct_price, taxrate, disrate, qty, qty_reserved, qty2, product_des, alert, unit, image, barcode, merge, sub, vb, expiry, code_type, sub_id, b_id, wastage, pwith, pthickness, pquick, sqft, pquick_code, fproduct_cost, local_importedTotal Products: 50Array
+(
+    [0] => Array
+        (
+            [pid] => 152256
+            [product_name] => High Velocity Hero
+            [product_code] => HV-416
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
 
-TABLE_CHECK: EXISTS
-TOTAL_ROWS: 4
+    [1] => Array
+        (
+            [pid] => 152257
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-182
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
 
-SCHEMA_CHECK: id, tid, date, payee, amount, status, type, ref_no, note, branch_id, created_at
+    [2] => Array
+        (
+            [pid] => 152262
+            [product_name] => High Velocity Hero
+            [product_code] => HV-891
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
 
-DATA_SAMPLE:
-{"id":"5","tid":"60","date":"2026-02-05","payee":"ABC Suppliers Ltd","amount":"15000.00","status":"Issued","type":"Outgoing","ref_no":null,"note":"Inventory Purchase (Cheque #1001)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
-{"id":"6","tid":"0","date":"2026-02-05","payee":"John Doe (Customer)","amount":"5000.00","status":"Cleared","type":"Incoming","ref_no":null,"note":"Invoice #1001 payment (Cheque #5566)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
-{"id":"7","tid":"0","date":"2026-02-05","payee":"Bad Debtor Inc","amount":"2500.00","status":"Bounced","type":"Incoming","ref_no":null,"note":"Insufficient funds (Cheque #999)","branch_id":"0","created_at":"2026-02-05 05:46:15"}
-{"id":"8","tid":"0","date":"2026-02-05","payee":"Office Rent","amount":"50000.00","status":"Cleared","type":"Outgoing","ref_no":null,"note":"Post-dated for rent","branch_id":"0","created_at":"2026-02-05 05:46:15"}
+    [3] => Array
+        (
+            [pid] => 152263
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-492
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
 
-DISTINCT_VALUES:
-Type: [Outgoing] | Status: [Issued]
-Type: [Incoming] | Status: [Cleared]
-Type: [Incoming] | Status: [Bounced]
-Type: [Outgoing] | Status: [Cleared]
+    [4] => Array
+        (
+            [pid] => 152272
+            [product_name] => High Velocity Hero
+            [product_code] => HV-215
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [5] => Array
+        (
+            [pid] => 152273
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-905
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [6] => Array
+        (
+            [pid] => 152278
+            [product_name] => High Velocity Hero
+            [product_code] => HV-694
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [7] => Array
+        (
+            [pid] => 152279
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-680
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [8] => Array
+        (
+            [pid] => 152284
+            [product_name] => High Velocity Hero
+            [product_code] => HV-104
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [9] => Array
+        (
+            [pid] => 152285
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-405
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [10] => Array
+        (
+            [pid] => 152291
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [11] => Array
+        (
+            [pid] => 152293
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [12] => Array
+        (
+            [pid] => 152294
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [13] => Array
+        (
+            [pid] => 152295
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [14] => Array
+        (
+            [pid] => 152298
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [15] => Array
+        (
+            [pid] => 152299
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [16] => Array
+        (
+            [pid] => 152302
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [17] => Array
+        (
+            [pid] => 152303
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [18] => Array
+        (
+            [pid] => 152306
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [19] => Array
+        (
+            [pid] => 152307
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [20] => Array
+        (
+            [pid] => 152310
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [21] => Array
+        (
+            [pid] => 152311
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [22] => Array
+        (
+            [pid] => 152314
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [23] => Array
+        (
+            [pid] => 152315
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [24] => Array
+        (
+            [pid] => 152318
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [25] => Array
+        (
+            [pid] => 152319
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [26] => Array
+        (
+            [pid] => 152322
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [27] => Array
+        (
+            [pid] => 152323
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [28] => Array
+        (
+            [pid] => 152326
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [29] => Array
+        (
+            [pid] => 152327
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [30] => Array
+        (
+            [pid] => 152330
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [31] => Array
+        (
+            [pid] => 152331
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [32] => Array
+        (
+            [pid] => 152334
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [33] => Array
+        (
+            [pid] => 152335
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [34] => Array
+        (
+            [pid] => 152338
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [35] => Array
+        (
+            [pid] => 152339
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [36] => Array
+        (
+            [pid] => 152342
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [37] => Array
+        (
+            [pid] => 152343
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [38] => Array
+        (
+            [pid] => 152346
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [39] => Array
+        (
+            [pid] => 152347
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [40] => Array
+        (
+            [pid] => 152350
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [41] => Array
+        (
+            [pid] => 152351
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [42] => Array
+        (
+            [pid] => 152354
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [43] => Array
+        (
+            [pid] => 152355
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [44] => Array
+        (
+            [pid] => 152358
+            [product_name] => High Velocity Hero
+            [product_code] => HV-HERO-2
+            [qty] => 100.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [45] => Array
+        (
+            [pid] => 152359
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [46] => Array
+        (
+            [pid] => 152366
+            [product_name] => Solid Teak Wood Plank
+            [product_code] => W-TEAK-S
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [47] => Array
+        (
+            [pid] => 152367
+            [product_name] => Stagnant Oak Beam
+            [product_code] => D-OAK-DEAD
+            [qty] => 10.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [48] => Array
+        (
+            [pid] => 152390
+            [product_name] => Solid Teak Wood Plank
+            [product_code] => W-TEAK-S-2
+            [qty] => 50.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+    [49] => Array
+        (
+            [pid] => 152391
+            [product_name] => Stagnant Oak Beam
+            [product_code] => D-OAK-DEAD-2
+            [qty] => 10.0000
+            [warehouse] => 3
+            [loc] => 2
+        )
+
+)
+Invoice Items for ProductsSold products count: 1Array
+(
+    [0] => Array
+        (
+            [product] => 152390
+            [count] => 15
+            [last_sold] => 2026-02-08
+        )
+
+)
+Dead Stock RawCount: 49Query: 
+            SELECT 
+                p.pid as id,
+                p.product_name,
+                p.product_code,
+                p.qty,
+                p.product_price,
+                p.warehouse,
+                w.title as warehouse_name,
+                MAX(ii.invoicedate) as last_sale_date,
+                DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale,
+                (p.qty * p.product_price) as dead_stock_value
+            FROM geopos_products p
+            LEFT JOIN geopos_warehouse w ON p.warehouse = w.id
+            LEFT JOIN geopos_invoice_items i ON p.pid = i.product
+            LEFT JOIN geopos_invoices ii ON i.tid = ii.id
+         WHERE p.qty > 0  AND w.loc = 2  GROUP BY p.pid  HAVING (last_sale_date IS NULL OR last_sale_date < '2026-01-09')  ORDER BY dead_stock_value DESC Array
+(
+    [0] => Array
+        (
+            [id] => 152366
+            [product_name] => Solid Teak Wood Plank
+            [product_code] => W-TEAK-S
+            [qty] => 50.0000
+            [product_price] => 12000.00
+            [warehouse] => 3
+            [warehouse_name] => Ragama Branch WH
+            [last_sale_date] => 
+            [days_since_sale] => 
+            [dead_stock_value] => 600000.000000
+        )
+
+    [1] => Array
+        (
+            [id] => 152391
+            [product_name] => Stagnant Oak Beam
+            [product_code] => D-OAK-DEAD-2
+            [qty] => 10.0000
+            [product_price] => 25000.00
+            [warehouse] => 3
+            [warehouse_name] => Ragama Branch WH
+            [last_sale_date] => 
+            [days_since_sale] => 
+            [dead_stock_value] => 250000.000000
+        )
+
+    [2] => Array
+        (
+            [id] => 152367
+            [product_name] => Stagnant Oak Beam
+            [product_code] => D-OAK-DEAD
+            [qty] => 10.0000
+            [product_price] => 25000.00
+            [warehouse] => 3
+            [warehouse_name] => Ragama Branch WH
+            [last_sale_date] => 
+            [days_since_sale] => 
+            [dead_stock_value] => 250000.000000
+        )
+
+    [3] => Array
+        (
+            [id] => 152256
+            [product_name] => High Velocity Hero
+            [product_code] => HV-416
+            [qty] => 100.0000
+            [product_price] => 500.00
+            [warehouse] => 3
+            [warehouse_name] => Ragama Branch WH
+            [last_sale_date] => 
+            [days_since_sale] => 
+            [dead_stock_value] => 50000.000000
+        )
+
+    [4] => Array
+        (
+            [id] => 152359
+            [product_name] => Dead Stock Dud
+            [product_code] => DS-DUD-2
+            [qty] => 50.0000
+            [product_price] => 1000.00
+            [warehouse] => 3
+            [warehouse_name] => Ragama Branch WH
+            [last_sale_date] => 
+            [days_since_sale] => 
+            [dead_stock_value] => 50000.000000
+        )
+
+)
+Fast Moving RawCount: 1Query: 
+            SELECT 
+                p.pid as id,
+                p.product_name,
+                p.product_code,
+                p.qty,
+                p.product_price,
+                p.alert as reorder_point,
+                COUNT(DISTINCT ii.id) as sales_count,
+                SUM(i.qty) as total_qty_sold,
+                AVG(i.qty) as avg_qty_per_sale,
+                MAX(ii.invoicedate) as last_sale_date,
+                DATEDIFF(NOW(), MAX(ii.invoicedate)) as days_since_sale,
+                (p.qty * p.product_price) as stock_value
+            FROM geopos_products p
+            LEFT JOIN geopos_warehouse w ON p.warehouse = w.id
+            LEFT JOIN geopos_invoice_items i ON p.pid = i.product
+            LEFT JOIN geopos_invoices ii ON i.tid = ii.id AND ii.invoicedate >= '2026-01-09'
+         WHERE 1=1  AND w.loc = 2  GROUP BY p.pid  HAVING sales_count >= 5  ORDER BY sales_count DESC, total_qty_sold DESC Array
+(
+    [0] => Array
+        (
+            [id] => 152390
+            [product_name] => Solid Teak Wood Plank
+            [product_code] => W-TEAK-S-2
+            [qty] => 50.0000
+            [product_price] => 12000.00
+            [reorder_point] => 
+            [sales_count] => 15
+            [total_qty_sold] => 44.0000
+            [avg_qty_per_sale] => 2.93333333
+            [last_sale_date] => 2026-02-08
+            [days_since_sale] => 0
+            [stock_value] => 600000.000000
+        )
+
+)
+Dead Stock SummaryArray
+(
+    [dead_stock_count] => 49
+    [dead_stock_value] => 3275000
+    [slow_moving_count] => 49
+    [slow_moving_value] => 3275000
+    [total_risk_value] => 6550000
+)
+High Velocity SummaryArray
+(
+    [fast_moving_count] => 1
+    [fast_moving_value] => 600000
+    [total_sales] => 15
+    [avg_sales_per_product] => 15
+)

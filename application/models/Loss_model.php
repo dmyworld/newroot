@@ -49,11 +49,17 @@ class Loss_model extends CI_Model
     public function get_stock_leak_stats($branch_id = 0)
     {
         // Stock Leak: Calculated as adjustments count from geopos_movers
-        // For percentage, we can use (adjustments / total moves) if possible, 
-        // but for now, we'll return a numeric count or a calculated rate.
         $this->db->from('geopos_movers');
-        $this->db->where_in('d_type', [4, 5, 20]); 
-        $this->db->where('date(d_time) >=', date('Y-m-01'));
+        
+        // Join to filter by branch
+        if ($branch_id > 0) {
+            $this->db->join('geopos_products', 'geopos_movers.rid1 = geopos_products.pid', 'left');
+            $this->db->join('geopos_warehouse', 'geopos_products.warehouse = geopos_warehouse.id', 'left');
+            $this->db->where('geopos_warehouse.loc', $branch_id);
+        }
+        
+        $this->db->where_in('geopos_movers.d_type', [4, 5, 20]); 
+        $this->db->where('date(geopos_movers.d_time) >=', date('Y-m-01'));
         $adjustments = $this->db->count_all_results();
 
         return array(
@@ -95,8 +101,16 @@ class Loss_model extends CI_Model
     {
         // Return Abuse: Stock Return Notes (SRN) vs Sales
         $this->db->from('geopos_movers');
-        $this->db->where('d_type', '2'); 
-        $this->db->where('date(d_time) >=', date('Y-m-01'));
+        
+        // Join to filter by branch
+        if ($branch_id > 0) {
+            $this->db->join('geopos_products', 'geopos_movers.rid1 = geopos_products.pid', 'left');
+            $this->db->join('geopos_warehouse', 'geopos_products.warehouse = geopos_warehouse.id', 'left');
+            $this->db->where('geopos_warehouse.loc', $branch_id);
+        }
+        
+        $this->db->where('geopos_movers.d_type', '2'); 
+        $this->db->where('date(geopos_movers.d_time) >=', date('Y-m-01'));
         $returns_count = $this->db->count_all_results();
         
         $this->db->where('date(invoicedate) >=', date('Y-m-01'));
@@ -116,5 +130,92 @@ class Loss_model extends CI_Model
             'status' => $status,
             'count' => $returns_count
         );
+    }
+
+    /**
+     * Create journal entry for stock adjustment (Shortage/Surplus)
+     * 
+     * @param int $product_id Product ID
+     * @param float $qty_diff Quantity difference (negative = shortage, positive = surplus)
+     * @param float $unit_price Unit price of the product
+     * @param string $note Adjustment note/reason
+     * @param int $loc Location/Branch ID
+     * @return bool Success status
+     */
+    public function create_stock_adjustment_entry($product_id, $qty_diff, $unit_price, $note = '', $loc = 0)
+    {
+        $this->load->model('transactions_model');
+        $this->load->model('univarsal_api_model', 'custom');
+        
+        if (!$loc) {
+            $loc = $this->aauth->get_user()->loc;
+        }
+        
+        $amount = abs($qty_diff * $unit_price);
+        
+        // Get Inventory/Stock Account
+        $inventory_acc = $this->custom->api_config(70); // Assuming API key 70 is for Stock/Inventory
+        
+        if (!$inventory_acc || !$inventory_acc['key1']) {
+            return false; // Stock account not configured
+        }
+        
+        $inventory_account_id = $inventory_acc['key1'];
+        
+        if ($qty_diff < 0) {
+            // Stock Shortage: Debit Stock Loss Expense, Credit Inventory
+            $loss_acc = $this->custom->api_config(71); // API key for Stock Loss Expense account
+            
+            if (!$loss_acc || !$loss_acc['key1']) {
+                return false;
+            }
+            
+            $note_text = "Stock Shortage Adjustment - Product #$product_id - Qty: " . abs($qty_diff) . " - " . $note;
+            
+            $result = $this->transactions_model->add_double_entry(
+                $loss_acc['key1'],          // Debit: Stock Loss Expense
+                $inventory_account_id,      // Credit: Inventory
+                $amount,
+                $note_text,
+                0,                          // payer_id
+                "Stock Adjustment",         // payer_name
+                'Stock Loss',               // category
+                'Journal',                  // method
+                date('Y-m-d H:i:s'),        // date
+                $loc,                       // location
+                0,                          // ext
+                $product_id                 // link_id (product)
+            );
+            
+            // Log the loss
+            $this->log_loss('Stock Shortage', $amount, $note_text, date('Y-m-d'));
+            
+        } else {
+            // Stock Surplus: Debit Inventory, Credit Stock Gain (Income)
+            $gain_acc = $this->custom->api_config(72); // API key for Stock Gain account
+            
+            if (!$gain_acc || !$gain_acc['key1']) {
+                return false;
+            }
+            
+            $note_text = "Stock Surplus Adjustment - Product #$product_id - Qty: $qty_diff - " . $note;
+            
+            $result = $this->transactions_model->add_double_entry(
+                $inventory_account_id,      // Debit: Inventory
+                $gain_acc['key1'],          // Credit: Stock Gain
+                $amount,
+                $note_text,
+                0,                          // payer_id
+                "Stock Adjustment",         // payer_name
+                'Stock Gain',               // category
+                'Journal',                  // method
+                date('Y-m-d H:i:s'),        // date
+                $loc,                       // location
+                0,                          // ext
+                $product_id                 // link_id (product)
+            );
+        }
+        
+        return $result;
     }
 }

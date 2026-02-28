@@ -51,9 +51,9 @@
 
                             <div class="col-sm-6">
                                 <select name="dual_inv" class="form-control">
-                                    <option value="<?= $discship['key2'] ?>">*--Do not change--*</option>
                                     <?php foreach ($acclist as $row) {
-                                        echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                        $selected = ($row['id'] == $discship['key2']) ? 'selected' : '';
+                                        echo '<option value="' . $row['id'] . '" '.$selected.'>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                     }
                                     ?>
                                 </select>
@@ -67,13 +67,83 @@
 
                             <div class="col-sm-6">
                                 <select name="dual_pur" class="form-control">
-                                    <option value="<?= $discship['url'] ?>">*--Do not change--*</option>
                                     <?php foreach ($acclist as $row) {
-                                        echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                        $selected = ($row['id'] == $discship['url']) ? 'selected' : '';
+                                        echo '<option value="' . $row['id'] . '" '.$selected.'>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                     }
                                     ?>
                                 </select>
 
+                            </div>
+                        </div>
+
+
+                        <hr>
+                        <h4 class="mb-2">Category-Specific Dual Entry Mappings & Performance</h4>
+                        <p>Analyze the financial impact (Debit/Credit) of each category and manage mappings. Use the filters to view values by branch and date.</p>
+                        
+                        <!-- Filters -->
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <div class="form-inline bg-light p-2 rounded">
+                                    <div class="form-group mr-2">
+                                        <label class="mr-1 mt-0">Branch:</label>
+                                        <select id="f_branch" name="branch" class="form-control form-control-sm">
+                                            <option value="0">All Branches</option>
+                                            <?php foreach ($locations as $loc) {
+                                                $selected = ($filter['branch'] == $loc['id']) ? 'selected' : '';
+                                                echo '<option value="' . $loc['id'] . '" '.$selected.'>' . $loc['cname'] . '</option>';
+                                            } ?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mr-2">
+                                        <label class="mr-1 mt-0">From:</label>
+                                        <input type="text" id="f_s_date" name="s_date" class="form-control form-control-sm datepicker" value="<?php echo @$this->input->get('s_date'); ?>">
+                                    </div>
+                                    <div class="form-group mr-2">
+                                        <label class="mr-1 mt-0">To:</label>
+                                        <input type="text" id="f_e_date" name="e_date" class="form-control form-control-sm datepicker" value="<?php echo @$this->input->get('e_date'); ?>">
+                                    </div>
+                                    <button type="button" id="apply_dual_filters" class="btn btn-primary btn-sm">Apply filters</button>
+                                    <a href="<?php echo base_url('settings/dual_entry'); ?>" class="btn btn-secondary btn-sm ml-1">Reset</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Transaction Category</th>
+                                            <th>Secondary Dual Entry Account Mapping</th>
+                                            <th class="text-right">Debit Value</th>
+                                            <th class="text-right">Credit Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if(isset($catlist)) { 
+                                            foreach($catlist as $cat) { 
+                                                $t_deb = isset($cat_totals[$cat['id']]) ? amountFormat_s($cat_totals[$cat['id']]['total_debit'], 0, $this->aauth->get_user()->loc) : '0.00';
+                                                $t_cre = isset($cat_totals[$cat['id']]) ? amountFormat_s($cat_totals[$cat['id']]['total_credit'], 0, $this->aauth->get_user()->loc) : '0.00';
+                                                ?>
+                                            <tr>
+                                                <td><strong><?php echo $cat['name']; ?></strong></td>
+                                                <td>
+                                                    <select name="cat_mapping[<?php echo $cat['id']; ?>]" class="form-control">
+                                                        <option value="0">-- Use Global Default --</option>
+                                                        <?php foreach ($acclist as $acc) {
+                                                            $selected = ($acc['id'] == $cat['dual_acid']) ? 'selected' : '';
+                                                            echo '<option value="' . $acc['id'] . '" '.$selected.'>' . $acc['holder'] . ' / ' . $acc['acn'] . '</option>';
+                                                        } ?>
+                                                    </select>
+                                                </td>
+                                                <td class="text-right text-danger"><strong><?php echo $t_deb; ?></strong></td>
+                                                <td class="text-right text-success"><strong><?php echo $t_cre; ?></strong></td>
+                                            </tr>
+                                        <?php } } ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
@@ -100,6 +170,13 @@
         e.preventDefault();
         var actionurl = baseurl + 'settings/dual_entry';
         actionProduct(actionurl);
+    });
+
+    $("#apply_dual_filters").click(function() {
+        var branch = $("#f_branch").val();
+        var s_date = $("#f_s_date").val();
+        var e_date = $("#f_e_date").val();
+        window.location.href = baseurl + 'settings/dual_entry?branch=' + branch + '&s_date=' + s_date + '&e_date=' + e_date;
     });
 </script>
 

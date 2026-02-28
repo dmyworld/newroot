@@ -32,6 +32,19 @@ class Products extends CI_Controller
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
         }
+
+        // Timber Pro Hub: Buyer Restrictions
+        if ($this->aauth->is_member('buyer')) {
+             // Buyers cannot manage products. They should use the Marketplace.
+             // If they are strictly a buyer (not also a seller/admin), restrict access.
+             // For now, we allow them to View (index) but NOT Add/Edit/Delete.
+             // We will handle this in individual methods or here if we want to block the whole controller.
+             // Users might need to see "My Purchases" which might be in a different controller.
+             // So we assume Products.php is for SELLING.
+             $this->session->set_flashdata('error', 'Buyers cannot access Inventory Management. Please upgrade to a Seller account.');
+             redirect('dashboard'); 
+        }
+
         $this->load->model('products_model', 'products');
         $this->load->model('categories_model');
         $this->load->library("Custom");

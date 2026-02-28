@@ -61,7 +61,7 @@
                     <div class="form-group row">
 
                         <label class="col-sm-2 control-label"
-                               for=region"><?php echo $this->lang->line('Region') ?></label>
+                               for="region"><?php echo $this->lang->line('Region') ?></label>
 
                         <div class="col-sm-8">
                             <input type="text" placeholder="Region"
@@ -128,16 +128,14 @@
                     <div class="form-group row">
 
                         <label class="col-sm-2 control-label"
-                               for="taxid"><?php echo $this->lang->line('Default') ?><?php echo $this->lang->line('Warehouse') ?></label>
+                               for="wid"><?php echo $this->lang->line('Default') ?> <?php echo $this->lang->line('Warehouse') ?></label>
                         <div class="col-sm-8">
-                            <select name="wid"
-                                    class="selectpicker form-control round">
-                                <?php echo '<option value="' . $ware . '">' . $this->lang->line('Do not change') . '</option>';
-                                echo $this->common->default_warehouse();
-                                echo '<option value="0">' . $this->lang->line('All') ?></option><?php foreach ($warehouse as $row) {
-                                    echo '<option value="' . $row['id'] . '">' . $row['title'] . '</option>';
+                            <select name="wid" class="selectpicker form-control round">
+                                <option value="0"><?php echo $this->lang->line('All') ?></option>
+                                <?php foreach ($warehouse as $row) {
+                                    $selected = ($ware == $row['id']) ? 'selected' : '';
+                                    echo '<option value="' . $row['id'] . '" ' . $selected . '>' . $row['title'] . '</option>';
                                 } ?>
-
                             </select>
                         </div>
                     </div>

@@ -85,10 +85,11 @@ function amountFormat($number)
     $ci =& get_instance();
     $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
     $row = $query->row_array();
-    $currency = $row['currency'];
+    $currency = $row['currency'] ?? 'Rs';
     //get data from database
     $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
     $row = $query2->row_array();
+    if (!$row) return $currency . ' ' . $number;
     //Format money as per country
     if ($row['method'] == 'l') {
         return $currency . ' ' . @number_format($number, $row['url'], $row['key1'], $row['key2']);
@@ -103,30 +104,31 @@ function prefix($number)
     $ci =& get_instance();
     $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=51 LIMIT 1");
     $row = $query2->row_array();
+    if (!$row) return "";
     //Format money as per country
     switch ($number) {
         case 1:
-            return $row['name'];
+            return $row['name'] ?? "";
             break;
         case 2:
-            return $row['key1'];
+            return $row['key1'] ?? "";
             break;
         case 3:
-            return $row['key2'];
+            return $row['key2'] ?? "";
             break;
         case 4:
-            return $row['url'];
+            return $row['url'] ?? "";
             break;
         case 5:
-            return $row['method'];
+            return $row['method'] ?? "";
             break;
         case 6:
-            return $row['other'];
+            return $row['other'] ?? "";
             break;
         case 7:
             $query2 = $ci->db->query("SELECT other FROM univarsal_api WHERE id=52 LIMIT 1");
             $row = $query2->row_array();
-            return $row['other'];
+            return $row['other'] ?? "";
             break;
     }
 }
@@ -148,6 +150,7 @@ function amountFormat_s($number)
     //get data from database
     $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
     $row = $query2->row_array();
+    if (!$row) return $number;
     //Format money as per country
 
     return @number_format($number, $row['url'], $row['key1'], $row['key2']);
@@ -161,6 +164,7 @@ function amountFormat_general($number)
     //get data from database
     $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
     $row = $query2->row_array();
+    if (!$row) return $number;
     //Format money as per country
     $number = @number_format($number, $row['url'], $row['key1'], '');
     return $number;
@@ -172,8 +176,10 @@ function numberClean($number)
     $ci->load->database();
     $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
     $row = $query2->row_array();
-    $number = str_replace($row['key2'], "", $number);
-    $number = str_replace($row['key1'], ".", $number);
+    if ($row) {
+        $number = str_replace($row['key2'], "", $number);
+        $number = str_replace($row['key1'], ".", $number);
+    }
     return $number;
 }
 
@@ -185,39 +191,41 @@ function amountExchange($number, $id = 0, $loc = 0)
     if ($loc > 0 && $id == 0) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $id = $row['cur'];
+        if ($row) $id = $row['cur'];
     }
     if ($id > 0) {
         $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $currency = $row['symbol'];
-        $rate = $row['rate'];
-        $thosand = $row['thous'];
-        $dec_point = $row['dpoint'];
-        $decimal_after = $row['decim'];
-        $totalamount = $rate * $number;
-        //get data from database
-        //Format money as per country
-        if ($row['cpos'] == 0) {
-            return $currency . ' ' . @number_format($totalamount, $decimal_after, $dec_point, $thosand);
-        } else {
-            return @number_format($totalamount, $decimal_after, $dec_point, $thosand) . ' ' . $currency;
+        if ($row) {
+            $currency = $row['symbol'];
+            $rate = $row['rate'];
+            $thosand = $row['thous'];
+            $dec_point = $row['dpoint'];
+            $decimal_after = $row['decim'];
+            $totalamount = $rate * $number;
+            //get data from database
+            //Format money as per country
+            if ($row['cpos'] == 0) {
+                return $currency . ' ' . @number_format($totalamount, $decimal_after, $dec_point, $thosand);
+            } else {
+                return @number_format($totalamount, $decimal_after, $dec_point, $thosand) . ' ' . $currency;
+            }
         }
+    }
+
+    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $row = $query->row_array();
+    $currency = $row['currency'] ?? 'Rs';
+
+    //get data from database
+    $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
+    $row = $query2->row_array();
+    if (!$row) return $currency . ' ' . $number;
+    //Format money as per country
+    if ($row['method'] == 'l') {
+        return $currency . ' ' . @number_format($number, $row['url'], $row['key1'], $row['key2']);
     } else {
-
-        $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
-        $row = $query->row_array();
-        $currency = $row['currency'];
-
-        //get data from database
-        $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
-        $row = $query2->row_array();
-        //Format money as per country
-        if ($row['method'] == 'l') {
-            return $currency . ' ' . @number_format($number, $row['url'], $row['key1'], $row['key2']);
-        } else {
-            return @number_format($number, $row['url'], $row['key1'], $row['key2']) . ' ' . $currency;
-        }
+        return @number_format($number, $row['url'], $row['key1'], $row['key2']) . ' ' . $currency;
     }
 
 }
@@ -229,26 +237,29 @@ function amountExchange_s($number, $id = 0, $loc = 0)
     if ($loc > 0 && $id == 0) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $id = $row['cur'];
+        if ($row) $id = $row['cur'];
     }
     if ($id > 0) {
         $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $rate = $row['rate'];
-        $dec_point = $row['decim'];
-        $totalamount = $rate * $number;
-        $totalamount = number_format($totalamount, $dec_point, $dec_point, '');
-        return $totalamount;
-    } else {
-        $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
-        $row = $query->row_array();
-        $currency = $row['currency'];
-        //get data from database
-        $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
-        $row = $query2->row_array();
-        $number = number_format($number, $row['url'], $row['key1'], '');
-        return $number;
+        if ($row) {
+            $rate = $row['rate'];
+            $dec_point = $row['dpoint'];
+            $decimals = $row['decim'];
+            $totalamount = $rate * $number;
+            $totalamount = number_format($totalamount, $decimals, $dec_point, '');
+            return $totalamount;
+        }
     }
+    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $row = $query->row_array();
+    //get data from database
+    $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
+    $row = $query2->row_array();
+    if ($row) {
+        $number = number_format($number, $row['url'], $row['key1'], '');
+    }
+    return $number;
 
 }
 
@@ -259,31 +270,33 @@ function edit_amountExchange_s($number, $id = 0, $loc = 0)
     if ($loc > 0) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $id = $row['cur'];
+        if ($row) $id = $row['cur'];
     }
     if ($id > 0) {
         $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $rate = $row['rate'];
-        $decimal_after = $row['decim'];
-        $dec_point = $row['dpoint'];
-        $number = str_replace($decimal_after, "", $number);
-        $number = str_replace($dec_point, ".", $number);
-        $totalamount = $rate * $number;
-        $totalamount = number_format($totalamount, $decimal_after, $dec_point, '');
-        return $totalamount;
-    } else {
-        $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
-        $row = $query->row_array();
-        $currency = $row['currency'];
-        //get data from database
-        $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
-        $row = $query2->row_array();
+        if ($row) {
+            $rate = $row['rate'];
+            $decimal_after = $row['decim'];
+            $dec_point = $row['dpoint'];
+            $number = str_replace($decimal_after, "", $number);
+            $number = str_replace($dec_point, ".", $number);
+            $totalamount = $rate * $number;
+            $totalamount = number_format($totalamount, $decimal_after, $dec_point, '');
+            return $totalamount;
+        }
+    }
+    $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
+    $row = $query->row_array();
+    //get data from database
+    $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
+    $row = $query2->row_array();
+    if ($row) {
         $number = str_replace($row['key2'], "", $number);
         $number = str_replace($row['key1'], ".", $number);
         $number = number_format($number, $row['url'], $row['key1'], '');
-        return $number;
     }
+    return $number;
 
 }
 
@@ -297,38 +310,51 @@ function rev_amountExchange_s($number, $id = 0, $loc = 0)
     if ($loc) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $lcid = $row['cur'];
+        $lcid = $row['cur'] ?? 0;
         if ($lcid > 0) {
             $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$lcid' LIMIT 1");
             $row = $query->row_array();
-            $rate = $row['rate'];
-            $number = str_replace($row['thous'], "", $number);
-            $number = str_replace($row['dpoint'], ".", $number);
-            $number = $number / $rate;
+            if ($row) {
+                $rate = $row['rate'];
+                $number = str_replace($row['thous'], "", $number);
+                $number = str_replace($row['dpoint'], ".", $number);
+                if ($rate > 0) $number = $number / $rate;
+            }
         } elseif ($id) {
             $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
             $row = $query->row_array();
-            $rate = $row['rate'];
-            $number = str_replace($row['thous'], "", $number);
-            $number = str_replace($row['dpoint'], ".", $number);
-            $number = $number / $rate;
+            if ($row) {
+                $rate = $row['rate'];
+                $number = str_replace($row['thous'], "", $number);
+                $number = str_replace($row['dpoint'], ".", $number);
+                if ($rate > 0) $number = $number / $rate;
+            }
+        } else {
+            $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
+            $row = $query2->row_array();
+            if ($row) {
+                $number = str_replace($row['key2'], "", $number);
+                $number = str_replace($row['key1'], ".", $number);
+            }
         }
     } elseif ($id) {
         $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $rate = $row['rate'];
-        $number = str_replace($row['thous'], "", $number);
-        $number = str_replace($row['dpoint'], ".", $number);
-        if ($revers) {
-
-            $number = $number / $rate;
+        if ($row) {
+            $rate = $row['rate'];
+            $number = str_replace($row['thous'], "", $number);
+            $number = str_replace($row['dpoint'], ".", $number);
+            if ($revers && $rate > 0) {
+                $number = $number / $rate;
+            }
         }
     } else {
         $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
         $row = $query2->row_array();
-        $number = str_replace($row['key2'], "", $number);
-        $number = str_replace($row['key1'], ".", $number);
-
+        if ($row) {
+            $number = str_replace($row['key2'], "", $number);
+            $number = str_replace($row['key1'], ".", $number);
+        }
     }
 
     return $number;
@@ -343,12 +369,12 @@ function rev_amountExchange($number, $id = 0)
     if ($reverse && $id > 0) {
         $query = $ci->db->query("SELECT rate FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $rate = $row['rate'];
-        $totalamount = $number / $rate;
-        return $totalamount;
-    } else {
-        return $number;
+        if ($row) {
+            $rate = $row['rate'];
+            if ($rate > 0) $number = $number / $rate;
+        }
     }
+    return $number;
 }
 
 function array_compare()
@@ -424,16 +450,16 @@ function currency($loc = 0, $id = 0)
     if ($loc > 0 && $id == 0) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $id = $row['cur'];
+        if ($row) $id = $row['cur'];
     }
     if ($id > 0) {
         $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
         $row = $query->row_array();
-        $currency = $row['symbol'];
+        $currency = $row['symbol'] ?? 'Rs';
     } else {
         $query = $ci->db->query("SELECT currency FROM geopos_system WHERE id=1 LIMIT 1");
         $row = $query->row_array();
-        $currency = $row['currency'];
+        $currency = $row['currency'] ?? 'Rs';
     }
     return $currency;
 }
@@ -459,22 +485,30 @@ function accounting($loc = 0)
     if ($loc > 0) {
         $query = $ci->db->query("SELECT cur FROM geopos_locations WHERE id='$loc' LIMIT 1");
         $row = $query->row_array();
-        $id = $row['cur'];
-        if ($id > 0) {
-            $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
-            $row = $query->row_array();
-
-            $thosand = $row['thous'];
-            $dec_point = $row['dpoint'];
-            $decimal_after = $row['decim'];
+        if ($row) {
+            $id = $row['cur'];
+            if ($id > 0) {
+                $query = $ci->db->query("SELECT * FROM geopos_currencies WHERE id='$id' LIMIT 1");
+                $row = $query->row_array();
+                if ($row) {
+                    $thosand = $row['thous'];
+                    $dec_point = $row['dpoint'];
+                    $decimal_after = $row['decim'];
+                }
+            }
         }
     } else {
         $query2 = $ci->db->query("SELECT * FROM univarsal_api WHERE id=4 LIMIT 1");
         $row = $query2->row_array();
-
-        $thosand = $row['key2'];
-        $dec_point = $row['key1'];
-        $decimal_after = $row['url'];
+        if ($row) {
+            $thosand = $row['key2'];
+            $dec_point = $row['key1'];
+            $decimal_after = $row['url'];
+        } else {
+            $thosand = ',';
+            $dec_point = '.';
+            $decimal_after = 2;
+        }
     }
 
     echo " <script type='text/javascript'>accounting.settings = {number: {precision :$decimal_after,thousand: '$thosand',decimal : '$dec_point'}};

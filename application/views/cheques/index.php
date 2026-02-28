@@ -85,6 +85,59 @@
     </div>
 
     <div class="content-body">
+        <!-- Filter Options -->
+        <div class="card border-0 shadow-sm mb-2" style="border-radius: 15px;">
+            <div class="card-content">
+                <div class="card-body py-2">
+                    <form action="<?php echo base_url('ChequeManager'); ?>" method="get">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="branch_id" class="font-small-3 text-bold-600">Branch / Warehouse</label>
+                                    <select name="branch_id" class="form-control rounded-pill">
+                                        <option value="0">All Locations</option>
+                                        <?php foreach ($branches as $row): ?>
+                                            <option value="<?php echo $row['id']; ?>" <?php if ($row['id'] == $branch_id) echo 'selected'; ?>>
+                                                <?php echo $row['cname']; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="type" class="font-small-3 text-bold-600">Type</label>
+                                    <select name="type" class="form-control rounded-pill">
+                                        <option value="all">All Types</option>
+                                        <option value="incoming" <?php if ($filter_type == 'incoming') echo 'selected'; ?>>Incoming</option>
+                                        <option value="outgoing" <?php if ($filter_type == 'outgoing') echo 'selected'; ?>>Outgoing</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group mb-0">
+                                    <label for="status" class="font-small-3 text-bold-600">Status</label>
+                                    <select name="status" class="form-control rounded-pill">
+                                        <option value="all">All Statuses</option>
+                                        <option value="Pending" <?php if ($filter_status == 'Pending') echo 'selected'; ?>>Pending</option>
+                                        <option value="Cleared" <?php if ($filter_status == 'Cleared') echo 'selected'; ?>>Cleared</option>
+                                        <option value="Bounced" <?php if ($filter_status == 'Bounced') echo 'selected'; ?>>Bounced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <div class="form-group mb-0 w-100">
+                                     <button type="submit" class="btn btn-primary rounded-pill btn-block text-bold-600">
+                                        <i class="fa fa-filter mr-1"></i> Apply Filters
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="card border-0 shadow-sm" style="border-radius: 20px;">
             <div class="card-header border-0 pb-0">
                 <h4 class="card-title font-weight-bold">Transaction History</h4>
@@ -96,7 +149,9 @@
                             <thead class="bg-light">
                                 <tr class="text-uppercase text-muted font-small-3">
                                     <th class="border-top-0">Due Date</th>
-                                    <th class="border-top-0">Ref #</th>
+                                    <th class="border-top-0">Branch</th>
+                                    <th class="border-top-0">Cheque #</th>
+                                    <th class="border-top-0">Transaction ID</th> <!-- Updated Column Name -->
                                     <th class="border-top-0">Type</th>
                                     <th class="border-top-0">Party (Payee/Payer)</th>
                                     <th class="border-top-0">Amount</th>
@@ -106,7 +161,7 @@
                             </thead>
                             <tbody>
                                 <?php if(empty($cheques)): ?>
-                                    <tr><td colspan="7" class="text-center py-4 text-muted border-0">No cheque records found for the current filter.</td></tr>
+                                    <tr><td colspan="8" class="text-center py-4 text-muted border-0">No cheque records found for the current filter.</td></tr>
                                 <?php else: ?>
                                     <?php foreach($cheques as $cheque): ?>
                                     <tr class="align-middle">
@@ -117,7 +172,48 @@
                                             </div>
                                         </td>
                                         <td>
+                                            <span class="badge badge-light"><?php echo $cheque['location_name'] ?: 'All Locations'; ?></span>
+                                        </td>
+                                        <td>
                                             <span class="text-primary font-weight-bold">#<?php echo $cheque['cheque_number'] ?: $cheque['id']; ?></span>
+                                        </td>
+                                        <!-- Transaction ID Column -->
+                                        <td>
+                                            <?php 
+                                                $doc_url = '#';
+                                                $doc_label = '-';
+                                                
+                                                if($cheque['doc_id'] > 0) {
+                                                    switch(strtolower($cheque['doc_type'])) {
+                                                        case 'invoice':
+                                                            $doc_url = base_url('invoices/view?id=' . $cheque['doc_id']);
+                                                            // Use joined TID if available, else fallback to Ref ID
+                                                            $display_id = isset($cheque['inv_tid']) ? $cheque['inv_tid'] : $cheque['doc_id'];
+                                                            $doc_label = 'INV #' . $display_id;
+                                                            break;
+                                                        case 'purchase':
+                                                            $doc_url = base_url('purchase/view?id=' . $cheque['doc_id']);
+                                                            $display_id = isset($cheque['pur_tid']) ? $cheque['pur_tid'] : $cheque['doc_id'];
+                                                            $doc_label = 'PO #' . $display_id;
+                                                            break;
+                                                        case 'purchase_wood':
+                                                        case 'purchase_logs':
+                                                            $doc_url = base_url('purchase/view?id=' . $cheque['doc_id']);
+                                                            $doc_label = 'PO #' . $cheque['doc_id'];
+                                                            break;
+                                                    }
+                                                }
+                                            ?>
+                                            <?php if($doc_label != '-'): ?>
+                                                <a href="<?php echo $doc_url; ?>" class="badge badge-light-primary text-bold-600" target="_blank">
+                                                    <?php echo $doc_label; ?>
+                                                </a>
+                                                <div class="mt-1">
+                                                     <i class="fa fa-link text-muted mr-1"></i> <a href="<?php echo $doc_url; ?>" class="text-muted font-small-2"> (ID: <?php echo $cheque['doc_id']; ?>)</a>
+                                                </div>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <?php if(strtolower($cheque['type']) == 'incoming'): ?>
@@ -179,14 +275,21 @@
     .bg-rgba-primary { background-color: rgba(98, 110, 212, 0.12) !important; }
     .badge-light-success { background-color: #e3f9eb; color: #39da8a !important; }
     .badge-light-danger { background-color: #ffebf0; color: #ff5b5c !important; }
+    .badge-light-primary { background-color: #e5f0fa; color: #5a8dee !important; }
     .table thead th { border-bottom: none !important; }
     .table td { border-top: 1px solid #f1f3f8 !important; vertical-align: middle; }
     .card { transition: transform 0.3s ease; }
     .card:hover { transform: translateY(-3px); }
 </style>
 
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
-    // Optional: Add sorting or searching logic here if not using server-side datatables
+    $('#cheque_table').DataTable({
+        "order": [], // Disable initial sort, let PHP handle it or defaulting to first col
+        "pageLength": 50,
+        "columnDefs": [
+            { "targets": 'no-sort', "orderable": false }
+        ]
+    });
 });
 </script>

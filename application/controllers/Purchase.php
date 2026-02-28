@@ -24,6 +24,7 @@ class Purchase extends CI_Controller
     {
         parent::__construct();
         $this->load->model('purchase_model', 'purchase');
+        $this->load->model('locations_model', 'locations');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
@@ -85,14 +86,47 @@ class Purchase extends CI_Controller
         $this->load->view('purchase/newinvoice_logs', $data);
         $this->load->view('fixed/footer');
     }
+
+    public function log_purchasing()
+    {
+        if (!$this->aauth->premission(2)) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
+        $head['title'] = "Raw Log Purchasing";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $data['locations'] = $this->locations->locations_list2();
+        
+        $this->load->view('fixed/header', $head);
+        $this->load->view('purchase/log_purchasing', $data);
+        $this->load->view('fixed/footer');
+    }
+
+    public function logs_inventory()
+    {
+        if (!$this->aauth->premission(2)) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
+        $head['title'] = "Logs Inventory (Location Aware)";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $loc = $this->aauth->get_user()->loc;
+        $this->load->model('TimberPro_model', 'timberpro');
+        $data['locations'] = $this->locations->locations_list2();
+        $data['logs'] = $this->timberpro->get_logs_at_location($loc);
+        
+        $this->load->view('fixed/header', $head);
+        $this->load->view('purchase/logs_inventory', $data);
+        $this->load->view('fixed/footer');
+    }
     
     
     //create newprocessing
-    public function newprocessing()
+    public function newprocessing($pid = 0, $pcode = '')
     {
         if (!$this->aauth->premission(2, 'add')) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
+        $data['pre_pid'] = $pid;
+        $data['pre_pcode'] = $pcode;
         $this->load->library("Common");
         $data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
         $this->load->model('plugins_model', 'plugins');
@@ -151,6 +185,7 @@ class Purchase extends CI_Controller
         $data['branch_id'] = $this->input->get('branch_id');
         $data['start_date'] = $this->input->get('start_date');
         $data['end_date'] = $this->input->get('end_date');
+        $data['locations'] = $this->locations->locations_list2();
         $this->load->view('fixed/header', $head);
         $this->load->view('purchase/invoices', $data);
         $this->load->view('fixed/footer');
@@ -164,6 +199,7 @@ class Purchase extends CI_Controller
         $data['branch_id'] = $this->input->get('branch_id');
         $data['start_date'] = $this->input->get('start_date');
         $data['end_date'] = $this->input->get('end_date');
+        $data['locations'] = $this->locations->locations_list2();
         $this->load->view('fixed/header', $head);
         $this->load->view('purchase/invoices_list', $data);
         $this->load->view('fixed/footer');
@@ -177,6 +213,7 @@ class Purchase extends CI_Controller
         $head['usernm'] = $this->aauth->get_user()->username;
         $this->load->view('fixed/header', $head);
         $this->load->view('purchase/manageprocessing');
+        $data['locations'] = $this->locations->locations_list2();
         $this->load->view('fixed/footer');
     }
     
@@ -221,7 +258,7 @@ class Purchase extends CI_Controller
         //products
         $transok = true;
         //Invoice Data
-        $bill_date = datefordatabase($invoicedate);
+        $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
         $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'loc' => $this->aauth->get_user()->loc, 'multi' => $currency);
 
@@ -444,7 +481,7 @@ $this->db->update('geopos_products');
         //products
         $transok = true;
         //Invoice Data
-        $bill_date = datefordatabase($invoicedate);
+        $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
         $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'loc' => $this->aauth->get_user()->loc, 'multi' => $currency, 'pquick' => $overall_cubic_feet_total);
 
@@ -627,7 +664,7 @@ $this->db->update('geopos_products');
         //products
         $transok = true;
         //Invoice Data
-        $bill_date = datefordatabase($invoicedate);
+        $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
         $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'pamnt' => 0, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'loc' => $this->aauth->get_user()->loc, 'multi' => $currency, 'pquick' => $overall_cubic_feet_total, 'wquick' => $wood_overall_cubic_feet_total, 'quickwastage' => $cubic_feet_total_wastage);
 
@@ -742,11 +779,12 @@ $this->db->update('geopos_products');
                 
                 
                 
-                                    $this->db->set('qty2', "qty2-$overall_cubic_feet_total", FALSE);
+                                    $this->db->set('qty2', "qty2-$overall_cubic_feet_total", FALSE); // Log Volume Decreases
                                     $this->db->where('product_code', $product_quick_code[$key]);
                                     $this->db->update('geopos_products');
                                     
-                                    $this->db->set('qty', "qty+$wood_overall_cubic_feet_total", FALSE);
+                                    $this->db->set('qty2', "qty2+$wood_overall_cubic_feet_total", FALSE); // Wood Volume Increases
+                                    $this->db->set('qty', "qty+$itc", FALSE); // Wood Piece Count Increases
                                     $this->db->where('product_code', $product_quick_code[$key]);
                                     $this->db->update('geopos_products');                                     
                             
@@ -799,7 +837,7 @@ $this->db->update('geopos_products');
             $row[] = $no;
             $row[] = $invoices->tid;
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
             $row[] = '<span class="st-' . $invoices->status . '">' . $this->lang->line(ucwords($invoices->status)) . '</span>';
             $row[] = '<a href="' . base_url("purchase/view2?id=$invoices->id") . '" class="btn btn-success btn-xs"><i class="fa fa-eye"></i> ' . $this->lang->line('View') . '</a> &nbsp; <a href="' . base_url("purchase/printinvoice2?id=$invoices->id") . '&d=1" class="btn btn-info btn-xs"  title="Download"><span class="fa fa-download"></span></a>&nbsp; &nbsp;<a href="#" data-object-id="' . $invoices->id . '" class="btn btn-danger btn-xs delete-object"><span class="fa fa-trash"></span></a>';
@@ -830,6 +868,8 @@ $this->db->update('geopos_products');
         $data['activity'] = $this->purchase->purchase_transactions($tid);
         $data['attach'] = $this->purchase->attach($tid);
         $data['employee'] = $this->purchase->employee($data['invoice']['eid']);
+        $this->load->model('plugins_model', 'plugins');
+        $data['default_account'] = $this->plugins->universal_api(65);
         $head['usernm'] = $this->aauth->get_user()->username;
         $this->load->view('fixed/header', $head);
         if ($data['invoice']['tid']) $this->load->view('purchase/view2', $data);
@@ -854,7 +894,7 @@ $this->db->update('geopos_products');
             $row[] = $no;
             $row[] = $invoices->tid;
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
             $row[] = '<span class="st-' . $invoices->status . '">' . $this->lang->line(ucwords($invoices->status)) . '</span>';
             $row[] = '<a href="' . base_url("purchase/view_wood?id=$invoices->id") . '" class="btn btn-success btn-xs"><i class="fa fa-eye"></i> ' . $this->lang->line('View') . '</a> &nbsp; <a href="#" data-object-id="' . $invoices->id . '" class="btn btn-danger btn-xs delete-object"><span class="fa fa-trash"></span></a>';
@@ -910,7 +950,7 @@ $this->db->update('geopos_products');
             $row[] = $no;
             $row[] = $invoices->tid;
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
             $row[] = '<span class="st-' . $invoices->status . '">' . $this->lang->line(ucwords($invoices->status)) . '</span>';
             $row[] = '<a href="' . base_url("purchase/view?id=$invoices->id") . '" class="btn btn-success btn-xs"><i class="fa fa-eye"></i> ' . $this->lang->line('View') . '</a> &nbsp; <a href="' . base_url("purchase/printinvoice?id=$invoices->id") . '&d=1" class="btn btn-info btn-xs"  title="Download"><span class="fa fa-download"></span></a>&nbsp; &nbsp;<a href="#" data-object-id="' . $invoices->id . '" class="btn btn-danger btn-xs delete-object"><span class="fa fa-trash"></span></a>';
@@ -941,6 +981,8 @@ $this->db->update('geopos_products');
         $data['activity'] = $this->purchase->purchase_transactions($tid);
         $data['attach'] = $this->purchase->attach($tid);
         $data['employee'] = $this->purchase->employee($data['invoice']['eid']);
+        $this->load->model('plugins_model', 'plugins');
+        $data['default_account'] = $this->plugins->universal_api(65);
         $head['usernm'] = $this->aauth->get_user()->username;
         $this->load->view('fixed/header', $head);
         if ($data['invoice']['tid']) $this->load->view('purchase/view', $data);
@@ -951,6 +993,7 @@ $this->db->update('geopos_products');
     public function printinvoice2()
     {
         $this->load->library("Custom");
+        $this->load->model('locations_model', 'locations');
         $tid = $this->input->get('id');
 
         $data['id'] = $tid;
@@ -1141,7 +1184,7 @@ $this->db->update('geopos_products');
         $transok = true;
         
         // Format dates
-        $bill_date = datefordatabase($invoicedate);
+        $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
         
         // Handle stock reversal for removed items before deleting

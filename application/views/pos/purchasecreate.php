@@ -947,12 +947,33 @@ if (($_GET['id'] ?? null) == 'v2') {
                                     <option value='Cash'><?php echo $this->lang->line('Cash') ?></option>
                                     <option value='Card Swipe'><?php echo $this->lang->line('Card Swipe') ?></option>
                                     <option value='Bank'><?php echo $this->lang->line('Bank') ?></option>
-
+                                    <option value='Cheque'><?php echo $this->lang->line('Cheque') ?></option>
                                 </select></div>
                         </div>
 
 
                     </div>
+                    <div class="row" id="cheque_number_row_pos" style="display: none;">
+                        <div class="col-12">
+                            <div class="card-title">
+                                <label for="cheque_number_pos"><?php echo $this->lang->line('Cheque Number') ?></label>
+                                <input type="text" class="form-control" name="cheque_number" id="cheque_number_pos" placeholder="Cheque Number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#p_method').on('change', function() {
+                                if ($(this).val() == 'Bank' || $(this).val() == 'Cheque') {
+                                    $('#cheque_number_row_pos').show();
+                                } else {
+                                    $('#cheque_number_row_pos').hide();
+                                    $('#cheque_number_pos').val('');
+                                }
+                            });
+                        });
+                    </script>
 
                     <div class="row">
                         <div class="col-6">
@@ -981,7 +1002,11 @@ if (($_GET['id'] ?? null) == 'v2') {
 
                             <select name="p_account" id="p_account" class="form-control">
                                 <?php foreach ($acc_list as $row) {
-                                    echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                    $sel = "";
+                                    if (isset($default_account['url']) && $default_account['url'] == $row['id']) {
+                                        $sel = "selected";
+                                    }
+                                    echo '<option value="' . $row['id'] . '" ' . $sel . '>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 }
                                 ?>
                             </select></div></div>
@@ -1306,6 +1331,11 @@ if (($_GET['id'] ?? null) == 'v2') {
     }
 
     $(document).ready(function () {
+        // Select Cash Account by default
+        $("#p_account option").filter(function() {
+            return $(this).text().includes("Cash Account");
+        }).prop('selected', true);
+
         Mousetrap.bind('alt+x', function () {
             $('#search_bar').focus();
         });

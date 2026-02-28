@@ -26,8 +26,10 @@ class Dashboard_model extends CI_Model
         $where = "DATE(invoicedate) ='$today'";
         $this->db->where($where);
         $this->db->from('geopos_invoices');
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -40,8 +42,10 @@ class Dashboard_model extends CI_Model
         $this->db->select_sum('total');
         $this->db->from('geopos_invoices');
         $this->db->where($where);
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -55,8 +59,10 @@ class Dashboard_model extends CI_Model
         $this->db->select_sum('credit');
         $this->db->where("DATE(date) ='$today'");
         $this->db->where("type!='Transfer'");
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+             // Show all - no filter
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -69,8 +75,10 @@ class Dashboard_model extends CI_Model
     {
         $this->db->limit(13);
         $this->db->order_by('id', 'DESC');
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -140,8 +148,10 @@ class Dashboard_model extends CI_Model
         $this->db->join('geopos_invoices', 'geopos_metadata.rid=geopos_invoices.id', 'left');
         $this->db->where($where);
         $this->db->where('geopos_metadata.type', 9);
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('geopos_invoices.loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('geopos_invoices.loc', 0);
         }
@@ -154,6 +164,8 @@ class Dashboard_model extends CI_Model
         $whr = '';
         if ($loc > 0) {
             $whr = ' AND (loc=' . $loc . ')';
+        } elseif ($loc == -1) {
+            $whr = '';
         } elseif ($this->aauth->get_user()->loc) {
             $whr = ' AND (loc=' . $this->aauth->get_user()->loc . ')';
         } elseif (!BDATA) {
@@ -168,6 +180,8 @@ class Dashboard_model extends CI_Model
         $whr = '';
         if ($loc > 0) {
             $whr = ' AND (loc=' . $loc . ')';
+        } elseif ($loc == -1) {
+             $whr = '';
         } elseif ($this->aauth->get_user()->loc) {
             $whr = ' AND (loc=' . $this->aauth->get_user()->loc . ')';
         } elseif (!BDATA) {
@@ -183,6 +197,8 @@ class Dashboard_model extends CI_Model
         $whr = '';
         if ($loc > 0) {
             $whr = ' AND (loc=' . $loc . ')';
+        } elseif ($loc == -1) {
+            $whr = '';
         } elseif ($this->aauth->get_user()->loc) {
             $whr = ' AND (loc=' . $this->aauth->get_user()->loc . ')';
         } elseif (!BDATA) {
@@ -200,6 +216,8 @@ class Dashboard_model extends CI_Model
         $this->db->from('geopos_invoices');
         if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+             // Show all
         } elseif ($this->aauth->get_user()->loc) {
             $this->db->where('loc', $this->aauth->get_user()->loc);
         } elseif (!BDATA) {
@@ -216,6 +234,8 @@ class Dashboard_model extends CI_Model
         $this->db->where($where);
         if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif ($this->aauth->get_user()->loc) {
             $this->db->where('loc', $this->aauth->get_user()->loc);
         } elseif (!BDATA) {
@@ -231,6 +251,8 @@ class Dashboard_model extends CI_Model
         $whr = '';
         if ($loc > 0) {
             $whr = ' WHERE (i.loc=' . $loc . ') ';
+        } elseif ($loc == -1) {
+             $whr = '';
         } elseif ($this->aauth->get_user()->loc) {
             $whr = ' WHERE (i.loc=' . $this->aauth->get_user()->loc . ') ';
         } elseif (!BDATA) {
@@ -259,8 +281,10 @@ class Dashboard_model extends CI_Model
     {
         $this->db->where("DATE(invoicedate) BETWEEN '$start_date' AND '$end_date'");
         $this->db->from('geopos_invoices');
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -272,8 +296,10 @@ class Dashboard_model extends CI_Model
         $this->db->select_sum('total');
         $this->db->from('geopos_invoices');
         $this->db->where("DATE(invoicedate) BETWEEN '$start_date' AND '$end_date'");
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+             // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -287,8 +313,13 @@ class Dashboard_model extends CI_Model
         $this->db->select_sum('credit');
         $this->db->where("DATE(date) BETWEEN '$start_date' AND '$end_date'");
         $this->db->where("type!='Transfer'");
-        if ($loc) {
+        // Exclude Dual Entry Contra Transactions (Expense on Sales, Income on Purchase)
+        $this->db->where("NOT (type='Expense' AND cat='Sales')");
+        $this->db->where("NOT (type='Income' AND cat='Purchase')");
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+             // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -304,8 +335,10 @@ class Dashboard_model extends CI_Model
         $this->db->join('geopos_invoices', 'geopos_metadata.rid=geopos_invoices.id', 'left');
         $this->db->where("DATE(geopos_metadata.d_date) BETWEEN '$start_date' AND '$end_date'");
         $this->db->where('geopos_metadata.type', 9);
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('geopos_invoices.loc', $loc);
+        } elseif ($loc == -1) {
+            // Show all
         } elseif (!BDATA) {
             $this->db->where('geopos_invoices.loc', 0);
         }
@@ -316,8 +349,10 @@ class Dashboard_model extends CI_Model
     public function rangeNewCustomers($start_date, $end_date, $loc = 0)
     {
         $this->db->where("DATE(reg_date) BETWEEN '$start_date' AND '$end_date'");
-        if ($loc) {
+        if ($loc > 0) {
             $this->db->where('loc', $loc);
+        } elseif ($loc == -1) {
+             // Show all
         } elseif (!BDATA) {
             $this->db->where('loc', 0);
         }
@@ -329,8 +364,10 @@ class Dashboard_model extends CI_Model
     {
         $this->db->trans_start();
         $whr = '';
-        if ($loc) {
+        if ($loc > 0) {
             $whr = ' WHERE (i.loc=' . $loc . ') ';
+        } elseif ($loc == -1) {
+            $whr = '';
         } elseif (!BDATA) {
             $whr = ' WHERE (i.loc=0) ';
         }

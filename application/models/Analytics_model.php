@@ -33,6 +33,10 @@ class Analytics_model extends CI_Model
         
         if ($branch_id > 0) {
             $this->db->where('w.loc', $branch_id);
+        } elseif ($branch_id == -1) {
+             // Show all
+        } elseif (!BDATA) {
+             $this->db->where('w.loc', 0);
         }
         
         return $this->db->get()->result_array();
@@ -48,12 +52,17 @@ class Analytics_model extends CI_Model
         return $total_val;
     }
 
-    public function get_branch_performance()
+    public function get_branch_performance($branch_id = 0)
     {
         // Mock data for map if actual branch coordinates aren't stored
         // Assuming geopos_locations or warehouses has branch info
         $this->db->select('id, cname as name, address, city'); // Adjust columns based on actual request
         $this->db->from('geopos_locations');
+        if ($branch_id > 0) {
+            $this->db->where('id', $branch_id);
+        } else {
+            $this->db->where('id !=', 0); // Exclude default/global location if it exists as 0
+        }
         $query = $this->db->get();
         $branches = $query->result_array();
         
@@ -112,6 +121,10 @@ class Analytics_model extends CI_Model
         
         if ($branch_id > 0) {
             $this->db->where('w.loc', $branch_id);
+        } elseif ($branch_id == -1) {
+            // Show all
+        } elseif (!BDATA) {
+            $this->db->where('w.loc', 0);
         }
         
         return $this->db->count_all_results();

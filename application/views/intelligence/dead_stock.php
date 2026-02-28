@@ -37,7 +37,7 @@
                                         </option>
                                     <?php } } ?>
                                 </select>
-                                <a href="<?= base_url('ownerdashboard') ?>" class="btn btn-white btn-sm ml-2">
+                                <a href="<?= base_url('dashboard') ?>" class="btn btn-white btn-sm ml-2">
                                     <i class="fa fa-arrow-left"></i> Back to Dashboard
                                 </a>
                             </form>

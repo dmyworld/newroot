@@ -750,6 +750,7 @@
                                     <option value='Cash'><?php echo $this->lang->line('Cash') ?></option>
                                     <option value='Card Swipe'><?php echo $this->lang->line('Card Swipe') ?></option>
                                     <option value='Bank'><?php echo $this->lang->line('Bank') ?></option>
+                                    <option value='Cheque'><?php echo $this->lang->line('Cheque') ?></option>
                                 </select>
                             </div>
                         </div>
@@ -766,7 +767,7 @@
                     <script type="text/javascript">
                         $(document).ready(function() {
                             $('#p_method').on('change', function() {
-                                if ($(this).val() == 'Bank') {
+                                if ($(this).val() == 'Bank' || $(this).val() == 'Cheque') {
                                     $('#cheque_number_row_pos').show();
                                 } else {
                                     $('#cheque_number_row_pos').hide();
@@ -803,7 +804,11 @@
 
                             <select name="p_account" id="p_account" class="form-control">
                                 <?php foreach ($acc_list as $row) {
-                                    echo '<option value="' . $row['id'] . '">' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
+                                    $sel = "";
+                                    if (isset($default_account['key2']) && $default_account['key2'] == $row['id']) {
+                                        $sel = "selected";
+                                    }
+                                    echo '<option value="' . $row['id'] . '" ' . $sel . '>' . $row['holder'] . ' / ' . $row['acn'] . '</option>';
                                 }
                                 ?>
                             </select></div></div>
@@ -1227,6 +1232,11 @@
         });
     })
     $(document).ready(function () {
+        // Select Cash Account by default
+        $("#p_account option").filter(function() {
+            return $(this).text().includes("Cash Account");
+        }).prop('selected', true);
+
         Mousetrap.bind('alt+x', function () {
             $('#v2_search_bar').focus();
         });

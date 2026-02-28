@@ -54,6 +54,12 @@ class Pos_invoices extends CI_Controller
         }
         $this->load->library("Custom");
         $this->li_a = 'sales';
+
+        // Timber Pro Hub: Buyer Restrictions
+        if ($this->aauth->is_member('buyer')) {
+             $this->session->set_flashdata('error', 'Buyers cannot access POS. Please interact via the Dashboard or Marketplace.');
+             redirect('dashboard'); 
+        }
     }
 
     //create invoice
@@ -184,30 +190,15 @@ class Pos_invoices extends CI_Controller
         //create invoice
     public function purchasecreate()
     {
-        if (!$this->aauth->premission(1, 'add')) {
+        if (!$this->aauth->premission(2, 'add')) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
        
         $this->load->model('customers_model', 'customers');
         $this->load->model('categories_model');
-        $this->load->model('plugins_model', 'plugins');
-        $this->load->library("Common");
-        $data['taxlist'] = $this->common->taxlist($this->config->item('tax'));
-        $data['gateway'] = $this->invocies->gateway_list('Yes');
-        $data['exchange'] = $this->plugins->universal_api(5);
-        $data['enable_card'] = $this->plugins->universal_api(54);
-        $data['customergrouplist'] = $this->customers->group_list();
-        $data['lastinvoice'] = $this->invocies->lastinvoice2();
-        $data['draft_list'] = $this->invocies->drafts();
-        $data['warehouse'] = $this->invocies->warehouses();
-        $data['terms'] = $this->invocies->billingterms();
-        $data['currency'] = $this->invocies->currencies();
-        $head['title'] = "New Invoice";
-        $head['usernm'] = $this->aauth->get_user()->username;
-        $data['cat'] = $this->categories_model->category_list();
-        $data['taxdetails'] = $this->common->taxdetail();
         $data['acc_list'] = $this->invocies->accountslist();
-
+        $this->load->model('plugins_model', 'plugins');
+        $data['default_account'] = $this->plugins->universal_api(65);
         if ($this->input->get('v2') OR POSV == 2) {
             $head['s_mode'] = false;
             $this->load->view('fixed/header-pos', $head);
@@ -523,7 +514,7 @@ class Pos_invoices extends CI_Controller
             $transok = true;
             $this->load->library("Common");
             //Invoice Data
-            $bill_date = datefordatabase($invoicedate);
+            $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
             $bill_due_date = datefordatabase($invocieduedate);
             $promo_flag = false;
             if ($coupon) {
@@ -819,7 +810,7 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
             $transok = true;
             $this->load->library("Common");
             //Invoice Data
-            $bill_date = datefordatabase($invoicedate);
+            $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
             $bill_due_date = datefordatabase($invocieduedate);
             $promo_flag = false;
             if ($coupon) {
@@ -1358,7 +1349,7 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
             $no++;
             $row = array();
             $row[] = $no;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = '<a href="' . base_url("pos_invoices/view?id=$invoices->id&$no") . '">&nbsp; ' . $invoices->tid . '&nbsp; </a>';
             $row[] = amountExchange($invoice_tota_oklk_2, 0, $this->aauth->get_user()->loc);
             $row[] = amountExchange($invoices_without_tax);
@@ -1464,7 +1455,7 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
             $no++;
             $row = array();
             $row[] = $no;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = '<a href="' . base_url("pos_invoices/view?id=$invoices->id&$no") . '">&nbsp; ' . $invoices->tid . '&nbsp; </a>';
             $row[] = amountExchange($invoice_tota_oklk_2, 0, $this->aauth->get_user()->loc);
             $row[] = amountExchange($invoices_without_tax);
@@ -1560,7 +1551,7 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
             $row[] = $no;
             $row[] = '<a href="' . base_url("pos_invoices/view?id=$invoices->id") . '">&nbsp; ' . $invoices->tid . '</a>';
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoice_tota_oklk_2, 0, $this->aauth->get_user()->loc);
             
             $row[] = amountExchange($total_due_oklk_2);
@@ -1641,7 +1632,7 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
             $row[] = $no;
             $row[] = '<a href="' . base_url("pos_invoices/view?id=$invoices->id") . '">&nbsp; ' . $invoices->tid . '</a>';
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoice_tota_oklk_2, 0, $this->aauth->get_user()->loc);
             
             $row[] = amountExchange($total_due_oklk_2);
@@ -1685,6 +1676,8 @@ $invoices_ssc_local = $l_subtotal80 * 0.025; // 2.5% of 85% of local subtotal
         $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
         $data['attach'] = $this->invocies->attach($tid);
         if ($data['invoice']['id']) $data['products'] = $this->invocies->invoice_products($tid);
+        $this->load->model('plugins_model', 'plugins');
+        $data['default_account'] = $this->plugins->universal_api(65);
         if ($data['invoice']['id']) $data['activity'] = $this->invocies->invoice_transactions($tid);
         $data['c_custom_fields'] = $this->custom->view_fields_data($data['invoice']['cid'], 1);
 

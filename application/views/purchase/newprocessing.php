@@ -429,3 +429,73 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Auto-load product if passed from marketplace
+        const pre_pcode = "<?php echo isset($pre_pcode) ? $pre_pcode : '' ?>";
+        if(pre_pcode) {
+            $("#productname-0").val("Loading Lot " + pre_pcode + "...");
+            $.ajax({
+                url: baseurl + "search_products/search_logs_wood",
+                type: 'POST',
+                data: {
+                    name_startsWith: pre_pcode,
+                    product_quick_code: pre_pcode,
+                    row_num: 0,
+                    '<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data.length > 0) {
+                        const v = data[0];
+                        // Map search result to first row
+                        $("#productname-0").val(v[0]);
+                        $("#pid-0").val(v[2]);
+                        $("#unit-0").val(v[6]);
+                        $("#hsn-0").val(v[7]);
+                        $("#r-0").val(0); // User must enter measurements
+                        $("#l-0").val(v[11]); 
+                        $("#pquick-0").val(v[11]);
+                        $("#product_quick_code-0").val(v[12]);
+                        
+                        // Highlight for user
+                        $("#productname-0").css('background-color', '#e0f2fe');
+                    } else {
+                        $("#productname-0").val("").attr("placeholder", "Lot " + pre_pcode + " not found in ERP");
+                    }
+                }
+            });
+        }
+    });
+
+    function calculateQuick(id) {
+        var qty = $('#amount-' + id).val();
+        var r = $('#r-' + id).val() || 0;
+        var l = $('#l-' + id).val() || 0;
+        var res = 0;
+        if(r > 0 && l > 0) {
+            res = (Math.pow((r/4), 2) * l / 144) * qty;
+        }
+        $('#result2-' + id).text(res.toFixed(4));
+        $('#result22-' + id).val(res.toFixed(4));
+        $('#total2-' + id).val(res.toFixed(4));
+        $('#tpquick2-' + id).val(res.toFixed(4));
+        billUpyog();
+    }
+
+    function rowTotal(id) {
+        // Placeholder or actual subtotal logic if needed
+        // In this form, calculateQuick handles the main cubic feet result
+    }
+
+    function billUpyog() {
+        var total = 0;
+        $('.ttlTextt').each(function() {
+            total += parseFloat($(this).text()) || 0;
+        });
+        $('#overall_cubic_feet_total').val(total.toFixed(4));
+        $('#wood_overall_cubic_feet_total').val((total * 0.7).toFixed(4)); // Default 70% yield estimate
+        $('#cubic_feet_total_wastage').val((total * 0.3).toFixed(4));
+    }
+</script>

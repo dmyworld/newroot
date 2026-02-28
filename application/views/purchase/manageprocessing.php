@@ -34,6 +34,14 @@
                     </div>
 
                     <div class="col-md-2">
+                        <select name="loc" id="loc" class="form-control form-control-sm">
+                            <option value="">-- <?php echo $this->lang->line('All') ?> --</option>
+                            <?php foreach ($locations as $row) {
+                                echo '<option value="' . $row['id'] . '">' . $row['cname'] . '</option>';
+                            } ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
                         <input type="button" name="search" id="search" value="Search" class="btn btn-info btn-sm"/>
                     </div>
 
@@ -111,7 +119,8 @@
                         'data': {
                             '<?=$this->security->get_csrf_token_name()?>': crsf_hash,
                             start_date: start_date,
-                            end_date: end_date
+                            end_date: end_date,
+                            loc: branch_id
                         }
                     },
                     'columnDefs': [
@@ -136,9 +145,10 @@
             $('#search').click(function () {
                 var start_date = $('#start_date').val();
                 var end_date = $('#end_date').val();
+                var loc = $('#loc').val();
                 if (start_date != '' && end_date != '') {
                     $('#po').DataTable().destroy();
-                    draw_data(start_date, end_date);
+                    draw_data(start_date, end_date, loc);
                 } else {
                     alert("Date range is Required");
                 }

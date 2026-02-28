@@ -42,6 +42,7 @@ class Invoices extends CI_Controller
             $this->limited = '';
         }
         $this->load->library("Custom");
+        $this->load->model('locations_model', 'locations');
         $this->li_a = 'sales';
 
     }
@@ -109,6 +110,7 @@ class Invoices extends CI_Controller
         $data['branch_id'] = $this->input->get('branch_id');
         $data['start_date'] = $this->input->get('start_date');
         $data['end_date'] = $this->input->get('end_date');
+        $data['locations'] = $this->locations->locations_list2();
         $this->load->view('fixed/header', $head);
         $this->load->view('invoices/invoices', $data);
         $this->load->view('fixed/footer');
@@ -164,7 +166,7 @@ class Invoices extends CI_Controller
         $this->load->library("Common");
         $this->db->trans_start();
         //Invoice Data
-        $bill_date = datefordatabase($invoicedate);
+        $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
         $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'planing' => $planing, 'planing_tax' => $planing_tax, 'planing_taxtype' => $planing_taxtype, 'discount_rate' => $disc_val, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'multi' => $currency, 'loc' => $this->aauth->get_user()->loc);
         $invocieno2 = $invocieno;
@@ -339,7 +341,7 @@ class Invoices extends CI_Controller
 
             $row[] = '<a href="' . base_url("invoices/view?id=$invoices->id") . '">&nbsp; ' . $invoices->tid . '</a>';
             $row[] = $invoices->name;
-            $row[] = dateformat($invoices->invoicedate);
+            $row[] = dateformat_time($invoices->invoicedate);
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
             $row[] = '<span class="st-' . $invoices->status . '">' . $this->lang->line(ucwords($invoices->status)) . '</span>';
             $row[] = '<a href="' . base_url("invoices/view?id=$invoices->id") . '" class="btn btn-success btn-sm" title="View"><i class="fa fa-eye"></i></a>&nbsp;<a href="' . base_url("invoices/printinvoice?id=$invoices->id") . '&d=1" class="btn btn-info btn-sm"  title="Download"><span class="fa fa-download"></span></a> <a href="#" data-object-id="' . $invoices->id . '" class="btn btn-danger btn-sm delete-object"><span class="fa fa-trash"></span></a>';
@@ -360,7 +362,9 @@ class Invoices extends CI_Controller
         $this->load->model('accounts_model');
         $data['acclist'] = $this->accounts_model->accountslist((integer)$this->aauth->get_user()->loc);
         $tid = $this->input->get('id');
+        $this->load->model('plugins_model', 'plugins');
         $data['invoice'] = $this->invocies->invoice_details($tid, $this->limited);
+        $data['default_account'] = $this->plugins->universal_api(65);
         $data['attach'] = $this->invocies->attach($tid);
         $data['c_custom_fields'] = $this->custom->view_fields_data($data['invoice']['cid'], 1);
         $head['usernm'] = $this->aauth->get_user()->username;

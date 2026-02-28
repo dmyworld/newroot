@@ -523,5 +523,72 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
                 return array('p1' => amountExchange($lastbal, 0, $this->aauth->get_user()->loc), 'p2' => amountExchange($motnhbal, 0, $this->aauth->get_user()->loc), 'p3' => 0, 'p4' => 0);
         }
     }
+
+    /**
+     * TimberPro - Profit & Loss Calculation
+     * Standard branch-wise reporting
+     */
+    public function get_profit_loss($loc = 0, $s_date = null, $e_date = null)
+    {
+        // 1. Income (Credits from Transactions)
+        $this->db->select('cat, SUM(credit) as total');
+        $this->db->from('geopos_transactions');
+        $this->db->where('type', 'Income');
+        if($loc > 0) $this->db->where('loc', $loc);
+        if($s_date) $this->db->where('DATE(date) >=', $s_date);
+        if($e_date) $this->db->where('DATE(date) <=', $e_date);
+        $this->db->group_by('cat');
+        $income = $this->db->get()->result_array();
+
+        // 2. Expenses (Debits from Transactions)
+        $this->db->select('cat, SUM(debit) as total');
+        $this->db->from('geopos_transactions');
+        $this->db->where('type', 'Expense');
+        if($loc > 0) $this->db->where('loc', $loc);
+        if($s_date) $this->db->where('DATE(date) >=', $s_date);
+        if($e_date) $this->db->where('DATE(date) <=', $e_date);
+        $this->db->group_by('cat');
+        $expenses = $this->db->get()->result_array();
+
+        $total_income = 0;
+        foreach($income as $row) $total_income += $row['total'];
+
+        $total_expense = 0;
+        foreach($expenses as $row) $total_expense += $row['total'];
+
+        return [
+            'income' => $income,
+            'expenses' => $expenses,
+            'total_income' => $total_income,
+            'total_expense' => $total_expense,
+            'net_profit' => $total_income - $total_expense
+        ];
+    }
+
+    /**
+     * TimberPro - Balance Sheet Calculation
+     * Standard branch-wise reporting
+     */
+    public function get_balance_sheet($loc = 0)
+    {
+        // Fetch accounts grouped by type
+        $types = ['Assets', 'Liabilities', 'Equity'];
+        $report = [];
+
+        foreach ($types as $type) {
+            $this->db->select('holder, lastbal');
+            $this->db->from('geopos_accounts');
+            $this->db->where('account_type', $type);
+            if($loc > 0) {
+                $this->db->group_start();
+                $this->db->where('loc', $loc);
+                $this->db->or_where('loc', 0); // Include common accounts
+                $this->db->group_end();
+            }
+            $report[strtolower($type)] = $this->db->get()->result_array();
+        }
+
+        return $report;
+    }
 }
 

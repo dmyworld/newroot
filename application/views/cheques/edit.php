@@ -136,3 +136,30 @@
     .badge-light-danger { background-color: #ffebf0; color: #ff5b5c !important; }
     .bg-light { background-color: #f8f9fb !important; }
 </style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var initial_status = $('select[name="status"]').val();
+        
+        $('select[name="status"]').change(function() {
+            var new_status = $(this).val();
+            var warning_msg = '';
+            var is_critical = false;
+
+            if (new_status == 'Cleared') {
+                warning_msg = '⚠️ CONFIRM ACTION:\n\nSet status to CLEARED?\n\nThis will POST this transaction to the financial ledger and update account balances.';
+                is_critical = true;
+            } else if (['Bounced', 'Void', 'Returned'].includes(new_status)) {
+                warning_msg = '⛔ WARNING: ROLLBACK ACTION\n\nSet status to ' + new_status.toUpperCase() + '?\n\nThis will:\n1. REVERSE any existing financial transactions.\n2. UPDATE the Invoice/Purchase balance to DUE.\n\nAre you sure?';
+                is_critical = true;
+            }
+
+            if (is_critical) {
+                if(!confirm(warning_msg)) {
+                    $(this).val(initial_status); // Revert if cancelled
+                } else {
+                    initial_status = new_status; // Update accepted status
+                }
+            }
+        });
+    });
+</script>

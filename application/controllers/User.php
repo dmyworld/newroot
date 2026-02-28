@@ -41,15 +41,9 @@ class User extends CI_Controller
         if ($this->aauth->is_loggedin()) {
             redirect('/dashboard/', 'refresh');
         }
-        $data['response'] = '';
-        $data['captcha_on'] = $this->captcha;
-        $data['captcha'] = $this->captcha_u->public_key()->recaptcha_p;
-        if ($this->input->get('e')) {
-            $data['response'] = 'Invalid username or password!';
-        }
-        // $this->load->view('user/header');
-        $this->load->view('user/index', $data);
-        // $this->load->view('user/footer');
+        
+        // Phase 14: Load Marketing Landing Page to drive sales
+        $this->load->view('landing_page/index');
 
 
     }

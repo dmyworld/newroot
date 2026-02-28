@@ -35,10 +35,11 @@ class ChequeManager extends CI_Controller
         $branch_id = $this->input->get('branch_id') ?: 0;
         
         // Build query with joins to get party names
-        $this->db->select('geopos_cheques.*, geopos_customers.name as customer_name, geopos_supplier.name as supplier_name');
+        $this->db->select('geopos_cheques.*, geopos_customers.name as customer_name, geopos_supplier.name as supplier_name, geopos_locations.cname as location_name');
         $this->db->from('geopos_cheques');
         $this->db->join('geopos_customers', 'geopos_customers.id = geopos_cheques.party_id AND geopos_cheques.type = "Incoming"', 'left');
         $this->db->join('geopos_supplier', 'geopos_supplier.id = geopos_cheques.party_id AND geopos_cheques.type = "Outgoing"', 'left');
+        $this->db->join('geopos_locations', 'geopos_locations.id = geopos_cheques.branch_id', 'left');
         
         // Apply filters
         if ($filter_type && $filter_type != 'all') {
@@ -240,20 +241,21 @@ class ChequeManager extends CI_Controller
                 // Create New Transaction if none exists (e.g. manually added cheque now clearing)
                 $this->_create_transaction($id);
             }
-        } else {
-            // Status is Pending, Bounced, or Cancelled -> Transition should NOT have a cleared transaction record
-            if ($current_tid > 0) {
+        } elseif (in_array(strtolower($final_status), ['bounced', 'void', 'cancelled', 'returned'])) {
+             // ROLLBACK ACTION: Status is Bounced/Void -> Reverse Payment
+             if ($current_tid > 0) {
                 // Fetch transaction to reverse account balance before deletion
                 $this->db->where('id', $current_tid);
                 $trans = $this->db->get('geopos_transactions')->row_array();
                 if ($trans) {
                     // Reverse account balance logic
-                    $rev_amount = $trans['credit'] - $trans['debit'];
-                    if ($rev_amount != 0) {
-                        $this->db->set('lastbal', "lastbal-$rev_amount", FALSE);
-                        $this->db->where('id', $trans['acid']);
-                        $this->db->update('geopos_accounts');
-                    }
+                    // If Income (Credit), subtract from balance (Debit behavior)
+                    // If Expense (Debit), add back to balance (Credit behavior)
+                    $rev_amount = $trans['credit'] - $trans['debit']; // +ve for Income, -ve for Expense
+                    
+                    $this->db->set('lastbal', "lastbal-$rev_amount", FALSE);
+                    $this->db->where('id', $trans['acid']);
+                    $this->db->update('geopos_accounts');
                     
                     // Delete the transaction
                     $this->db->delete('geopos_transactions', array('id' => $current_tid));
@@ -265,9 +267,8 @@ class ChequeManager extends CI_Controller
                 $this->db->update('geopos_cheques');
             }
 
-            // SPECIFIC ROLLBACK: For Bounced/Cancelled, also revert the Source Document (Invoice/Purchase)
-            $rollback_statuses = array('bounced', 'cancelled');
-            if (in_array(strtolower($final_status), $rollback_statuses) && $latest_cheque['doc_id'] > 0 && !empty($latest_cheque['doc_type'])) {
+            // REVERT SOURCE DOCUMENT (Invoice/Purchase)
+            if ($latest_cheque['doc_id'] > 0 && !empty($latest_cheque['doc_type'])) {
                 $table = '';
                 switch (strtolower($latest_cheque['doc_type'])) {
                     case 'invoice': $table = 'geopos_invoices'; break;
@@ -280,7 +281,7 @@ class ChequeManager extends CI_Controller
                     $c_amount = $latest_cheque['amount'];
                     // Decrement paid amount in source doc
                     $this->db->set('pamnt', "pamnt-$c_amount", FALSE);
-                    $this->db->set('status', 'partial'); // Set to partial by default
+                    $this->db->set('status', 'partial'); // Set to partial temporarily
                     $this->db->where('id', $latest_cheque['doc_id']);
                     $this->db->update($table);
                     
@@ -288,14 +289,22 @@ class ChequeManager extends CI_Controller
                     $this->db->select('pamnt, total');
                     $this->db->where('id', $latest_cheque['doc_id']);
                     $doc_check = $this->db->get($table)->row_array();
-                    if ($doc_check && $doc_check['pamnt'] <= 0) {
-                        $this->db->set('status', 'due');
-                        $this->db->where('id', $latest_cheque['doc_id']);
-                        $this->db->update($table);
+                    
+                    // Use tolerance for float comparison
+                    if ($doc_check && $doc_check['pamnt'] <= 0.01) {
+                         $this->db->set('status', 'due');
+                         // Ensure pamnt is exactly 0 if it dipped below due to float errors
+                         if ($doc_check['pamnt'] < 0) $this->db->set('pamnt', 0.00);
+                         
+                         $this->db->where('id', $latest_cheque['doc_id']);
+                         $this->db->update($table);
                     }
                 }
             }
-        }
+        } 
+        // NOTE: if Status is 'Pending' or 'Signed' or 'Issued', we DO NOT touch the transaction.
+        // It remains as is (if it exists). 
+        // If it doesn't exist, we don't create it yet (wait for Cleared).
         
         redirect('ChequeManager');
     }

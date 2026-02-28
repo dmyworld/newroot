@@ -1,0 +1,56 @@
+Processing Ragama
+Seeding products for 2
+Seeding invoices for 1
+Seeding staff for 1
+Seeding transactions for 1
+Seeding payroll for 1
+Seeding mfg for 1
+Processing Ragama Branch
+Seeding products for 3
+Seeding invoices for 2
+Seeding staff for 2
+Seeding transactions for 2
+Seeding payroll for 2
+Seeding mfg for 2
+Processing Ragama
+Seeding products for 2
+Seeding invoices for 1
+Seeding staff for 1
+Seeding transactions for 1
+Seeding payroll for 1
+Seeding mfg for 1
+Processing Ragama Branch
+Seeding products for 3
+Seeding invoices for 2
+Seeding staff for 2
+Seeding transactions for 2
+Seeding payroll for 2
+Seeding mfg for 2
+Processing Ragama
+Seeding products for 2
+Seeding invoices for 1
+Seeding staff for 1
+Seeding transactions for 1
+Seeding payroll for 1
+Seeding mfg for 1
+Processing Ragama Branch
+Seeding products for 3
+Seeding invoices for 2
+Seeding staff for 2
+Seeding transactions for 2
+Seeding payroll for 2
+Seeding mfg for 2
+Processing Ragama
+Seeding products for 2
+Seeding invoices for 1
+Seeding staff for 1
+Seeding transactions for 1
+Seeding payroll for 1
+Seeding mfg for 1
+Processing Ragama Branch
+Seeding products for 3
+Seeding invoices for 2
+Seeding staff for 2
+Seeding transactions for 2
+Seeding payroll for 2
+Seeding mfg for 2

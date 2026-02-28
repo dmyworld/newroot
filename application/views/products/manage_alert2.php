@@ -1,53 +1,43 @@
 <style>
     /* ============================================
-       TIMBER ERP PROFESSIONAL DESIGN SYSTEM v2.1
-       Refined Palette & Layout
+       BLUE & LIFE GREEN - PSYCHOLOGICAL THEME
+       Based on Owner Dashboard (Style 9)
     ============================================ */
     
     :root {
-        /* Timber Brand Colors - Deep & Professional */
-        --timber-walnut: #5D4037;   /* Deep Brown */
-        --timber-oak: #D4AF37;      /* Metallic Gold/Oak */
-        --timber-forest: #2E7D32;   /* Rich Green */
-        --timber-charcoal: #37474F; /* Dark Blue-Grey */
+        /* Blue & Green Palette */
+        --psy-bg-page: #eff6ff; /* Alice Blue (Page BG) */
+        --psy-bg-card: #ffffff;
+        --psy-text-primary: #1e3a8a; /* Navy Blue 900 */
+        --psy-text-secondary: #334155; /* Slate 700 (Neutral) */
+        --psy-accent-primary: #2563eb; /* Royal Blue */
+        --psy-accent-success: #16a34a; /* Life Green */
+        --psy-accent-danger: #ef4444; /* Red (Standard Danger) */
+        --psy-accent-warning: #f59e0b; /* Amber */
+        --psy-border: #bfdbfe; /* Blue 200 */
+        --psy-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.1), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
+        --psy-glass: rgba(255, 255, 255, 0.95);
         
-        /* Background & Surface tones */
-        --bg-warm-cream: #FAF9F6;
-        --bg-paper-white: #FFFFFF;
-        --bg-soft-gray: #F5F7FA;
-        
-        /* Status Indicators */
-        --status-critical: #D32F2F;
-        --status-warning: #FFA000;
-        --status-info: #1976D2;
-        --status-success: #388E3C;
-        
-        /* UI Elements */
-        --shadow-soft: 0 4px 20px rgba(0,0,0,0.05);
-        --shadow-lifted: 0 10px 25px rgba(93, 64, 55, 0.1);
-        --glass-border: 1px solid rgba(255,255,255,0.6);
-        --radius-std: 12px;
-        --radius-lg: 20px;
+        --radius-std: 8px;
+        --radius-lg: 12px;
     }
 
-    body {
-        background-color: var(--bg-soft-gray);
+    /* Force overrides for Global Dark Mode leaks */
+    html, body, .app-content, .content-wrapper, .content-body {
+        background-color: var(--psy-bg-page) !important;
+        color: var(--psy-text-primary) !important;
         font-family: 'Montserrat', sans-serif;
-        color: var(--timber-charcoal);
     }
 
     .content-body {
         padding: 2rem;
-        background: radial-gradient(circle at 10% 10%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
     }
 
-    /* GLASSMORPHIC HEADER */
+    /* GLASSMORPHIC HEADER match Dashboard */
     .page-header-glass {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: var(--glass-border);
-        box-shadow: var(--shadow-soft);
+        background: #ffffff;
+        border: 1px solid var(--psy-border);
+        box-shadow: var(--psy-shadow);
         border-radius: var(--radius-lg);
         padding: 1.5rem 2rem;
         margin-bottom: 2rem;
@@ -62,34 +52,34 @@
         content: '';
         position: absolute;
         bottom: 0; left: 0; width: 100%; height: 3px;
-        background: linear-gradient(90deg, var(--timber-walnut), var(--timber-oak));
+        background: linear-gradient(90deg, var(--psy-accent-primary), var(--psy-accent-success));
     }
 
     .page-title h2 {
-        color: var(--timber-walnut);
+        color: var(--psy-text-primary);
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
-        font-size: 2rem;
+        font-size: 1.8rem;
         text-transform: uppercase;
     }
-
+    
     .page-title p {
-        color: #795548;
+        color: var(--psy-text-secondary);
         font-weight: 500;
         margin: 0;
         font-size: 0.95rem;
     }
 
-    /* PREMIUM BUTTONS */
+    /* PREMIUM BUTTONS MATCHING DASHBOARD */
     .btn-premium {
-        background: linear-gradient(135deg, var(--timber-walnut), #4E342E);
-        color: #fff;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 50px;
+        background: white;
+        color: var(--psy-accent-primary);
+        border: 1px solid var(--psy-border);
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(93, 64, 55, 0.3);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
@@ -98,172 +88,181 @@
 
     .btn-premium:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(93, 64, 55, 0.4);
-        background: linear-gradient(135deg, #4E342E, var(--timber-walnut));
-        color: #fff;
+        background: var(--psy-bg-page);
+        border-color: var(--psy-accent-primary);
+        color: var(--psy-accent-primary);
+        box-shadow: var(--psy-shadow);
     }
 
-    /* METRIC CARDS */
+    /* PREMIUM CARDS */
+    .premium-card {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--psy-border);
+        box-shadow: var(--psy-shadow);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    /* METRIC CARDS - UPDATED TO NEW THEME */
     .metric-card {
         background: #fff;
-        border-radius: var(--radius-std);
+        border-radius: var(--radius-lg);
         padding: 1.5rem;
-        border: 1px solid rgba(0,0,0,0.03);
-        box-shadow: var(--shadow-soft);
+        border: 1px solid var(--psy-border);
+        box-shadow: var(--psy-shadow);
         position: relative;
         overflow: hidden;
         transition: transform 0.3s ease;
+        height: 100%;
     }
 
     .metric-card:hover {
         transform: translateY(-5px);
-        box-shadow: var(--shadow-lifted);
+        box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1);
     }
 
-    .metric-card.critical { border-bottom: 4px solid var(--status-critical); }
-    .metric-card.warning { border-bottom: 4px solid var(--status-warning); }
-    .metric-card.info { border-bottom: 4px solid var(--status-info); }
-    .metric-card.success { border-bottom: 4px solid var(--status-success); }
+    .metric-card.critical { border-bottom: 4px solid var(--psy-accent-danger); }
+    .metric-card.warning { border-bottom: 4px solid var(--psy-accent-warning); }
+    .metric-card.info { border-bottom: 4px solid var(--psy-accent-primary); }
+    .metric-card.success { border-bottom: 4px solid var(--psy-accent-success); }
 
     .metric-icon {
-        width: 50px; height: 50px;
-        border-radius: 12px;
+        width: 48px; height: 48px;
+        border-radius: 8px;
         display: flex; align-items: center; justify-content: center;
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }
     
-    .bg-light-critical { background: #FFEBEE; color: var(--status-critical); }
-    .bg-light-warning { background: #FFF8E1; color: var(--status-warning); }
-    .bg-light-info { background: #E3F2FD; color: var(--status-info); }
-    .bg-light-success { background: #E8F5E9; color: var(--status-success); }
+    .bg-light-critical { background: #fee2e2; color: var(--psy-accent-danger); } /* Red 100 */
+    .bg-light-warning { background: #fef3c7; color: var(--psy-accent-warning); } /* Amber 100 */
+    .bg-light-info { background: #dbeafe; color: var(--psy-accent-primary); } /* Blue 100 */
+    .bg-light-success { background: #dcfce7; color: var(--psy-accent-success); } /* Green 100 */
 
-    .metric-value { font-size: 2.2rem; font-weight: 800; color: var(--timber-charcoal); line-height: 1.2; }
-    .metric-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; font-weight: 600; }
+    .metric-value { font-size: 2rem; font-weight: 800; color: var(--psy-text-primary); line-height: 1.2; }
+    .metric-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--psy-text-secondary); font-weight: 600; }
 
     /* FILTERS PANEL */
     .filter-panel {
         background: #fff;
-        border-radius: var(--radius-std);
+        border-radius: var(--radius-lg);
         padding: 1.5rem;
-        box-shadow: var(--shadow-soft);
+        box-shadow: var(--psy-shadow);
+        border: 1px solid var(--psy-border);
         margin-bottom: 2rem;
-        border-left: 5px solid var(--timber-oak);
+        border-left: 5px solid var(--psy-accent-primary);
     }
     
     .filter-header {
         font-size: 1.1rem;
         font-weight: 700;
-        color: var(--timber-walnut);
+        color: var(--psy-text-primary);
         margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
     
-    .form-control-timber {
-        border: 2px solid #EEE;
-        border-radius: 8px;
+    .filter-input-glass {
+        border: 1px solid var(--psy-border);
+        border-radius: 6px;
         padding: 0.6rem 1rem;
         height: auto;
         font-size: 0.95rem;
-        transition: all 0.3s;
-        background: #FAFAFA;
+        background: #f8fafc; /* Slate 50 */
+        color: var(--psy-text-secondary);
+        transition: all 0.2s;
     }
     
-    .form-control-timber:focus {
-        border-color: var(--timber-oak);
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    .filter-input-glass:focus {
+        border-color: var(--psy-accent-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         background: #fff;
     }
 
     /* DATA TABLE & LIST */
-    .timber-table-card {
-        background: #fff;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-lifted);
-        padding: 0;
-        overflow: hidden;
-    }
-
     .table-responsive { overflow-x: auto; }
 
-    .table-timber {
+    .table-premium {
         width: 100%;
         border-collapse: separate;
         border-spacing: 0;
     }
 
-    .table-timber thead th {
-        background: linear-gradient(to right, var(--timber-walnut), #4E342E);
-        color: #fff;
+    .table-premium thead th {
+        background: #f8fafc;
+        color: var(--psy-text-secondary);
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         letter-spacing: 1px;
-        padding: 1.2rem 1.5rem;
-        border: none;
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid var(--psy-border);
+        border-top: none;
     }
 
-    .table-timber tbody tr {
+    .table-premium tbody tr {
         transition: all 0.2s;
     }
 
-    .table-timber tbody tr:nth-child(even) { background-color: #FAFAFA; }
-    
-    .table-timber tbody tr:hover {
-        background-color: #FFF8E1; /* Light Gold tint */
-        transform: scale(1.005);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    .table-premium tbody tr:hover {
+        background-color: #f1f5f9; /* Slate 100 */
+        transform: scale(1.002);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         z-index: 5;
         position: relative;
     }
 
-    .table-timber td {
+    .table-premium td {
         padding: 1rem 1.5rem;
         vertical-align: middle;
-        border-bottom: 1px solid #F0F0F0;
-        color: #555;
+        border-bottom: 1px solid #e2e8f0;
+        color: var(--psy-text-secondary);
         font-weight: 500;
+        font-size: 0.9rem;
     }
 
     .product-name {
         font-weight: 700;
-        color: var(--timber-walnut);
+        color: var(--psy-text-primary);
         font-size: 1rem;
         display: block;
         margin-bottom: 2px;
         text-decoration: none;
     }
+    .product-name:hover { color: var(--psy-accent-primary); text-decoration: underline; }
     
     .product-sku {
         font-family: 'Roboto Mono', monospace;
-        font-size: 0.8rem;
-        color: #999;
-        background: #F5F5F5;
+        font-size: 0.75rem;
+        color: var(--psy-text-secondary);
+        background: #f1f5f9;
         padding: 2px 6px;
         border-radius: 4px;
+        border: 1px solid #e2e8f0;
     }
 
     /* ACTIONS MENU */
     .action-btn {
-        width: 36px; height: 36px;
-        border-radius: 50%;
+        width: 32px; height: 32px;
+        border-radius: 6px;
         display: inline-flex;
         align-items: center; justify-content: center;
         transition: all 0.2s;
-        border: none;
+        border: 1px solid transparent;
         margin: 0 2px;
     }
     
-    .action-btn.edit { background: #E3F2FD; color: #1976D2; }
-    .action-btn.edit:hover { background: #1976D2; color: #fff; }
+    .bg-primary-soft { background: #dbeafe; color: var(--psy-accent-primary); border-color: #bfdbfe; }
+    .bg-primary-soft:hover { background: var(--psy-accent-primary); color: white; border-color: var(--psy-accent-primary); }
     
-    .action-btn.cut { background: #FFF3E0; color: #F57C00; }
-    .action-btn.cut:hover { background: #F57C00; color: #fff; }
-
-    .action-btn.alert { background: #FFEBEE; color: #D32F2F; }
-    .action-btn.alert:hover { background: #D32F2F; color: #fff; }
+    .bg-warning-soft { background: #fef3c7; color: var(--psy-accent-warning); border-color: #fde68a; }
+    .bg-warning-soft:hover { background: var(--psy-accent-warning); color: white; border-color: var(--psy-accent-warning); }
+    
+    .bg-info-soft { background: #e0f2fe; color: #0ea5e9; border-color: #bae6fd; } /* Sky Blue */
+    .bg-info-soft:hover { background: #0ea5e9; color: white; border-color: #0ea5e9; }
 
     /* STOCK INDICATORS */
     .stock-indicator-wrapper {
@@ -273,13 +272,37 @@
     .stock-progress {
         height: 6px;
         border-radius: 3px;
-        background: #EEE;
+        background: #e2e8f0;
         margin-top: 6px;
         overflow: hidden;
     }
     
     .stock-bar { height: 100%; border-radius: 3px; }
 
+    /* Badges */
+    .badge-psy {
+        padding: 0.4em 0.8em;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+    .badge-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+    /* Modals */
+    .modal-content {
+        border-radius: var(--radius-lg);
+        border: none;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    .modal-header {
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        padding: 1.5rem;
+    }
+    
 </style>
 
 <div class="content-body">
@@ -298,65 +321,65 @@
     </div>
 
     <!-- User Guide -->
-    <div class="card bg-white border-0 shadow-sm mb-4" style="border-radius: 12px;">
-        <div class="card-header bg-white font-weight-bold ml-2 pt-3" data-toggle="collapse" href="#helpGuide" role="button" aria-expanded="false" aria-controls="helpGuide" style="cursor: pointer; border-bottom: none;">
-            <i class="ft-book mr-1 text-primary"></i> User Guide / උපදෙස් / பயனர் வழிகாட்டி <i class="ft-chevron-down float-right mr-3"></i>
+    <div class="premium-card mb-4" style="border-left: 4px solid var(--psy-accent-success);">
+        <div class="card-header p-3 pointer" data-toggle="collapse" data-target="#helpGuide" aria-expanded="false" style="cursor: pointer; background: white; border-bottom: none;">
+            <h6 class="mb-0 text-psy-primary font-weight-bold"><i class="fa fa-info-circle mr-2 text-success"></i> <?php echo $this->lang->line('HelpGuide') ? $this->lang->line('HelpGuide') : "User Guide / උපදෙස් / பயனர் வழிகாட்டி" ?> <small class="text-muted float-right">(Click to view)</small></h6>
         </div>
         <div class="collapse" id="helpGuide">
-            <div class="card-body pt-0 ml-2 mr-2">
-                <ul class="nav nav-tabs nav-underline" id="guideTab" role="tablist">
+            <div class="card-body p-3 pt-0">
+                <ul class="nav nav-tabs" role="tablist" style="border-bottom: 2px solid var(--psy-border);">
                     <li class="nav-item">
-                        <a class="nav-link active" id="eng-tab" data-toggle="tab" href="#eng" role="tab" style="color: var(--timber-walnut);">English</a>
+                        <a class="nav-link active small p-2 font-weight-bold" data-toggle="tab" href="#eng" role="tab" style="color: var(--psy-text-primary);">🇬🇧 English</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="sin-tab" data-toggle="tab" href="#sin" role="tab" style="color: var(--timber-walnut);">සිංහල</a>
+                        <a class="nav-link small p-2 font-weight-bold" data-toggle="tab" href="#sin" role="tab" style="color: var(--psy-text-primary);">🇱🇰 Sinhala</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="tam-tab" data-toggle="tab" href="#tam" role="tab" style="color: var(--timber-walnut);">தமிழ்</a>
+                        <a class="nav-link small p-2 font-weight-bold" data-toggle="tab" href="#tam" role="tab" style="color: var(--psy-text-primary);">IN Tamil</a>
                     </li>
                 </ul>
-                <div class="tab-content border-0 p-3" id="guideTabContent">
+                <div class="tab-content pt-3">
                     <div class="tab-pane fade show active" id="eng" role="tabpanel">
-                        <h6 class="text-primary mt-2">How to Manage Alerts</h6>
-                        <ol>
+                        <h6 class="text-primary mt-1 small font-weight-bold">How to Manage Alerts</h6>
+                        <ol class="small pl-3 mb-0 text-muted">
                             <li><strong>Monitor Levels:</strong> View products with stock levels below their Alert Quantity.</li>
                             <li><strong>Status Indicators:</strong>
                                 <ul>
-                                    <li><span class="badge badge-danger">CRITICAL</span> Stock is critically low. Immediate reorder needed.</li>
-                                    <li><span class="badge badge-warning">WARNING</span> Stock is approaching zero. Plan restock.</li>
+                                    <li><span class="badge badge-psy badge-danger">CRITICAL</span> Stock is critically low. Immediate reorder needed.</li>
+                                    <li><span class="badge badge-psy badge-warning">WARNING</span> Stock is approaching zero. Plan restock.</li>
                                 </ul>
                             </li>
                             <li><strong>Manage:</strong> Use the "Manage" column to update alert thresholds or initiate stock transfers.</li>
                         </ol>
-                        <p class="text-muted"><small><strong>Note:</strong> Keeping stock above alert levels ensures smooth operations and prevents checkout blockages.</small></p>
+                        <p class="text-muted mt-2 mb-0"><small><strong>Note:</strong> Keeping stock above alert levels ensures smooth operations and prevents checkout blockages.</small></p>
                     </div>
                     <div class="tab-pane fade" id="sin" role="tabpanel">
-                        <h6 class="text-primary mt-2">අනතුරු ඇඟවීම් (Alerts) කළමනාකරණය කරන ආකාරය</h6>
-                        <ol>
+                        <h6 class="text-primary mt-1 small font-weight-bold">අනතුරු ඇඟවීම් (Alerts) කළමනාකරණය කරන ආකාරය</h6>
+                        <ol class="small pl-3 mb-0 text-muted">
                             <li><strong>මට්ටම් නිරීක්ෂණය:</strong> අනතුරු ඇඟවීමේ ප්‍රමාණයට (Alert Quantity) වඩා අඩු තොග ඇති නිෂ්පාදන පරීක්ෂා කරන්න.</li>
                             <li><strong>තත්ත්ව දර්ශක:</strong>
                                 <ul>
-                                    <li><span class="badge badge-danger">CRITICAL</span> තොග ඉතා අඩු මට්ටමක පවතී. වහාම ඇණවුම් කිරීම අවශ්‍ය වේ.</li>
-                                    <li><span class="badge badge-warning">WARNING</span> තොග අවසන් වීමට ආසන්නයි. නැවත පුරවන්න (Restock).</li>
+                                    <li><span class="badge badge-psy badge-danger">CRITICAL</span> තොග ඉතා අඩු මට්ටමක පවතී. වහාම ඇණවුම් කිරීම අවශ්‍ය වේ.</li>
+                                    <li><span class="badge badge-psy badge-warning">WARNING</span> තොග අවසන් වීමට ආසන්නයි. නැවත පුරවන්න (Restock).</li>
                                 </ul>
                             </li>
                             <li><strong>කළමනාකරණය:</strong> අනතුරු ඇඟවීමේ සීමාවන් යාවත්කාලීන කිරීමට හෝ තොග මාරු කිරීම් ආරම්භ කිරීමට "Manage" තීරුව භාවිතා කරන්න.</li>
                         </ol>
-                        <p class="text-muted"><small><strong>සටහන:</strong> අනතුරු ඇඟවීමේ මට්ටමට වඩා ඉහළින් තොග පවත්වා ගැනීමෙන් බාධාවකින් තොරව මෙහෙයුම් සිදු කළ හැක.</small></p>
+                        <p class="text-muted mt-2 mb-0"><small><strong>සටහන:</strong> අනතුරු ඇඟවීමේ මට්ටමට වඩා ඉහළින් තොග පවත්වා ගැනීමෙන් බාධාවකින් තොරව මෙහෙයුම් සිදු කළ හැක.</small></p>
                     </div>
                     <div class="tab-pane fade" id="tam" role="tabpanel">
-                        <h6 class="text-primary mt-2">எச்சரிக்கைகளை எவ்வாறு நிர்வகிப்பது</h6>
-                        <ol>
+                        <h6 class="text-primary mt-1 small font-weight-bold">எச்சரிக்கைகளை எவ்வாறு நிர்வகிப்பது</h6>
+                        <ol class="small pl-3 mb-0 text-muted">
                             <li><strong>நிலைகளைக் கண்காணிக்கவும்:</strong> எச்சரிக்கை அளவிற்குக் கீழே உள்ள பங்கு நிலைகளைக் கொண்ட தயாரிப்புகளைப் பார்க்கவும்.</li>
                             <li><strong>நிலை குறிகாட்டிகள்:</strong>
                                 <ul>
-                                    <li><span class="badge badge-danger">CRITICAL</span> இருப்பு மிகவும் குறைவாக உள்ளது. உடனடி மறு ஆர்டர் தேவை.</li>
-                                    <li><span class="badge badge-warning">WARNING</span> இருப்பு பூஜ்ஜியத்தை நெருங்குகிறது. மறுசீரமைக்கத் திட்டமிடவும்.</li>
+                                    <li><span class="badge badge-psy badge-danger">CRITICAL</span> இருப்பு மிகவும் குறைவாக உள்ளது. உடனடி மறு ஆர்டர் தேவை.</li>
+                                    <li><span class="badge badge-psy badge-warning">WARNING</span> இருப்பு பூஜ்ஜியத்தை நெருங்குகிறது. மறுசீரமைக்கத் திட்டமிடவும்.</li>
                                 </ul>
                             </li>
                             <li><strong>நிர்வகித்தல்:</strong> எச்சரிக்கை வரம்புகளைப் புதுப்பிக்க அல்லது பங்கு மாற்றங்களைத் தொடங்க "Manage" பத்தியைப் பயன்படுத்தவும்.</li>
                         </ol>
-                        <p class="text-muted"><small><strong>குறிப்பு:</strong> எச்சரிக்கை அளவிற்கு மேலே இருப்பை வைத்திருப்பது மென்மையான செயல்பாடுகளை உறுதி செய்கிறது.</small></p>
+                        <p class="text-muted mt-2 mb-0"><small><strong>குறிப்பு:</strong> எச்சரிக்கை அளவிற்கு மேலே இருப்பை வைத்திருப்பது மென்மையான செயல்பாடுகளை உறுதி செய்கிறது.</small></p>
                     </div>
                 </div>
             </div>
@@ -364,7 +387,7 @@
     </div>
 
     <!-- Stats Overview -->
-    <div class="row mb-5">
+    <div class="row mb-4">
         <div class="col-xl-3 col-lg-6 col-12 mb-3">
             <div class="metric-card critical">
                 <div class="d-flex justify-content-between">
@@ -374,7 +397,7 @@
                     </div>
                     <div class="metric-icon bg-light-critical"><i class="ft-alert-octagon"></i></div>
                 </div>
-                <div class="progress mt-3" style="height: 4px;"><div class="progress-bar bg-danger" id="critical-progress" style="width: 0%"></div></div>
+                <div class="progress mt-3" style="height: 4px; background-color: #fee2e2;"><div class="progress-bar bg-danger" id="critical-progress" style="width: 0%"></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-lg-6 col-12 mb-3">
@@ -386,7 +409,7 @@
                     </div>
                     <div class="metric-icon bg-light-warning"><i class="ft-alert-circle"></i></div>
                 </div>
-                <div class="progress mt-3" style="height: 4px;"><div class="progress-bar bg-warning" id="warning-progress" style="width: 0%"></div></div>
+                <div class="progress mt-3" style="height: 4px; background-color: #fef3c7;"><div class="progress-bar bg-warning" id="warning-progress" style="width: 0%"></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-lg-6 col-12 mb-3">
@@ -398,7 +421,7 @@
                     </div>
                     <div class="metric-icon bg-light-info"><i class="ft-info"></i></div>
                 </div>
-                <div class="progress mt-3" style="height: 4px;"><div class="progress-bar bg-info" id="info-progress" style="width: 0%"></div></div>
+                <div class="progress mt-3" style="height: 4px; background-color: #dbeafe;"><div class="progress-bar bg-info" id="info-progress" style="width: 0%"></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-lg-6 col-12 mb-3">
@@ -410,24 +433,24 @@
                     </div>
                     <div class="metric-icon bg-light-success"><i class="ft-check-circle"></i></div>
                 </div>
-                <div class="progress mt-3" style="height: 4px;"><div class="progress-bar bg-success" id="normal-progress" style="width: 0%"></div></div>
+                <div class="progress mt-3" style="height: 4px; background-color: #dcfce7;"><div class="progress-bar bg-success" id="normal-progress" style="width: 0%"></div></div>
             </div>
         </div>
     </div>
 
     <!-- Charts Row -->
-    <div class="row mb-5">
+    <div class="row mb-4">
         <div class="col-lg-5 mb-4">
-            <div class="timber-table-card p-4 h-100">
-                <h5 class="text-bold-600 mb-4 text-center">Stock Level Distribution</h5>
+            <div class="premium-card p-4 h-100">
+                <h5 class="text-bold-600 mb-4 text-center text-primary">Stock Level Distribution</h5>
                 <div style="height: 250px;">
                     <canvas id="alertDoughnutChart"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-lg-7 mb-4">
-            <div class="timber-table-card p-4 h-100">
-                <h5 class="text-bold-600 mb-4">Alerts by Warehouse</h5>
+            <div class="premium-card p-4 h-100">
+                <h5 class="text-bold-600 mb-4 text-primary">Alerts by Warehouse</h5>
                 <div style="height: 250px;">
                     <canvas id="alertBarChart"></canvas>
                 </div>
@@ -442,8 +465,8 @@
         </div>
         <div class="row">
             <div class="col-md-3 mb-3">
-                <label>Warehouse</label>
-                <select class="form-control form-control-timber" id="warehouse-filter">
+                <label class="text-muted small font-weight-bold">Warehouse</label>
+                <select class="form-control filter-input-glass" id="warehouse-filter">
                     <option value="all">All Warehouses</option>
                     <?php foreach ($warehouses as $warehouse): ?>
                         <option value="<?php echo $warehouse['id']; ?>"><?php echo $warehouse['title']; ?></option>
@@ -451,8 +474,8 @@
                 </select>
             </div>
             <div class="col-md-3 mb-3">
-                <label>Category</label>
-                <select class="form-control form-control-timber" id="category-filter">
+                <label class="text-muted small font-weight-bold">Category</label>
+                <select class="form-control filter-input-glass" id="category-filter">
                     <option value="all">All Categories</option>
                     <?php foreach ($categories as $category): ?>
                         <option value="<?php echo $category['id']; ?>"><?php echo $category['title']; ?></option>
@@ -460,15 +483,15 @@
                 </select>
             </div>
             <div class="col-md-3 mb-3">
-                <label>Subcategory</label>
-                <select class="form-control form-control-timber" id="subcategory-filter">
+                <label class="text-muted small font-weight-bold">Subcategory</label>
+                <select class="form-control filter-input-glass" id="subcategory-filter">
                     <option value="all">All Subcategories</option>
                 </select>
             </div>
             <!-- NEW UNIT FILTER -->
             <div class="col-md-3 mb-3">
-                <label>Measurement Unit</label>
-                <select class="form-control form-control-timber" id="unit-filter">
+                <label class="text-muted small font-weight-bold">Measurement Unit</label>
+                <select class="form-control filter-input-glass" id="unit-filter">
                     <option value="all">All Units</option>
                     <?php foreach ($units as $unit): ?>
                         <option value="<?php echo $unit['code']; ?>"><?php echo $unit['name']; ?></option>
@@ -476,8 +499,8 @@
                 </select>
             </div>
             <div class="col-md-3 mb-3">
-                <label>Alert Level</label>
-                <select class="form-control form-control-timber" id="alert-level-filter">
+                <label class="text-muted small font-weight-bold">Alert Level</label>
+                <select class="form-control filter-input-glass" id="alert-level-filter">
                     <option value="all">All Levels</option>
                     <option value="critical">Critical</option>
                     <option value="warning">Warning</option>
@@ -486,8 +509,8 @@
                 </select>
             </div>
             <div class="col-md-3 mb-3">
-                <label>Inventory Logic</label>
-                <select class="form-control form-control-timber" id="minus-qty-filter">
+                <label class="text-muted small font-weight-bold">Inventory Logic</label>
+                <select class="form-control filter-input-glass" id="minus-qty-filter">
                     <option value="all">Show All</option>
                     <option value="yes">Negative Stock Only</option>
                     <option value="no">Positive Stock Only</option>
@@ -500,10 +523,11 @@
             </div>
         </div>
     </div>
+    
     <!-- Stock Volume Breakdown -->
     <div class="row mb-3">
         <div class="col-xl-4 col-md-4 col-12">
-            <div class="card bg-white shadow-sm border-0">
+            <div class="card bg-white shadow-sm border-0" style="border-radius: var(--radius-std);">
                 <div class="card-content">
                     <div class="card-body py-4">
                         <div class="media">
@@ -520,7 +544,7 @@
             </div>
         </div>
         <div class="col-xl-4 col-md-4 col-12">
-            <div class="card bg-white shadow-sm border-0">
+            <div class="card bg-white shadow-sm border-0" style="border-radius: var(--radius-std);">
                 <div class="card-content">
                     <div class="card-body py-4">
                         <div class="media">
@@ -537,7 +561,7 @@
             </div>
         </div>
         <div class="col-xl-4 col-md-4 col-12">
-            <div class="card bg-white shadow-sm border-0">
+            <div class="card bg-white shadow-sm border-0" style="border-radius: var(--radius-std);">
                 <div class="card-content">
                     <div class="card-body py-4">
                         <div class="media">
@@ -556,14 +580,14 @@
     </div>
 
     <!-- Main Table -->
-    <div class="timber-table-card">
+    <div class="premium-card">
         <div id="notify" class="alert alert-success m-3" style="display:none;">
             <a href="#" class="close" data-dismiss="alert">&times;</a>
             <div class="message"></div>
         </div>
         
         <div class="table-responsive">
-            <table id="alerts-table" class="table table-timber">
+            <table id="alerts-table" class="table table-premium">
                 <thead>
                     <tr>
                         <th>Product Details</th>
@@ -583,10 +607,10 @@
 <!-- Refined Modal -->
 <div class="modal fade" id="editAlertModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="border-radius: 20px; border: none;">
-            <div class="modal-header bg-primary text-white" style="border-radius: 20px 20px 0 0; background: linear-gradient(135deg, var(--timber-walnut), var(--timber-oak));">
-                <h5 class="modal-title font-weight-bold">Adjust Threshold</h5>
-                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title font-weight-bold text-primary">Adjust Threshold</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
             </div>
             <form id="editAlertForm">
                 <div class="modal-body p-4">
@@ -599,27 +623,27 @@
                     <div class="row">
                         <div class="col-6">
                             <label class="font-weight-bold small text-uppercase text-muted">Current Stock</label>
-                            <div class="h4" id="edit-current-qty-text">0</div>
+                            <div class="h4 text-primary" id="edit-current-qty-text">0</div>
                         </div>
                         <div class="col-6">
                              <label class="font-weight-bold small text-uppercase text-muted">Current Alert</label>
-                             <input type="text" class="form-control form-control-sm" id="edit-current-alert" readonly style="background:none; border:none; font-weight:bold;">
+                             <input type="text" class="form-control form-control-sm" id="edit-current-alert" readonly style="background:none; border:none; font-weight:bold; color: #ef4444;">
                         </div>
                     </div>
                     <hr>
                     
                     <div class="form-group mt-3">
                         <label class="font-weight-bold">New Threshold</label>
-                        <input type="number" class="form-control form-control-lg" id="edit-new-alert" name="alert_qty" step="0.001" min="0" required>
+                        <input type="number" class="form-control form-control-lg filter-input-glass" id="edit-new-alert" name="alert_qty" step="0.001" min="0" required>
                     </div>
                     
                     <div class="form-group">
                         <label>Reason for Change</label>
-                        <textarea class="form-control" id="edit-reason" name="reason" rows="2"></textarea>
+                        <textarea class="form-control filter-input-glass" id="edit-reason" name="reason" rows="2"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pb-4 pr-4">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-premium">Save Changes</button>
                 </div>
             </form>
@@ -630,10 +654,10 @@
 <!-- Details Modal -->
 <div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px;">
-            <div class="modal-header text-white" style="background: linear-gradient(135deg, #37474F, #455A64); border-radius: 20px 20px 0 0;">
-                <h5 class="modal-title"><i class="ft-info mr-2"></i>Product Details</h5>
-                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title text-primary"><i class="ft-info mr-2"></i>Product Details</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body p-0" id="productDetailsContent"></div>
         </div>
@@ -649,7 +673,7 @@ $(document).ready(function() {
     
     // Theme Defaults for Charts
     Chart.defaults.font.family = "'Montserrat', sans-serif";
-    Chart.defaults.color = '#5D4037';
+    Chart.defaults.color = '#334155';
     
     loadStatistics();
     loadCharts();
@@ -778,17 +802,17 @@ $(document).ready(function() {
                         var badgeClass = '';
                         var text = '';
                         switch(row.alert_level) {
-                            case 'critical': badgeClass='badge-danger'; text='CRITICAL'; break;
-                            case 'warning': badgeClass='badge-warning'; text='WARNING'; break;
-                            case 'info': badgeClass='badge-info'; text='LOW STOCK'; break;
-                            default: badgeClass='badge-success'; text='GOOD'; break;
+                            case 'critical': badgeClass='badge-psy badge-danger'; text='CRITICAL'; break;
+                            case 'warning': badgeClass='badge-psy badge-warning'; text='WARNING'; break;
+                            case 'info': badgeClass='badge-psy badge-info'; text='LOW STOCK'; break;
+                            default: badgeClass='badge-psy badge-success'; text='HEALTHY'; break;
                         }
-                        return '<span class="badge ' + badgeClass + ' px-3 py-2">' + text + '</span>';
+                        return '<span class="badge ' + badgeClass + '">' + text + '</span>';
                     }
                 },
                 { 
                     data: 'actions',
-                    className: 'text-right' // Actions already formatted in controller, but we restyled them in CSS
+                    className: 'text-right' // Actions already formatted in controller
                 }
             ],
             dom: '<"d-flex justify-content-between align-items-center mx-3 mt-3"l>rt<"d-flex justify-content-between align-items-center mx-3 my-3"ip>',
@@ -798,7 +822,7 @@ $(document).ready(function() {
             }
         });
     }
-
+    
     function reloadDataTable() {
         alertsTable.ajax.reload();
         loadStatistics();
@@ -859,10 +883,10 @@ $(document).ready(function() {
          doughnutChart = new Chart(ctx, {
              type: 'doughnut',
              data: {
-                 labels: ['Critical', 'Warning', 'Low', 'Good'],
+                 labels: ['Critical', 'Warning', 'Low', 'Healthy'],
                  datasets: [{
                      data: [data.critical, data.warning, data.low, data.normal],
-                     backgroundColor: ['#D32F2F', '#FFA000', '#1976D2', '#388E3C']
+                     backgroundColor: ['#ef4444', '#f59e0b', '#2563eb', '#16a34a']
                  }]
              },
              options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } }
@@ -877,8 +901,8 @@ $(document).ready(function() {
             data: {
                 labels: data.map(i => i.warehouse),
                 datasets: [
-                    { label: 'Critical', data: data.map(i => i.critical), backgroundColor: '#D32F2F', borderRadius: 5 },
-                    { label: 'Warning', data: data.map(i => i.warning), backgroundColor: '#FFA000', borderRadius: 5 }
+                    { label: 'Critical', data: data.map(i => i.critical), backgroundColor: '#ef4444', borderRadius: 4 },
+                    { label: 'Warning', data: data.map(i => i.warning), backgroundColor: '#f59e0b', borderRadius: 4 }
                 ]
             },
             options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
@@ -916,13 +940,13 @@ $(document).ready(function() {
                      var html = `
                         <div class="d-flex flex-column h-100">
                             <!-- Hero Section -->
-                            <div class="bg-gradient-x-primary p-4 text-white position-relative" style="background: linear-gradient(135deg, var(--timber-walnut), var(--timber-oak));">
+                            <div class="p-4 text-white position-relative" style="background: linear-gradient(135deg, var(--psy-accent-primary), var(--psy-text-primary)); border-radius: 6px 6px 0 0;">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h3 class="font-weight-bold text-white mb-0">${p.product_name}</h3>
                                         <div class="mt-2">
-                                            <span class="badge badge-light text-dark font-medium-1 mr-2"><i class="ft-tag"></i> ${show(p.product_code)}</span>
-                                            <span class="badge badge-${p.status_class} font-medium-1"><i class="ft-activity"></i> ${p.alert_status}</span>
+                                            <span class="badge badge-light text-primary font-medium-1 mr-2"><i class="ft-tag"></i> ${show(p.product_code)}</span>
+                                            <span class="badge badge-${p.status_class} font-medium-1 text-white border-0"><i class="ft-activity"></i> ${p.alert_status}</span>
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -936,16 +960,16 @@ $(document).ready(function() {
                             <div class="bg-white border-bottom">
                                 <ul class="nav nav-tabs nav-justified" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active font-weight-bold" data-toggle="tab" href="#tab-overview"><i class="ft-layers"></i> Overview</a>
+                                        <a class="nav-link active font-weight-bold text-primary" data-toggle="tab" href="#tab-overview"><i class="ft-layers"></i> Overview</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#tab-pricing"><i class="ft-dollar-sign"></i> Pricing</a>
+                                        <a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#tab-pricing"><i class="ft-dollar-sign"></i> Pricing</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#tab-specs"><i class="ft-maximize"></i> Dimensions</a>
+                                        <a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#tab-specs"><i class="ft-maximize"></i> Dimensions</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link font-weight-bold" data-toggle="tab" href="#tab-system"><i class="ft-server"></i> System Data</a>
+                                        <a class="nav-link font-weight-bold text-primary" data-toggle="tab" href="#tab-system"><i class="ft-server"></i> System Data</a>
                                     </li>
                                 </ul>
                             </div>
@@ -997,19 +1021,19 @@ $(document).ready(function() {
                                 <div class="tab-pane p-4" id="tab-pricing">
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
-                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom-primary border-3">
+                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom border-success">
                                                 <h6 class="text-muted text-uppercase small">Retail Price</h6>
                                                 <h2 class="text-success font-weight-bold mb-0">${money(p.product_price)}</h2>
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom-info border-3">
+                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom border-info">
                                                 <h6 class="text-muted text-uppercase small">Purchase Price</h6>
                                                 <h2 class="text-info font-weight-bold mb-0">${money(p.fproduct_price)}</h2>
                                             </div>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom-warning border-3">
+                                            <div class="bg-white p-3 rounded shadow-sm text-center border-bottom border-warning">
                                                 <h6 class="text-muted text-uppercase small">Tax Rate</h6>
                                                 <h2 class="text-warning font-weight-bold mb-0">${show(p.taxrate)}%</h2>
                                             </div>

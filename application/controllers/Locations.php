@@ -130,7 +130,10 @@ class Locations Extends CI_Controller
     {
         $id = $this->input->post('deleteid');
         if ($id) {
-
+            // Delete linked warehouses first
+            $this->db->delete('geopos_warehouse', array('loc' => $id));
+            
+            // Delete the location
             $this->db->delete('geopos_locations', array('id' => $id));
 
 

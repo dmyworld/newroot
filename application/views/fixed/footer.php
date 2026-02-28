@@ -50,6 +50,39 @@
 
 </script>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        if (typeof demo_status !== 'undefined' && demo_status.is_demo) {
+            // 1. Add usage indicator to page title or header
+            var indicator = $('<div class="alert alert-warning text-center mb-0" style="padding: 5px; font-size: 0.9rem; border-radius: 0;">' +
+                '<i class="fa fa-info-circle"></i> <strong>Demo Mode:</strong> ' + demo_status.name + ' usage: ' + demo_status.count + '/' + demo_status.limit + 
+                ' (Remaining: ' + demo_status.remaining + ') &nbsp; <a href="<?php echo base_url('settings/subscription'); ?>" class="btn btn-sm btn-danger py-0">Upgrade Now</a>' +
+                '</div>');
+            $('.content-wrapper').prepend(indicator);
 
+            // 2. Intercept "Add" or "Submit" actions if limit reached
+            if (demo_status.count >= demo_status.limit) {
+                // Intercept clicks on links that look like "Add"
+                $('a[href*="/add"]').on('click', function(e) {
+                    e.preventDefault();
+                    $('#modal-module-name').text(demo_status.name + ' Limit Reached');
+                    $('#subscriptionModal').modal('show');
+                });
+
+                // Intercept form submissions for creation
+                $('form').on('submit', function(e) {
+                    // Check if the current URL is an "add" page or action
+                    if (window.location.href.indexOf('/add') > -1 || window.location.href.indexOf('/create') > -1) {
+                         e.preventDefault();
+                         $('#modal-module-name').text(demo_status.name + ' Limit Reached');
+                         $('#subscriptionModal').modal('show');
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<?php $this->load->view('fixed/subscription_modal'); ?>
 </body>
 </html>

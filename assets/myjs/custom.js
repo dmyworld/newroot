@@ -2094,6 +2094,7 @@ $(document).on('click', ".select_pos_item", function (e) {
             '<input type="hidden" name="o_pquick[]" id="o_pquick-' + cvalue + '" value="' + $(this).attr('data-pquick') + '">' +
             '<input type="hidden" name="qty2[]" id="qty2-' + cvalue + '" value="' + $(this).attr('data-pquick') + '">' +
             '<input type="hidden" name="product_sqft[]" id="sqft-' + cvalue + '" value="' + $(this).attr('data-sqft') + '">' +
+            '<input type="hidden" name="alert[]" id="alert-' + cvalue + '" value="' + stock + '">' +
             '<input type="hidden" name="group_id[]" id="group_id-' + cvalue + '" value="' + $(this).attr('data-group_id') + '">' +
             '</tr>';
 

@@ -1,7 +1,0 @@
-Add method reached
-Rules set
-Validation failed or first load
-Customers fetched
-Suppliers fetched
-Branches fetched
-Views loaded

@@ -10,6 +10,7 @@ class Project_stock extends CI_Controller
         $this->load->model('project_stock_model');
         $this->load->model('projects_model');
         $this->load->model('products_model', 'products');
+        $this->load->model('categories_model');
         
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
@@ -21,6 +22,7 @@ class Project_stock extends CI_Controller
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = 'Issue Stock to Project';
         $data['projects'] = $this->projects_model->project_list_all();
+        $data['cat'] = $this->categories_model->category_list();
         // $data['warehouses']... if needed
         
         $this->load->view('fixed/header', $head);
@@ -53,5 +55,34 @@ class Project_stock extends CI_Controller
                  echo json_encode(array('status' => 'Error', 'message' => 'Error Issuing Stock'));
             }
         }
+    }
+
+    public function get_sub_categories()
+    {
+        $id = $this->input->post('id');
+        $result = $this->categories_model->category_sub_stock($id);
+        echo json_encode($result);
+    }
+
+    public function search_products()
+    {
+        $keyword = $this->input->post('keyword');
+        $cid = $this->input->post('cid');
+        $sub_cid = $this->input->post('sub_cid');
+        
+        $this->db->select('pid, product_name, product_price, code_type, product_code');
+        $this->db->like('product_name', $keyword);
+        
+        if($cid) {
+             $this->db->where('pcat', $cid);
+        }
+        if($sub_cid) {
+             $this->db->where('sub_id', $sub_cid);
+        }
+        
+        $this->db->limit(30);
+        $query = $this->db->get('geopos_products');
+        $result = $query->result_array();
+        echo json_encode($result);
     }
 }

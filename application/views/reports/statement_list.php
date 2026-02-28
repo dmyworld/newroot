@@ -16,14 +16,13 @@
                 <thead>
                 <tr>
                     <th><?php echo $this->lang->line('Date') ?></th>
+                    <th><?php echo $this->lang->line('Account') ?></th>
                     <th><?php echo $this->lang->line('Description') ?></th>
-
+                    <th><?php echo $this->lang->line('Method') ?></th>
                     <th><?php echo $this->lang->line('Debit') ?></th>
                     <th><?php echo $this->lang->line('Credit') ?></th>
-
                     <th><?php echo $this->lang->line('Balance') ?></th>
-
-
+                    <th><?php echo $this->lang->line('Action') ?></th>
                 </tr>
                 </thead>
                 <tbody id="entries">
@@ -32,14 +31,13 @@
                 <tfoot>
                 <tr>
                     <th><?php echo $this->lang->line('Date') ?></th>
+                    <th><?php echo $this->lang->line('Account') ?></th>
                     <th><?php echo $this->lang->line('Description') ?></th>
-
+                    <th><?php echo $this->lang->line('Method') ?></th>
                     <th><?php echo $this->lang->line('Debit') ?></th>
                     <th><?php echo $this->lang->line('Credit') ?></th>
-
                     <th><?php echo $this->lang->line('Balance') ?></th>
-
-
+                    <th><?php echo $this->lang->line('Action') ?></th>
                 </tr>
                 </tfoot>
             </table>
@@ -51,7 +49,7 @@
 
     $(document).ready(function () {
 
-        $('#entries').html('<td class="text-lg-center" colspan="5">Data loading...</td>');
+        $('#entries').html('<td class="text-lg-center" colspan="8">Data loading...</td>');
 
         $.ajax({
 
@@ -86,4 +84,29 @@
         });
     });
 </script>
+
+<div id="delete_model" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title"><?php echo $this->lang->line('Delete') ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p><?php echo $this->lang->line('delete this transaction') ?></p>
+                <p class="text-danger">Note: If this is a dual-entry transaction, the linked record will also be deleted to maintain balance.</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="object-id" value="">
+                <input type="hidden" id="action-url" value="transactions/delete_i">
+                <button type="button" data-dismiss="modal" class="btn btn-primary"
+                        id="delete-confirm"><?php echo $this->lang->line('Delete') ?></button>
+                <button type="button" data-dismiss="modal"
+                        class="btn"><?php echo $this->lang->line('Cancel') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
 

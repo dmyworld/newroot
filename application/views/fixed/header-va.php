@@ -2,59 +2,50 @@
           href="<?= assets_url() ?>app-assets/<?= LTR ?>/core/menu/menu-types/vertical-menu-modern.css">
     <style>
         :root {
-            --primary-color: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.5);
-            --bg-dark: #0f172a;
-            --sidebar-bg: rgba(15, 23, 42, 0.85);
-            --sidebar-hover: rgba(255, 255, 255, 0.05);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
+            /* Luxury Command Palette - "The Boardroom" */
+            --timber-dark: #020617;        /* Midnight Obsidian - Main Background */
+            --timber-panel: #0f172a;       /* Deep Gunmetal - Panel Background */
+            --timber-accent: #3b82f6;      /* Luxury Blue - Primary Accent */
+            --timber-green: #22c55e;       /* Life Green - Success/Growth */
+            --timber-text: #f8fafc;        /* Platinum White - Primary Text */
+            --timber-text-muted: #94a3b8;  /* Silver - Secondary Text */
+            --timber-border: rgba(59, 130, 246, 0.15); /* Subtle Blue Edge */
+            
+            /* High-End Glassmorphism */
+            --glass-bg: rgba(15, 23, 42, 0.85); /* Dark Slate Glass */
+            --glass-border: rgba(255, 255, 255, 0.05); /* Diamond Cut Edge */
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            --blue-glow: 0 0 15px rgba(59, 130, 246, 0.3);
+
+            --primary-color: var(--timber-accent);
+            --accent-glow: var(--blue-glow);
+            --bg-dark: var(--timber-dark);
+            --sidebar-bg: rgba(2, 6, 23, 0.95);
+            --sidebar-hover: rgba(59, 130, 246, 0.08);
+            --text-primary: var(--timber-text);
+            --text-secondary: var(--timber-text-muted);
             --transition-speed: 0.4s;
-            --glass-bg: rgba(15, 23, 42, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08); /* Updated glass border */
-            --glass-reflection: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-
-            /* Alive Tokens */
-            --glow-pulse: 0 0 15px var(--accent-glow);
-            --float-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-
-            /* Section Specific Colors */
-            --color-erp: #3b82f6;
-            --color-hr: #10b981;
-            --color-services: #8b5cf6;
-            --color-tools: #f59e0b;
-            --color-data: #ef4444;
-        --color-settings: #06b6d4;
-        --color-default: var(--primary-color);
+            
+            /* Section Specific Colors (Premium Palette) */
+            --color-erp: #3b82f6;      /* Blue */
+            --color-hr: #22c55e;       /* Life Green */
+            --color-services: #8b5cf6; /* Royal Purple */
+            --color-tools: #f59e0b;    /* Amber */
+            --color-data: #ef4444;     /* Crimson */
+            --color-settings: #06b6d4; /* Sapphire */
+            --color-default: var(--primary-color);
         }
 
         /* Alive Keyframes */
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes glowPulse {
-        0% { filter: drop-shadow(0 0 5px rgba(var(--section-accent-rgb, 59, 130, 246), 0.5)); transform: scale(1); }
-        50% { filter: drop-shadow(0 0 15px rgba(var(--section-accent-rgb, 59, 130, 246), 0.8)); transform: scale(1.1); }
-        100% { filter: drop-shadow(0 0 5px rgba(var(--section-accent-rgb, 59, 130, 246), 0.5)); transform: scale(1); }
-    }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-3px); }
-            100% { transform: translateY(0px); }
+            0% { filter: drop-shadow(0 0 5px rgba(var(--section-accent-rgb, 59, 130, 246), 0.5)); transform: scale(1); }
+            50% { filter: drop-shadow(0 0 15px rgba(var(--section-accent-rgb, 59, 130, 246), 0.8)); transform: scale(1.1); }
+            100% { filter: drop-shadow(0 0 5px rgba(var(--section-accent-rgb, 59, 130, 246), 0.5)); transform: scale(1); }
         }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        @keyframes textExpand {
-            from { letter-spacing: normal; transform: translateX(0); }
-            to { letter-spacing: 0.5px; transform: translateX(3px); }
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-3px); } 100% { transform: translateY(0px); } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes textExpand { from { letter-spacing: normal; transform: translateX(0); } to { letter-spacing: 0.5px; transform: translateX(3px); } }
 
         .main-menu.menu-dark {
             background: var(--sidebar-bg) !important;
@@ -83,14 +74,14 @@
 
         .navigation li {
             position: relative;
-            margin: 6px 14px;
+            margin: 0px 14px;
             border-radius: 10px;
             overflow: hidden;
             transition: all var(--transition-speed);
         }
 
         .navigation li a {
-            padding: 12px 18px !important;
+            padding: 4px 18px !important;
             display: flex !important;
             align-items: center;
             color: var(--text-secondary) !important;
@@ -131,20 +122,96 @@
             z-index: 5;
         }
 
+        .navigation li a {
+            padding: 12px 18px !important;
+            display: flex !important;
+            align-items: center;
+            color: var(--text-secondary) !important;
+            transition: all var(--transition-speed);
+            position: relative;
+            z-index: 1;
+        }
+
+        .navigation li.active > a, .navigation li:hover > a {
+            background: var(--sidebar-hover) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .navigation li.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--glass-reflection);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .navigation li.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 4px;
+            background: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 15px var(--accent-glow);
+            z-index: 5;
+        }
+
         .navigation li i {
-            font-size: 1.15rem;
-            width: 38px;
-            height: 38px;
+            font-size: 1.4rem;
+            width: 42px;
+            height: 42px;
             display: flex !important;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             z-index: 2;
+        }
+
+        /* Collapsed Menu Icon Visibility & Stability */
+        body.menu-collapsed .main-menu.menu-dark .navigation > li > a {
+            justify-content: center !important;
+            padding: 8px 0 !important;
+        }
+
+        body.menu-collapsed .main-menu.menu-dark .navigation > li > a i {
+            margin-right: 0 !important;
+            width: 42px !important;
+            height: 42px !important;
+            font-size: 1.4rem !important;
+            border-radius: 12px;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            transition: margin 0.3s ease;
+        }
+
+        body.menu-collapsed .main-menu:hover .navigation > li > a {
+            justify-content: flex-start !important;
+            padding-left: 14px !important;
+        }
+
+        body.menu-collapsed .main-menu:hover .navigation > li > a i {
+            margin-right: 15px !important;
+        }
+
+        body.menu-collapsed .navigation li span { display: none !important; }
+        body.menu-collapsed .main-menu:hover .navigation li span { display: inline-block !important; }
+
+        body.menu-collapsed .main-menu.menu-dark .navigation > li:hover > a i {
+            transform: scale(1.1) !important;
+            background: rgba(var(--section-accent-rgb, 59, 130, 246), 0.2) !important;
+            box-shadow: 0 0 15px rgba(var(--section-accent-rgb, 59, 130, 246), 0.4) !important;
         }
 
         .navigation li:hover i {
@@ -155,15 +222,8 @@
             box-shadow: 0 5px 15px rgba(var(--section-accent-rgb, 59, 130, 246), 0.3);
         }
 
-        .navigation li span {
-            transition: all 0.4s ease;
-            font-weight: 500;
-        }
-
-        .navigation li:hover span {
-            animation: textExpand 0.4s forwards;
-            color: var(--text-primary) !important;
-        }
+        .navigation li span { transition: all 0.4s ease; font-weight: 500; }
+        .navigation li:hover span { animation: textExpand 0.4s forwards; color: var(--text-primary) !important; }
 
         .navigation li.active i {
             background: linear-gradient(135deg, var(--section-accent), rgba(var(--section-accent-rgb), 0.6)) !important;
@@ -191,17 +251,11 @@
             top: 0;
             height: 100%;
             width: 2px;
-            background: linear-gradient(to bottom, var(--primary-color), transparent); /* Changed to primary-color */
+            background: linear-gradient(to bottom, var(--primary-color), transparent);
             opacity: 0.5;
         }
 
-        .navigation li .menu-content li {
-            margin: 2px 8px;
-            border-radius: 6px;
-            opacity: 0;
-            animation: slideIn 0.4s ease forwards;
-        }
-
+        .navigation li .menu-content li { margin: 2px 8px; border-radius: 6px; opacity: 0; animation: slideIn 0.4s ease forwards; }
         .navigation li.open .menu-content li:nth-child(1) { animation-delay: 0.1s; }
         .navigation li.open .menu-content li:nth-child(2) { animation-delay: 0.15s; }
         .navigation li.open .menu-content li:nth-child(3) { animation-delay: 0.2s; }
@@ -222,13 +276,9 @@
         .navigation li.active > a {
             background: rgba(var(--section-accent-rgb, 59, 130, 246), 0.1) !important;
             color: var(--text-primary) !important;
-            border-left: 3px solid var(--section-accent, var(--primary-color));
         }
 
-        .navigation li.active > a i {
-            color: var(--section-accent, var(--primary-color)) !important;
-            opacity: 1;
-        }
+        .navigation li.active > a i { color: var(--section-accent, var(--primary-color)) !important; opacity: 1; }
 
         .navigation li .menu-content li.active a {
             background: rgba(var(--section-accent-rgb, 59, 130, 246), 0.15) !important;
@@ -244,81 +294,95 @@
             animation: float 2s infinite ease-in-out;
         }
 
-        .navigation li .menu-content li a:hover {
-            opacity: 1;
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.05) !important;
-        }
-
-        .navigation li .menu-content li a i {
-            font-size: 0.9rem;
-            margin-right: 10px;
-            width: 18px;
-        }
+        .navigation li .menu-content li a:hover { opacity: 1; transform: translateX(5px); background: rgba(255, 255, 255, 0.05) !important; }
+        .navigation li .menu-content li a i { font-size: 0.9rem; margin-right: 10px; width: 18px; }
 
         /* Modern Scrollbar */
-        .main-menu-content::-webkit-scrollbar {
-            width: 5px;
-        }
-        .main-menu-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .main-menu-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            border: 1px solid transparent;
-            background-clip: padding-box;
-        }
-        .main-menu-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .main-menu-content::-webkit-scrollbar { width: 5px; }
+        .main-menu-content::-webkit-scrollbar-track { background: transparent; }
+        .main-menu-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid transparent; background-clip: padding-box; }
+        .main-menu-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
         /* User Section Refinement */
-        .navbar-header {
-            background: var(--sidebar-bg) !important;
-            padding: 1.2rem 0;
-            border-bottom: 1px solid var(--glass-border);
+        .navbar-header { 
+            background: var(--timber-dark) !important; 
+            padding: 0 !important; 
+            border-bottom: 1px solid var(--glass-border); 
+            height: 56px !important;
+            width: 300px !important; /* Explicit default width for expanded state */
+       
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        .brand-logo {
-            filter: drop-shadow(0 0 10px var(--accent-glow));
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .brand-logo { 
+          
+            width: 100% !important;
+            height: 100% !important;
+            padding: 0 !important;
+            filter: drop-shadow(0 0 10px var(--accent-glow)); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
 
-        .brand-logo:hover {
-            transform: translateY(-2px) scale(1.05);
-            filter: drop-shadow(0 5px 15px var(--accent-glow));
+        .brand-logo img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+          
+            padding: 0 !important; 
+            margin: 0 !important;
+        }
+
+        .brand-logo:hover { transform: translateY(-2px); filter: drop-shadow(0 5px 15px var(--accent-glow)); }
+
+        /* Ensure Navbar Header expands with menu */
+        body.vertical-layout.vertical-menu-modern.menu-expanded .navbar .navbar-header {
+            width: 300px !important;
         }
 
         /* Header Navbar Glassmorphism */
         .header-navbar {
-            background: rgba(15, 23, 42, 0.8) !important;
-            backdrop-filter: blur(15px) saturate(180%) !important;
-            border-bottom: 1px solid var(--glass-border) !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Kept original box-shadow */
+            background: rgba(2, 6, 23, 0.9) !important;
+            backdrop-filter: blur(20px) saturate(180%) !important;
+            border-bottom: 1px solid var(--timber-border) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
         }
 
-        .header-navbar .navbar-header {
-            background: transparent !important;
-        }
+        .header-navbar .navbar-header { background: transparent !important; }
+        .header-navbar .navbar-container { padding: 0 1.5rem; }
 
-        .header-navbar .navbar-container {
-            padding: 0 1.5rem;
-        }
-
-        .nav-item .btn-info {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #2563eb 100%) !important;
+        .nav-item .btn-pos {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 10px !important;
+            border-radius: 12px !important;
             letter-spacing: 0.5px;
-            font-weight: 600;
+            font-weight: 700;
             overflow: hidden;
             position: relative;
+            color: white !important;
         }
 
-        .nav-item .btn-info::after {
+        .nav-item .btn-alert {
+            background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px !important;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            overflow: hidden;
+            position: relative;
+            color: white !important;
+        }
+
+        .nav-item .btn-pos:hover, .nav-item .btn-alert:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .nav-item .btn-pos::after, .nav-item .btn-alert::after {
             content: '';
             position: absolute;
             top: 0;
@@ -336,30 +400,17 @@
         }
 
         /* Top Bar Icons Hover */
-        .header-navbar .nav-link-label i {
-            transition: all 0.3s ease;
-        }
-
+        .header-navbar .nav-link-label i { transition: all 0.3s ease; }
         .header-navbar .nav-link-label:hover i {
-            color: var(--primary-color) !important;
-            animation: bounce 0.6s ease-in-out;
-            filter: drop-shadow(0 0 8px var(--accent-glow));
+            color: var(--timber-accent) !important;
+            transform: translateY(-2px) scale(1.1);
+            filter: drop-shadow(0 0 10px var(--gold-glow));
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px) scale(1.1); }
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px) scale(1.1); } }
 
-        .header-navbar .nav-link span, 
-        .header-navbar .btn-info {
-            transition: all 0.3s ease;
-        }
-
-        .header-navbar .nav-link:hover span {
-            letter-spacing: 0.5px;
-            color: var(--primary-color) !important;
-        }
+        .header-navbar .nav-link span, .header-navbar .btn-info { transition: all 0.3s ease; }
+        .header-navbar .nav-link:hover span { letter-spacing: 0.5px; color: var(--primary-color) !important; }
 
         /* Avatar & Badges Polishing */
         .avatar-online i {
@@ -380,14 +431,8 @@
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
-        .badge-danger {
-            background: linear-gradient(135deg, #ef4444, #991b1b) !important;
-            animation: glowPulse 2s infinite !important;
-        }
-
-        .badge-info {
-            background: linear-gradient(135deg, #0ea5e9, #0369a1) !important;
-        }
+        .badge-danger { background: linear-gradient(135deg, #ef4444, #991b1b) !important; animation: glowPulse 2s infinite !important; }
+        .badge-info { background: linear-gradient(135deg, #0ea5e9, #0369a1) !important; }
 
         /* Top Search Polish */
         .header-navbar .search-input input {
@@ -407,23 +452,10 @@
         }
 
         /* Layout Fix for Fixed Sidebar */
-        body.menu-expanded .app-content {
-            margin-left: 260px !important;
-            transition: margin-left var(--transition-speed);
-        }
-        body.menu-collapsed .app-content {
-            margin-left: 80px !important;
-            transition: margin-left var(--transition-speed);
-        }
-        .header-navbar.navbar-fixed {
-            left: 260px !important;
-            width: calc(100% - 260px) !important;
-            transition: all var(--transition-speed);
-        }
-        body.menu-collapsed .header-navbar.navbar-fixed {
-            left: 80px !important;
-            width: calc(100% - 80px) !important;
-        }
+        body.menu-expanded .app-content { margin-left: 300px !important; }
+        body.menu-collapsed .app-content { margin-left: 60px !important; }
+        body.menu-expanded .header-navbar.navbar-fixed { left: 0 !important; width: 100% !important; }
+        body.menu-collapsed .header-navbar.navbar-fixed { left: 0 !important; width: 100% !important; }
 
         /* Section Dynamic Overrides */
         .section-erp { --section-accent: var(--color-erp); --section-accent-rgb: 59, 130, 246; }
@@ -431,8 +463,8 @@
         .section-services { --section-accent: var(--color-services); --section-accent-rgb: 139, 92, 246; }
         .section-tools { --section-accent: var(--color-tools); --section-accent-rgb: 245, 158, 11; }
         .section-data { --section-accent: var(--color-data); --section-accent-rgb: 239, 68, 68; }
-    .section-settings { --section-accent: var(--color-settings); --section-accent-rgb: 6, 182, 212; }
-    .section-default { --section-accent: var(--color-default); --section-accent-rgb: 59, 130, 246; }
+        .section-settings { --section-accent: var(--color-settings); --section-accent-rgb: 6, 182, 212; }
+        .section-default { --section-accent: var(--color-default); --section-accent-rgb: 59, 130, 246; }
 
         .navigation-header {
             color: var(--text-secondary);
@@ -463,14 +495,12 @@
 
         /* Update Active-Pill with Section Accent */
         .menu-item.active > a {
-            background: linear-gradient(135deg, 
-                rgba(var(--section-accent-rgb, 59, 130, 246), 0.15), 
-                rgba(var(--section-accent-rgb, 59, 130, 246), 0.05)
-            ) !important;
+            background: linear-gradient(135deg, rgba(var(--section-accent-rgb, 59, 130, 246), 0.15), rgba(var(--section-accent-rgb, 59, 130, 246), 0.05) ) !important;
             color: var(--section-accent, #3b82f6) !important;
             border-right: 3px solid var(--section-accent, #3b82f6);
             box-shadow: -10px 0 20px rgba(0, 0, 0, 0.2);
         }
+
         /* Section Specific Personalities */
         .section-erp.active > a i, .section-erp.menu-item.active > a i { animation: glowPulse 2s infinite; }
         .section-hr.active > a i, .section-hr.menu-item.active > a i { filter: drop-shadow(0 0 8px var(--color-hr)); animation: float 3s infinite ease-in-out; }
@@ -478,17 +508,9 @@
         .section-tools.active > a i, .section-tools.menu-item.active > a i { transform: rotate(10deg); color: var(--color-tools) !important; filter: drop-shadow(0 0 5px var(--color-tools)); }
         .section-data.active > a i, .section-data.menu-item.active > a i { animation: heartbeat 1.5s infinite; filter: drop-shadow(0 0 8px var(--color-data)); }
 
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.15); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.15); }
-            70% { transform: scale(1); }
-        }
-        .sidebar-search-container {
-            padding: 15px 18px;
-            margin-bottom: 10px;
-        }
+        @keyframes heartbeat { 0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); } 42% { transform: scale(1.15); } 70% { transform: scale(1); } }
+
+        .sidebar-search-container { padding: 15px 18px; margin-bottom: 10px; }
         .sidebar-search {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -501,6 +523,7 @@
             backdrop-filter: blur(5px);
             margin: 10px 0;
         }
+
         .sidebar-search:focus {
             outline: none;
             background: rgba(255, 255, 255, 0.1);
@@ -546,37 +569,14 @@
             box-shadow: 0 5px 15px rgba(var(--section-accent-rgb, 59, 130, 246), 0.3);
         }
 
-        .sidebar-footer a.social-icon i {
-            font-size: 1.15rem;
-            margin: 0 !important;
-            width: auto !important;
-            height: auto !important;
-            background: none !important;
-            border: none !important;
-            box-shadow: none !important;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-footer a.social-icon:hover i {
-            transform: rotate(15deg);
-        }
+        .sidebar-footer a.social-icon i { font-size: 1.15rem; margin: 0 !important; width: auto !important; height: auto !important; background: none !important; border: none !important; box-shadow: none !important; transition: transform 0.3s ease; }
+        .sidebar-footer a.social-icon:hover i { transform: rotate(15deg); }
 
         /* Top Navbar Social Style */
-        .social-icon-top {
-            padding: 0 8px !important;
-            transition: all 0.3s ease;
-        }
-
-        .social-icon-top i {
-            font-size: 1.1rem !important;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        }
-
-        .social-icon-top:hover i {
-            animation: bounce 0.6s ease-in-out;
-            color: var(--primary-color) !important;
-            filter: drop-shadow(0 0 8px var(--accent-glow));
-        }
+        .social-icon-top { padding: 0 10px !important; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+        .social-icon-top i { font-size: 1.4rem !important; transition: all 0.3s ease !important; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .social-icon-top:hover { transform: translateY(-4px) scale(1.2) rotate(8deg); }
+        .social-icon-top:hover i { filter: drop-shadow(0 0 15px var(--timber-accent)) !important; color: var(--timber-accent) !important; }
 
         /* Dropdown Enhancements */
         .dropdown-menu {
@@ -589,82 +589,45 @@
             padding: 10px;
         }
 
-        .dropdown-item {
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            color: var(--text-secondary) !important;
-            padding: 10px 15px;
+        .dropdown-item { border-radius: 8px; transition: all 0.2s ease; color: var(--text-secondary) !important; padding: 10px 15px; }
+
+        /* Menu Toggle Enhancement */
+        .menu-toggle {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 50% !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid var(--glass-border) !important;
+            padding: 0 !important;
+            margin: 0 10px !important;
         }
 
+        .menu-toggle i { font-size: 1.5rem !important; color: var(--timber-text-muted) !important; transition: all 0.3s ease !important; }
+        .menu-toggle:hover { background: rgba(212, 175, 55, 0.1) !important; border-color: var(--timber-accent) !important; transform: scale(1.1) rotate(5deg); }
+        .menu-toggle:hover i { color: var(--timber-accent) !important; filter: drop-shadow(0 0 8px var(--timber-accent)); }
 
-        :root {
-            /* Timber Professional Palette */
-            --timber-dark: #1a1412;        /* Deepest Oak - Main Background */
-            --timber-panel: #261e1b;       /* Dark Walnut - Panel Background */
-            --timber-accent: #e6b800;      /* Golden Oak - Primary Accent */
-            --timber-green: #3a5a40;       /* Forest Pine - Secondary Accent */
-            --timber-text: #f0f0f0;        /* White Birch - Primary Text */
-            --timber-text-muted: #a8a29e;  /* Ash - Secondary Text */
-            --timber-border: rgba(230, 184, 0, 0.15); /* Golden Glow Border */
-            
-            /* Glassmorphism Variables */
-            --glass-bg: rgba(38, 30, 27, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+        /* Fixed the is-active state mentioned by user */
+        .menu-toggle.is-active { background: rgba(212, 175, 55, 0.15) !important; border-color: var(--timber-accent) !important; box-shadow: 0 0 20px rgba(212, 175, 55, 0.25) !important; }
+        .menu-toggle.is-active i { color: var(--timber-accent) !important; transform: rotate(90deg) !important; animation: glowPulse 2s infinite !important; }
 
         /* Navbar Global Overrides */
-        .header-navbar.navbar-semi-dark .navbar-header {
-            background: var(--timber-dark) !important;
-            border-right: 1px solid var(--timber-border);
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-        }
-
-        .header-navbar .navbar-header .navbar-brand .brand-logo {
-            filter: drop-shadow(0 0 5px var(--timber-accent));
-            transition: all 0.3s ease;
-        }
-
-        .header-navbar.navbar-semi-dark {
-            background: linear-gradient(135deg, var(--timber-dark) 0%, var(--timber-panel) 100%) !important;
-            border-bottom: 1px solid var(--timber-border);
-        }
+        .header-navbar.navbar-semi-dark .navbar-header { background: var(--timber-dark) !important; border-right: 1px solid var(--timber-border); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+        .header-navbar .navbar-header .navbar-brand .brand-logo { filter: drop-shadow(0 0 5px var(--timber-accent)); transition: all 0.3s ease; }
+        .header-navbar.navbar-semi-dark { background: linear-gradient(135deg, var(--timber-dark) 0%, var(--timber-panel) 100%) !important; border-bottom: 1px solid var(--timber-border); }
 
         /* Nav Links */
-        .header-navbar .nav-link {
-            color: var(--timber-text) !important;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .header-navbar .nav-link:hover {
-            color: var(--timber-accent) !important;
-            text-shadow: 0 0 10px rgba(230, 184, 0, 0.4);
-        }
-
-        .header-navbar .nav-link i {
-            font-size: 1.2rem;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .header-navbar .nav-link:hover i {
-            transform: translateY(-2px);
-            color: var(--timber-accent) !important;
-        }
+        .header-navbar .nav-link { color: var(--timber-text) !important; transition: all 0.3s ease; position: relative; }
+        .header-navbar .nav-link:hover { color: var(--timber-accent) !important; text-shadow: 0 0 10px rgba(230, 184, 0, 0.4); }
+        .header-navbar .nav-link i { font-size: 1.2rem; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .header-navbar .nav-link:hover i { transform: translateY(-2px); color: var(--timber-accent) !important; }
 
         /* Buttons in Nav */
-        .header-navbar .btn-info {
-            background: linear-gradient(45deg, var(--timber-green), #588157) !important;
-            border: none;
-            box-shadow: 0 4px 15px rgba(58, 90, 64, 0.4);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .header-navbar .btn-info:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(58, 90, 64, 0.6);
-        }
+        .header-navbar .btn-info { background: linear-gradient(45deg, var(--timber-green), #588157) !important; border: none; box-shadow: 0 4px 15px rgba(58, 90, 64, 0.4); font-weight: 600; letter-spacing: 0.5px; }
+        .header-navbar .btn-info:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(58, 90, 64, 0.6); }
 
         /* Mega Dropdown - Timber Style */
         .mega-dropdown-menu {
@@ -680,351 +643,206 @@
         }
 
         /* Mega Dropdown Sections */
-        .mega-dropdown-menu .card-header .text-uppercase {
-            color: var(--timber-accent) !important;
-            font-weight: 700;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .mega-dropdown-menu .card-header i {
-            color: var(--timber-accent) !important;
-            background: rgba(230, 184, 0, 0.1);
-            padding: 8px;
-            border-radius: 6px;
-        }
-
-        .mega-dropdown-menu .dropdown-item {
-            color: var(--timber-text-muted) !important;
-            padding: 10px 15px !important;
-            border-radius: 6px;
-            margin-bottom: 2px;
-            transition: all 0.2s ease;
-            border-left: 2px solid transparent;
-        }
-
-        .mega-dropdown-menu .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.03) !important;
-            color: var(--timber-text) !important;
-            border-left: 2px solid var(--timber-accent);
-            padding-left: 20px !important;
-        }
-
-        .mega-dropdown-menu .dropdown-item i {
-            color: var(--timber-green) !important;
-            opacity: 0.7;
-        }
+        .mega-dropdown-menu .card-header .text-uppercase { color: var(--timber-accent) !important; font-weight: 700; letter-spacing: 1px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; }
+        .mega-dropdown-menu .card-header i { color: var(--timber-accent) !important; background: rgba(230, 184, 0, 0.1); padding: 8px; border-radius: 6px; }
+        .mega-dropdown-menu .dropdown-item { color: var(--timber-text-muted) !important; padding: 10px 15px !important; border-radius: 6px; margin-bottom: 2px; transition: all 0.2s ease; border-left: 2px solid transparent; }
+        .mega-dropdown-menu .dropdown-item:hover { background: rgba(255, 255, 255, 0.03) !important; color: var(--timber-text) !important; border-left: 2px solid var(--timber-accent); padding-left: 20px !important; }
+        .mega-dropdown-menu .dropdown-item i { color: var(--timber-green) !important; opacity: 0.7; }
 
         /* Horizontal Menu (if active) */
-        .main-menu.menu-dark {
-            background: var(--timber-panel) !important;
-            border-right: 1px solid var(--timber-border);
-        }
-        
-        .main-menu.menu-dark .navigation > li.active > a {
-            background: linear-gradient(90deg, rgba(230, 184, 0, 0.1), transparent) !important;
-            border-left: 4px solid var(--timber-accent);
-        }
+        .main-menu.menu-dark { background: var(--timber-panel) !important; border-right: 1px solid var(--timber-border); }
+        .main-menu.menu-dark .navigation > li.active > a { background: linear-gradient(90deg, rgba(230, 184, 0, 0.1), transparent) !important; border-left: 4px solid var(--timber-accent); }
 
         /* Clean up existing overrides */
         .dropdown-menu-header { border-bottom: 1px solid var(--glass-border); }
         .dropdown-item:active { background-color: var(--timber-accent) !important; }
 
         /* ================================================================================= */
-        /* TIMBER SIDEBAR REDESIGN                                                           */
+        /* LUXURY COMMAND SIDEBAR REDESIGN */
         /* ================================================================================= */
-
         /* Main Menu Container */
         .main-menu.menu-dark {
-            background-color: var(--timber-panel) !important;
-            background-image: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.1) 100%);
-            border-right: 1px solid var(--timber-border);
-            box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+            background-color: var(--timber-dark) !important;
+            background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.4) 100%), radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent 40%);
+            border-right: 1px solid var(--glass-border);
+            box-shadow: 10px 0 40px rgba(0,0,0,0.6);
         }
 
         /* Section Headers (e.g., MAIN, ERP OPERATIONS) */
         .main-menu.menu-dark .navigation > .navigation-header {
             color: var(--timber-accent) !important;
-            font-weight: 800;
-            font-size: 0.75rem;
-            letter-spacing: 1.5px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
             padding: 24px 24px 8px 24px;
-            opacity: 1;
+            opacity: 0.9;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
         }
-        
-        .main-menu.menu-dark .navigation > .navigation-header span {
-             border-bottom: 2px solid rgba(230, 184, 0, 0.3);
-             padding-bottom: 4px;
-        }
+
+        .main-menu.menu-dark .navigation > .navigation-header span { border-bottom: 2px solid rgba(59, 130, 246, 0.2); padding-bottom: 4px; }
 
         /* Top Level Menu Items */
         .main-menu.menu-dark .navigation > li > a {
-            color: var(--timber-text) !important;
+            color: var(--timber-text-muted) !important;
             padding: 12px 24px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-            margin: 2px 0;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-left: 3px solid transparent;
+            margin: 4px 0;
+            position: relative;
+            overflow: hidden;
         }
 
         .main-menu.menu-dark .navigation > li:not(.active) > a:hover {
-            background: rgba(58, 90, 64, 0.2);
-            color: #fff !important;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent);
+            color: var(--timber-text) !important;
             padding-left: 28px;
+            border-left-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Active Top Level Item */
+        /* Active Top Level Item - The "Blue Standard" */
         .main-menu.menu-dark .navigation > li.active > a {
-            background: linear-gradient(90deg, rgba(230, 184, 0, 0.15), transparent) !important;
-            border-left: 4px solid var(--timber-accent);
-            color: var(--timber-accent) !important;
-            box-shadow: inset 5px 0 10px -5px rgba(230, 184, 0, 0.2);
-        }
-        
-        .main-menu.menu-dark .navigation > li.active > a i {
-             color: var(--timber-accent) !important;
-             filter: drop-shadow(0 0 5px rgba(230, 184, 0, 0.6));
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent) !important;
+            border-left: 3px solid var(--timber-accent);
+            color: var(--timber-text) !important;
+            box-shadow: inset 10px 0 20px -10px rgba(59, 130, 246, 0.15);
         }
 
-        /* Icon Styling */
-        .main-menu.menu-dark .navigation > li > a i {
-            color: var(--timber-text-muted);
-            font-size: 1.1rem;
-            margin-right: 12px;
-            transition: all 0.3s;
+        .main-menu.menu-dark .navigation > li.active > a::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+            animation: shimmer 3s infinite;
         }
-        
-        .main-menu.menu-dark .navigation > li:hover > a i {
-            color: var(--timber-accent);
+
+        .main-menu.menu-dark .navigation > li.active > a i {
+            color: var(--timber-accent) !important;
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
             transform: scale(1.1);
         }
 
-        /* ================================================================================= */
-        /* NESTED MENU STYLING (Level 2 & 3)                                                 */
-        /* ================================================================================= */
+        /* Icon Styling */
+        .main-menu.menu-dark .navigation > li > a i { color: var(--timber-text-muted); font-size: 1.1rem; margin-right: 14px; transition: all 0.4s ease; }
+        .main-menu.menu-dark .navigation > li:hover > a i { color: var(--timber-accent); transform: scale(1.1); }
 
+        /* ================================================================================= */
+        /* NESTED MENU STYLING (Level 2 & 3) */
+        /* ================================================================================= */
         /* Level 2 Container */
-        .main-menu.menu-dark .navigation > li ul.menu-content {
-            background: rgba(0, 0, 0, 0.2) !important;
-            box-shadow: inset 0 5px 15px -5px rgba(0,0,0,0.5);
-        }
+        .main-menu.menu-dark .navigation > li ul.menu-content { background: rgba(0, 0, 0, 0.2) !important; box-shadow: inset 0 5px 15px -5px rgba(0,0,0,0.5); }
 
         /* Level 2 Items */
-        .main-menu.menu-dark .navigation > li .menu-content > li > a {
-            padding: 10px 15px 10px 54px !important;
-            font-size: 0.9rem;
-            color: var(--timber-text-muted) !important;
-            transition: all 0.2s;
-            position: relative;
-        }
-        
-        /* Tree Branch Line for Level 2 */
-        .main-menu.menu-dark .navigation > li .menu-content > li > a:before {
-            content: '';
-            position: absolute;
-            left: 36px;
-            top: 50%;
-            height: 1px;
-            width: 8px;
-            background: rgba(255,255,255,0.1);
-            transition: all 0.3s;
-        }
+        .main-menu.menu-dark .navigation > li .menu-content > li > a { padding: 10px 15px 10px 54px !important; font-size: 0.9rem; color: var(--timber-text-muted) !important; transition: all 0.2s; position: relative; }
 
-        .main-menu.menu-dark .navigation > li .menu-content > li:hover > a {
-            color: var(--timber-text) !important;
-            background: transparent;
-            transform: translateX(5px);
-        }
-        
-        .main-menu.menu-dark .navigation > li .menu-content > li:hover > a:before {
-             background: var(--timber-accent);
-             width: 12px;
-        }
+        /* Tree Branch Line for Level 2 */
+        .main-menu.menu-dark .navigation > li .menu-content > li > a:before { content: ''; position: absolute; left: 36px; top: 50%; height: 1px; width: 8px; background: rgba(255,255,255,0.1); transition: all 0.3s; }
+        .main-menu.menu-dark .navigation > li .menu-content > li:hover > a { color: var(--timber-text) !important; background: transparent; transform: translateX(5px); }
+        .main-menu.menu-dark .navigation > li .menu-content > li:hover > a:before { background: var(--timber-accent); width: 12px; }
 
         /* Level 2 Active */
-        .main-menu.menu-dark .navigation > li .menu-content > li.active > a {
-            color: var(--timber-accent) !important;
-            font-weight: 600;
-        }
-        
-        .main-menu.menu-dark .navigation > li .menu-content > li.active > a:before {
-             background: var(--timber-accent);
-             width: 12px;
-             box-shadow: 0 0 5px var(--timber-accent);
-        }
+        .main-menu.menu-dark .navigation > li .menu-content > li.active > a { color: var(--timber-accent) !important; font-weight: 600; }
+        .main-menu.menu-dark .navigation > li .menu-content > li.active > a:before { background: var(--timber-accent); width: 12px; box-shadow: 0 0 5px var(--timber-accent); }
 
         /* ================================================================================= */
-        /* LEVEL 3 ITEMS                                                                     */
+        /* LEVEL 3 ITEMS */
         /* ================================================================================= */
-        
         /* Level 3 Container */
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content {
-             background: rgba(0, 0, 0, 0.15) !important; /* Slightly darker */
-        }
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content { background: rgba(0, 0, 0, 0.15) !important; /* Slightly darker */ }
 
         /* Level 3 Items */
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a {
-            padding: 10px 15px 10px 50px !important; /* Adjusted Indent */
-            font-size: 0.85rem;
-            color: var(--timber-text-muted) !important;
-            white-space: normal !important; /* Fix truncation */
-            height: auto !important;
-            display: flex !important;
-            align-items: flex-start;
-            line-height: 1.4;
-        }
-        
-         /* Tree Branch Line for Level 3 */
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a:before {
-            left: 36px; /* Shift line to match Level 2 alignment */
-            top: 20px; /* Align with first line of text */
-        }
-        
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li:hover > a {
-            color: var(--timber-text) !important;
-            background: rgba(255,255,255,0.03);
-        }
-        
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li.active > a {
-            color: var(--timber-accent) !important;
-        }
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a { padding: 10px 15px 10px 50px !important; /* Adjusted Indent */ font-size: 0.85rem; color: var(--timber-text-muted) !important; white-space: normal !important; /* Fix truncation */ height: auto !important; display: flex !important; align-items: flex-start; line-height: 1.4; }
+
+        /* Tree Branch Line for Level 3 */
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a:before { left: 36px; /* Shift line to match Level 2 alignment */ top: 20px; /* Align with first line of text */ }
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li:hover > a { color: var(--timber-text) !important; background: rgba(255,255,255,0.03); }
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li.active > a { color: var(--timber-accent) !important; }
 
         /* Search Box in Sidebar */
-        .sidebar-search-container {
-            padding: 20px;
-            background: var(--timber-dark);
-            border-bottom: 1px solid var(--timber-border);
-        }
-        
-        .sidebar-search {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            color: var(--timber-text);
-            padding: 8px 15px;
-            width: 100%;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-        }
-        
-        .sidebar-search:focus {
-            outline: none;
-            border-color: var(--timber-accent);
-            background: rgba(0,0,0,0.3);
-            box-shadow: 0 0 10px rgba(230, 184, 0, 0.1);
-        }
+        .sidebar-search-container { padding: 20px; background: var(--timber-dark); border-bottom: 1px solid var(--timber-border); }
+        .sidebar-search { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: var(--timber-text); padding: 8px 15px; width: 100%; font-size: 0.85rem; transition: all 0.3s; }
+        .sidebar-search:focus { outline: none; border-color: var(--timber-accent); background: rgba(0,0,0,0.3); box-shadow: 0 0 10px rgba(230, 184, 0, 0.1); }
 
         /* ================================================================================= */
-        /* MENU TOGGLE ICONS (ARROWS)                                                        */
+        /* MENU TOGGLE ICONS (ARROWS) */
         /* ================================================================================= */
-
         /* Base Arrow Style */
-        .main-menu.menu-dark .navigation > li.has-sub > a:after {
-            content: '\f105'; /* FontAwesome Chevron Right */
-            font-family: 'FontAwesome';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1rem;
-            color: var(--timber-text-muted);
-            transition: all 0.3s ease;
-        }
-
+        .main-menu.menu-dark .navigation > li.has-sub > a:after { content: '\f105'; /* FontAwesome Chevron Right */ font-family: 'FontAwesome'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1rem; color: var(--timber-text-muted); transition: all 0.3s ease; }
         /* Rotate Arrow when Open */
-        .main-menu.menu-dark .navigation > li.open > a:after {
-            transform: translateY(-50%) rotate(90deg);
-            color: var(--timber-accent);
-        }
-
+        .main-menu.menu-dark .navigation > li.open > a:after { transform: translateY(-50%) rotate(90deg); color: var(--timber-accent); }
         /* Hide default Theme arrows if any */
-        .main-menu.menu-dark .navigation > li.has-sub > a > span.description {
-            display: none !important; 
-        }
+        .main-menu.menu-dark .navigation > li.has-sub > a > span.description { display: none !important; }
 
         /* ================================================================================= */
-        /* SIDEBAR WIDTH ADJUSTMENT (300px)                                                  */
+        /* SIDEBAR WIDTH ADJUSTMENT (300px / 60px) */
         /* ================================================================================= */
-        
         @media (min-width: 768px) {
             /* Increase Sidebar Width */
-            body.vertical-layout.vertical-menu-modern.menu-expanded .main-menu {
-                width: 300px !important;
-            }
-
+            body.vertical-layout.vertical-menu-modern.menu-expanded .main-menu { width: 300px !important; }
             /* Adjust Content Margin */
-            body.vertical-layout.vertical-menu-modern.menu-expanded .content,
-            body.vertical-layout.vertical-menu-modern.menu-expanded .footer {
-                margin-left: 300px !important;
+            body.vertical-layout.vertical-menu-modern.menu-expanded .content, body.vertical-layout.vertical-menu-modern.menu-expanded .footer { margin-left: 300px !important; }
+            /* Collapsed Sidebar Width & Hover Expand */
+            body.vertical-layout.vertical-menu-modern.menu-collapsed .main-menu { 
+                width: 60px !important; 
+                transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; 
+                overflow: visible !important;
+            }
+            body.vertical-layout.vertical-menu-modern.menu-collapsed .main-menu:hover { width: 300px !important; }
+            
+            body.vertical-layout.vertical-menu-modern.menu-collapsed .navbar .navbar-header { 
+                width: 60px !important; 
+                transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; 
             }
             
-            /* Adjust Navbar Header (Logo Area) */
-            body.vertical-layout.vertical-menu-modern.menu-expanded .navbar .navbar-header {
+            /* Logo Area Sync on Hover */
+            body.vertical-layout.vertical-menu-modern.menu-collapsed:has(.main-menu:hover) .navbar .navbar-header { 
                 width: 300px !important; 
             }
-            
-            /* Adjust Navbar Container positions */
-            body.vertical-layout.vertical-menu-modern.menu-expanded .navbar .navbar-container {
-                margin-left: 300px !important;
-            }
-            
-            /* Ensure fixed navbar matches */
-            body.vertical-layout.vertical-menu-modern.menu-expanded .header-navbar.fixed-top {
-                left: 0; 
-            }
+
+            /* Spacing adjustments for icon visibility */
+            body.vertical-layout.vertical-menu-modern.menu-collapsed .navigation li { margin: 0px 4px !important; position: static !important; }
         }
 
         /* ================================================================================= */
-        /* VISUAL REFINEMENTS (Typography, Icons, Animation)                                 */
+        /* VISUAL REFINEMENTS (Typography, Icons, Animation) */
         /* ================================================================================= */
-
         /* 1. Bold Typography */
-        .main-menu.menu-dark .navigation .navigation-header {
-            font-weight: 800 !important;
-            letter-spacing: 1.5px;
-            color: var(--timber-accent);
-            opacity: 1; /* Make headers fully visible */
-        }
-
-        .main-menu.menu-dark .navigation > li > a {
-            font-weight: 600;
-        }
+        .main-menu.menu-dark .navigation .navigation-header { font-weight: 800 !important; letter-spacing: 1.5px; color: var(--timber-accent); opacity: 1; /* Make headers fully visible */ }
+        .main-menu.menu-dark .navigation > li > a { font-weight: 600; }
 
         /* 2. Related Icons & Colors */
-        /* Level 1 Icons - Default to Timber Accent (Golden Oak) */
-        .main-menu.menu-dark .navigation > li > a > i {
-            color: var(--timber-accent) !important;
-            opacity: 0.8;
-            transition: all 0.3s;
-        }
-        
+        /* Level 1 Icons - Default to Timber Accent (Blue) */
+        .main-menu.menu-dark .navigation > li > a > i { color: var(--timber-accent) !important; opacity: 0.8; transition: all 0.3s; }
         /* Brighten on Hover/Active */
-        .main-menu.menu-dark .navigation > li:hover > a > i,
-        .main-menu.menu-dark .navigation > li.active > a > i {
-            color: var(--timber-green) !important; /* Switch to Green on interaction */
-            opacity: 1;
-            text-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
-        }
+        .main-menu.menu-dark .navigation > li:hover > a > i, .main-menu.menu-dark .navigation > li.active > a > i { color: var(--timber-green) !important; /* Switch to Green on interaction */ opacity: 1; text-shadow: 0 0 8px rgba(76, 175, 80, 0.4); }
 
         /* Level 3 "Leaf" Icon */
-        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a:before {
-            content: '\f06c' !important; /* FontAwesome Leaf */
-            font-family: 'FontAwesome';
-            font-size: 0.7rem;
-            color: var(--timber-green); /* Green Leaf */
-            top: 22px; /* Adjust alignment */
-            background: none; /* Remove previous line style if specific */
-            width: auto;
-            height: auto;
-        }
+        .main-menu.menu-dark .navigation > li .menu-content .menu-content > li > a:before { content: '\f06c' !important; /* FontAwesome Leaf */ font-family: 'FontAwesome'; font-size: 0.7rem; color: var(--timber-green); /* Green Leaf */ top: 22px; /* Adjust alignment */ background: none; /* Remove previous line style if specific */ width: auto; height: auto; }
 
         /* 3. New Animation Style */
 
+        /* 4. Dual Logo Logic */
+        .brand-logo .logo-collapsed { display: none !important; }
+        .brand-logo .logo-expanded { display: block !important; }
 
+        /* When Menu Collapsed, Show Collapsed Logo */
+        body.vertical-layout.vertical-menu-modern.menu-collapsed .navbar .navbar-header .brand-logo .logo-expanded { display: none !important; }
+        body.vertical-layout.vertical-menu-modern.menu-collapsed .navbar .navbar-header .brand-logo .logo-collapsed { 
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            object-fit: contain !important;
+        }
+
+        /* Show Expanded Logo on Hover */
+        body.vertical-layout.vertical-menu-modern.menu-collapsed:has(.main-menu:hover) .navbar .navbar-header .brand-logo .logo-expanded { display: block !important; }
+        body.vertical-layout.vertical-menu-modern.menu-collapsed:has(.main-menu:hover) .navbar .navbar-header .brand-logo .logo-collapsed { display: none !important; }
     </style>
     <script type="text/javascript">
         var baseurl = '<?php echo base_url(); ?>';
@@ -1040,10 +858,10 @@
 <!-- fixed-top-->
 <nav class="header-navbar navbar-expand-md navbar navbar-with-menu fixed-top navbar-semi-dark navbar-shadow">
     <div class="navbar-wrapper">
-        <div class="navbar-header" style="padding: 0; width: 300px; height: 56px;">
-             <a href="<?= base_url() ?>dashboard/" style="display: block; width: 100%; height: 100%;">
-                 <img 
-                      src="<?php echo base_url(); ?>userfiles/theme/logo-header.png" style="width: 300px; height: 56px; object-fit: fill;">
+        <div class="navbar-header">
+             <a href="<?= base_url() ?>dashboard/" class="brand-logo">
+                 <img class="logo-expanded" src="<?php echo base_url(); ?>userfiles/theme/logo-header.png" alt="logo">
+                 <img class="logo-collapsed" src="<?php echo base_url(); ?>userfiles/theme/logo-h.png" alt="logo">
              </a>
         </div>
         <div class="navbar-container content">
@@ -1072,22 +890,24 @@
                     </li>
                     <?php if ($this->aauth->premission(1)) { ?>
                     <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>pos_invoices/create"
-                                                                        class="btn btn-info btn-md t_tooltip"
+                                                                        class="btn btn-pos btn-md t_tooltip"
                                                                         title="Access POS"><i
                                     class="icon-handbag"></i><?php echo $this->lang->line('POS') ?> </a>
                     </li>
                     <?php } ?>
                     
                     <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>products_alert/manage_alert2"
-                                                                        class="btn btn-info btn-md t_tooltip"
-                                                                        title="Advanced Alert Management System"><i
-                                    class="ft-bell mr-1"></i>Alerts </a>
+                                                                        class="btn btn-alert btn-md t_tooltip"
+                                                                        title="Advanced Inventory Management System"><i
+                                    class="ft-bell mr-1"></i>Inventory Alert</a>
                     </li>
-                    <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>products/stock_transfer"
+                    
+                    <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>project_command"
                                                                         class="btn btn-info btn-md t_tooltip"
-                                                                        title="Stock Transfer"><i
-                                    class="ft-repeat mr-1"></i>Transfer </a>
+                                                                        title="TimberPro Project Command Center"><i
+                                    class="ft-briefcase mr-1"></i>Projects</a>
                     </li>
+               
 
                 </ul>
 
@@ -1502,68 +1322,18 @@
                     
                     <ul class="nav navbar-nav float-right flex-row align-items-center d-none d-lg-flex mr-2">
                         <li class="nav-item">
-                            <a href="#" class="nav-link nav-link-label social-icon-top p-1"><i class="fa fa-twitter" style="font-size: 1.5rem;"></i></a>
+                            <a href="https://web.facebook.com/koralahawage" class="nav-link nav-link-label social-icon-top p-1" style="color: #1877F2 !important;"><i class="fa fa-facebook-official" style="font-size: 1.6rem;"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link nav-link-label social-icon-top p-1"><i class="fa fa-facebook" style="font-size: 1.5rem;"></i></a>
+                            <a href="https://www.linkedin.com/in/dashan-korala-hewage-52801a89/" class="nav-link nav-link-label social-icon-top p-1" style="color: #0A66C2 !important;"><i class="fa fa-linkedin-square" style="font-size: 1.6rem;"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link nav-link-label social-icon-top p-1"><i class="fa fa-linkedin" style="font-size: 1.5rem;"></i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link nav-link-label social-icon-top p-1" style="color: #25d366 !important;"><i class="fa fa-whatsapp" style="font-size: 1.5rem;"></i></a>
+                            <a href="https://wa.link/s8s8ns" class="nav-link nav-link-label social-icon-top p-1" style="color: #25D366 !important;"><i class="fa fa-whatsapp" style="font-size: 1.6rem;"></i></a>
                         </li>
                     </ul>
 
-                    <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#"
-                                                                           data-toggle="dropdown"><i
-                                    class="ficon ft-bell"></i><span
-                                    class="badge badge-pill badge-default badge-danger badge-default badge-up"
-                                    id="taskcount">0</span></a>
-                        <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                            <li class="dropdown-menu-header">
-                                <h6 class="dropdown-header m-0"><span
-                                            class="grey darken-2"><?php echo $this->lang->line('Pending Tasks') ?></span><span
-                                            class="notification-tag badge badge-default badge-danger float-right m-0">New</span>
-                                </h6>
-                            </li>
-                            <li class="scrollable-container media-list" id="tasklist"></li>
-                            <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center"
-                                                                href="<?php echo base_url('manager/todo') ?>"><?php echo $this->lang->line('Manage tasks') ?></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="dropdown dropdown-notification nav-item"><a class="nav-link nav-link-label" href="#"
-                                                                           data-toggle="dropdown"><i
-                                    class="ficon ft-mail"></i><span
-                                    class="badge badge-pill badge-default badge-info badge-default badge-up"><?php echo $this->aauth->count_unread_pms() ?></span></a>
-                        <ul class="dropdown-menu dropdown-menu-media dropdown-menu-right">
-                            <li class="dropdown-menu-header">
-                                <h6 class="dropdown-header m-0"><span
-                                            class="grey darken-2"><?php echo $this->lang->line('Messages') ?></span><span
-                                            class="notification-tag badge badge-default badge-warning float-right m-0"><?php echo $this->aauth->count_unread_pms() ?><?php echo $this->lang->line('new') ?></span>
-                                </h6>
-                            </li>
-                            <li class="scrollable-container media-list">
-                                <?php $list_pm = $this->aauth->list_pms(6, 0, $this->aauth->get_user()->id, false);
-
-                                foreach ($list_pm as $row) {
-
-                                    echo '<a href="' . base_url('messages/view?id=' . $row->pid) . '">
-                      <div class="media">
-                        <div class="media-left"><span class="avatar avatar-sm  rounded-circle"><img src="' . base_url('userfiles/employee/' . $row->picture) . '" alt="avatar"><i></i></span></div>
-                        <div class="media-body">
-                          <h6 class="media-heading">' . $row->name . '</h6>
-                          <p class="notification-text font-small-3 text-muted">' . $row->{'title'} . '</p><small>
-                            <time class="media-meta text-muted" datetime="' . $row->{'date_sent'} . '">' . $row->{'date_sent'} . '</time></small>
-                        </div>
-                      </div></a>';
-                                } ?>    </li>
-                            <li class="dropdown-menu-footer"><a class="dropdown-item text-muted text-center"
-                                                                href="<?php echo base_url('messages') ?>"><?php echo $this->lang->line('Read all messages') ?></a>
-                            </li>
-                        </ul>
-                    </li>
+                    
+                   
                     <?php if ($this->aauth->auto_attend()) { ?>
                         <li class="dropdown dropdown-d nav-item">
 
@@ -1594,19 +1364,14 @@
                     <?php } ?>
                     <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link"
                                                                    href="#" data-toggle="dropdown"><span
-                                    class="avatar avatar-online"><img
+                                    class="avatar avatar-online" style="border: 2px solid var(--timber-accent); border-radius: 50%; padding: 1px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);"><img
                                         src="<?php echo base_url('userfiles/employee/thumbnail/' . $this->aauth->get_user()->picture) ?>"
-                                        alt="avatar"><i></i></span><span
-                                    class="user-name"><?php echo $this->lang->line('Account') ?></span></a>
+                                        alt="avatar" style="border-radius: 50%;"><i></i></span><span
+                                    class="user-name" style="color: var(--timber-accent) !important; font-weight: 700; margin-left: 8px;"><?php echo $this->lang->line('Account') ?></span></a>
                         <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
                                                                           href="<?php echo base_url(); ?>user/profile"><i
                                         class="ft-user"></i> <?php echo $this->lang->line('Profile') ?></a>
-                            <a href="<?php echo base_url(); ?>user/attendance"
-                               class="dropdown-item"><i
-                                        class="fa fa-list-ol"></i><?php echo $this->lang->line('Attendance') ?></a>
-                            <a href="<?php echo base_url(); ?>user/holidays"
-                               class="dropdown-item"><i
-                                        class="fa fa-hotel"></i><?php echo $this->lang->line('Holidays') ?></a>
+                           
 
                             <div class="dropdown-divider" style="border-top-color: var(--glass-border);"></div>
                             <a class="dropdown-item" href="<?php echo base_url('user/logout'); ?>" style="color: #ef4444 !important;"><i
@@ -1629,558 +1394,456 @@
             <input type="text" id="menu-search" class="sidebar-search" placeholder="Quick search menu...">
         </div>
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-            <li class="navigation-header section-erp"><span>Main</span></li>
-            <li class="nav-item section-erp <?php if (current_url() == base_url('dashboard')) echo 'active'; ?>"><a href="<?= base_url(); ?>dashboard/"><i
-                            class="ft-home"></i><span><?= $this->lang->line('Dashboard') ?></span></a>
-            </li>
             
-            <li class="navigation-header section-hr"><span><?php echo $this->lang->line('Self Service') ?></span></li>
-             <li class="nav-item section-hr <?php if (current_url() == base_url('payrollreport/my_payslips')) echo 'active'; ?>"><a href="<?= base_url(); ?>payrollreport/my_payslips"><i
-                            class="fa fa-money"></i><span><?php echo $this->lang->line('My Payslips') ?></span></a>
+            <!-- 1. MY ORGANIZATION & CORE -->
+            <li class="navigation-header section-erp"><span>🏢 My Organization</span></li>
+            
+            <li class="nav-item section-erp <?php if (current_url() == base_url('dashboard')) echo 'active'; ?>">
+                <a href="<?= base_url(); ?>dashboard/"><i class="ft-home"></i><span>Dashboard (Main)</span></a>
             </li>
-           
-            <li class="navigation-header section-erp"><span>ERP Operations</span></li>
-            <?php
-            if ($this->aauth->premission(1)) { ?>
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "sales") {
-                    echo ' open';
-                } ?>"><a href="#"><i
-                                class="ft-shopping-cart"></i><span><?php echo $this->lang->line('sales') ?></span></a>
+
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "org") echo 'open active'; ?>">
+                <a href="#"><i class="ft-briefcase"></i><span>Organization (Locations අනුව)</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>productcategory/warehouse"><i class="ft-map-pin"></i>Locations & Warehouses</a>
+                    </li>
+                    <?php if ($this->aauth->premission(9) || $this->aauth->is_admin()) { ?>
+                    <li class="menu-item <?php if ($this->li_a == 'employee') echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>employee"><i class="ft-users"></i>Staff Management</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('employee/roles')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>employee/roles"><i class="ft-shield"></i>Roles & Permissions</a>
+                    </li>
+                    <?php } ?>
+                </ul>
+            </li>
+
+            <!-- 2. ACCOUNTING & FINANCE -->
+            <li class="navigation-header section-erp"><span>💰 Accounting (Locations අනුව)</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounting") echo 'open active'; ?>">
+                <a href="#"><i class="ft-trending-up"></i><span>Accounting Center</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('settings/dual_entry')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>settings/dual_entry"><i class="ft-list"></i>Double Entry Ledger</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('financial/profit_loss')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>financial/profit_loss"><i class="ft-pie-chart"></i>Profit & Loss (P&L)</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('financial/balance_sheet')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>financial/balance_sheet"><i class="ft-file-text"></i>Balance Sheet</a>
+                    </li>
+                    <li class="menu-item <?php if ($this->li_a == 'accounts') echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>accounts"><i class="ft-credit-card"></i>Manage Accounts</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 3. TIMBER OPERATIONS -->
+            <?php if ($this->aauth->premission(4) || $this->aauth->is_admin()) { ?>
+            <li class="navigation-header section-erp"><span>🌲 Timber Operations</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "timberpro") echo 'open active'; ?>">
+                <a href="#"><i class="ft-layers"></i><span>Operations Engine</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('purchase/log_purchasing')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>purchase/log_purchasing"><i class="ft-shopping-cart"></i>Log Purchasing</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('sawmill/processing')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>sawmill/processing"><i class="ft-cpu"></i>Sawmill Processing</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('TimberPro/input')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>TimberPro/input"><i class="ft-package"></i>Stock (Sawn Timber)</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('TimberPro')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>TimberPro"><i class="ft-activity"></i>Timber Dashboard</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <?php if ($this->aauth->premission(1)) { ?>
+                <!-- Sales -->
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "sales") echo 'open'; ?>">
+                    <a href="#"><i class="ft-shopping-cart"></i><span><?php echo $this->lang->line('sales') ?></span></a>
                     <ul class="menu-content">
-                        <li class="menu-item <?php if ($this->li_a == "pos") echo 'active'; ?>"><a
-                                    href="#"><i
-                                        class="ft-chevron-right"></i>POS <?php echo $this->lang->line('sales') ?></a>
+                        <li class="menu-item <?php if ($this->li_a == "pos") echo 'active'; ?>">
+                            <a href="#"><i class="ft-chevron-right"></i>POS <?php echo $this->lang->line('sales') ?></a>
                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/create')) echo 'active'; ?>"><a href="<?= base_url(); ?>pos_invoices/create"
-                                    ><?php echo $this->lang->line('New Invoice'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>pos_invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if ($this->li_a == "timber") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-chevron-right"></i>Timber Treatment</a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('invoices/create')) echo 'active'; ?>"><a href="<?= base_url(); ?>invoices/create"><?php echo $this->lang->line('New Invoice'); ?></a>
+                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/create')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>pos_invoices/create"><?php echo $this->lang->line('New Invoice'); ?></a>
                                 </li>
-
-                                <li class="menu-item <?php if (current_url() == base_url('invoices')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if ($this->li_a == "quotes") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-chevron-right"></i><?php echo $this->lang->line('Quotes') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/quotecreate')) echo 'active'; ?>"><a
-                                            href="<?= base_url(); ?>pos_invoices/quotecreate"><?php echo $this->lang->line('New Quote'); ?></a>
+                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>pos_invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a>
                                 </li>
-
-                                <li class="menu-item <?php if (current_url() == base_url('quote')) echo 'active'; ?>"><a class="dropdown-item" href="<?php echo base_url(); ?>quote"><?php echo $this->lang->line('Manage Quotes'); ?></a></li>
                             </ul>
                         </li>
-
-                      
+                        <li class="menu-item <?php if ($this->li_a == "timber") echo 'active'; ?>">
+                            <a href="#"><i class="ft-chevron-right"></i>Timber Treatment</a>
+                            <ul class="menu-content">
+                                <li class="menu-item <?php if (current_url() == base_url('invoices/create')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>invoices/create"><?php echo $this->lang->line('New Invoice'); ?></a>
+                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('invoices')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item <?php if ($this->li_a == "quotes") echo 'active'; ?>">
+                            <a href="#"><i class="ft-chevron-right"></i><?php echo $this->lang->line('Quotes') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/quotecreate')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>pos_invoices/quotecreate"><?php echo $this->lang->line('New Quote'); ?></a>
+                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('quote')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>quote"><?php echo $this->lang->line('Manage Quotes'); ?></a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="menu-item <?php if (current_url() == base_url('stockreturn/creditnotes')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>stockreturn/creditnotes"><i
-                                        class="ft-chevron-right"></i><?php echo $this->lang->line('Credit Notes'); ?></a></li>
-                    </ul>
-                </li>
-                        <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock_transfer") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-wind"></i> <span>Stock Transfer</span></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('products/stock_transfer')) echo 'active'; ?>"><a
-                                            href="<?= base_url(); ?>products/stock_transfer">New Transfer</a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('products/manage_transfer2')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>products/manage_transfer2">Manage Transfer</a></li>
-                            </ul>
+                            <a href="<?php echo base_url(); ?>stockreturn/creditnotes"><i class="ft-chevron-right"></i><?php echo $this->lang->line('Credit Notes'); ?></a>
                         </li>
-
-            <?php }
-            if ($this->aauth->premission(2)) { ?>
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock") {
-                    echo ' open';
-                } ?>"><a href="#"><i
-                                class="ft-package"></i> <span><?php echo $this->lang->line('Stock') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('products/add') || current_url() == base_url('products')) echo 'active'; ?>"><a
-                                    href="#"><i
-                                        class="ft-list"></i> <?php echo $this->lang->line('Items Manager') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('products/add')) echo 'active'; ?>"><a
-                                            href="<?= base_url(); ?>products/add"> <?php echo $this->lang->line('New Product'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('products')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>products"><?= $this->lang->line('Manage Products'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('productcategory')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>productcategory"><i
-                                        class="ft-umbrella"></i><?php echo $this->lang->line('Product Categories'); ?>
-                            </a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>productcategory/warehouse"><i
-                                        class="ft-home"></i><?php echo $this->lang->line('Warehouses'); ?></a>
-                        </li>
-
-
-                      
-     
-                        
-                        
-                        
-                        
-
-                        <li class="menu-item <?php if (strpos(current_url(), 'stockreturn') !== false && strpos(current_url(), 'creditnotes') === false) echo 'active'; ?>"><a href="#"><i
-                                        class="ft-repeat"></i> <?php echo $this->lang->line('Stock Return') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('stockreturn')) echo 'active'; ?>"><a
-                                            href="<?= base_url(); ?>stockreturn"> <?php echo $this->lang->line('Suppliers') . ' ' . $this->lang->line('Records'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('stockreturn/customer')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>stockreturn/customer"><?php echo $this->lang->line('Customers') . ' ' . $this->lang->line('Records'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('supplier/create') || current_url() == base_url('supplier')) echo 'active'; ?>"><a href="#"><i
-                                        class="ft-target"></i><?php echo $this->lang->line('Suppliers') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('supplier/create')) echo 'active'; ?>"><a
-                                            href="<?= base_url(); ?>supplier/create"><?php echo $this->lang->line('New Supplier'); ?></a>
-                                </li>
-
-                                <li class="menu-item <?php if (current_url() == base_url('supplier')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>supplier"><?php echo $this->lang->line('Manage Suppliers'); ?></a></li>
-                            </ul>
-                        </li>
-                        
-                    </ul>
-                </li>
-                
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "purchase") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-shopping-cart"></i> <span><?php echo $this->lang->line('Purchase Order') ?></span></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/purchasecreate')) echo 'active'; ?>"><a class="dropdown-item" href="<?= base_url(); ?>pos_invoices/purchasecreate"> <?php echo $this->lang->line('New Order'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('purchase')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>purchase"><?= $this->lang->line('Manage Orders'); ?></a></li>
-
-                                 <li class="menu-item <?php if (current_url() == base_url('purchase/createlogs')) echo 'active'; ?>"><a class="dropdown-item" href="<?= base_url(); ?>purchase/createlogs"> New Logs Order</a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('purchase/list')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>purchase/list">Manage Logs Orders</a></li>
-                            </ul>
-                        </li>
-                <li class="nav-item has-sub section-erp <?php if (current_url() == base_url('purchase/newprocessing') || current_url() == base_url('purchase/manageprocessing')) echo 'open active'; ?>"><a href="#"><i
-                                class="ft-cpu"></i> <span>Trunks Processing</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/newprocessing')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase/newprocessing"><i
-                                        class="ft-chevron-right"></i>New Processing</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/manageprocessing')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase/manageprocessing"><i
-                                        class="ft-chevron-right"></i>Manage Processing</a>
+                        <li class="menu-item <?php if (current_url() == base_url('pos_invoices/invoices_list_action')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>pos_invoices/invoices_list_action"><i class="ft-file-text"></i><span>Sales Reports</span></a>
                         </li>
                     </ul>
                 </li>
 
-                <!-- PRODUCTION LINE START -->
-                <li class="navigation-header section-erp"><span>Production Line</span></li>
-                <li class="nav-item has-sub section-erp"><a href="#"><i class="ft-layers"></i><span>Production</span></a>
+                <!-- Stock Transfer -->
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock_transfer") echo 'active'; ?>">
+                    <a href="#"><i class="ft-wind"></i><span>Stock Transfer</span></a>
                     <ul class="menu-content">
-                        <!-- 1. Master Data -->
-                        <li class="menu-item has-sub"><a href="#"><i class="ft-settings"></i> Setup & Master Data</a>
-                            <ul class="menu-content">
-                                <li><a href="<?php echo base_url(); ?>wood_types" class="menu-item">Wood Types</a></li>
-                                <li><a href="<?php echo base_url(); ?>timber_grades" class="menu-item">Timber Grades</a></li>
-                                <li><a href="<?php echo base_url(); ?>machines" class="menu-item">Machines</a></li>
-                                <li><a href="<?php echo base_url(); ?>carpenter_skills" class="menu-item">Skills</a></li>
-                            </ul>
+                        <li class="menu-item <?php if (current_url() == base_url('products/stock_transfer')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>products/stock_transfer">New Transfer</a>
                         </li>
-
-                        <!-- 2. Planning -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_schedule"><i class="ft-calendar"></i> Planning & Schedule</a></li>
-
-                        <!-- 3. Routing -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_routes"><i class="ft-map"></i> Routes & Stages</a></li>
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>cutting_plan"><i class="ft-scissors"></i> Cutting Plans</a></li>
-
-                        <!-- 4. Seasoning -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>seasoning"><i class="ft-thermometer"></i> Seasoning (Kiln)</a></li>
-
-                        <!-- 5. Execution -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>work_orders"><i class="ft-check-square"></i> Work Orders</a></li>
-                        
-                        <!-- 6. QC -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>quality_control"><i class="ft-shield"></i> Quality Control</a></li>
-
-                        <!-- 7. Inventory -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_inventory"><i class="ft-box"></i> WIP Inventory</a></li>
-
-                        <!-- 8. Costing -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_costing"><i class="ft-dollar-sign"></i> Costing & Profit</a></li>
-
-                        <!-- 9. Intelligence -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_intelligence"><i class="ft-activity"></i> AI Insights</a></li>
-
-                         <!-- 10. Maintenance -->
-                        <li class="menu-item"><a href="<?php echo base_url(); ?>production_maintenance"><i class="ft-tool"></i> Maintenance</a></li>
-                    </ul>
-                </li>
-                <!-- PRODUCTION LINE END -->
-                
-                <li class="nav-item section-erp"><a href="<?php echo base_url(); ?>pos_invoices/invoices_list_action"><i
-                                    class="ft-file-text"></i> <span>Sales Reports</span></a></li>
-                        
-                        
-                        <li class="nav-item has-sub section-erp <?php if ($this->li_a == "transactions") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-repeat"></i> <span><?php echo $this->lang->line('Transactions') ?></span></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('transactions')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>transactions"><?php echo $this->lang->line('View Transactions') ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('transactions/add')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>transactions/add"><?= $this->lang->line('New Transaction'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('transactions/transfer')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>transactions/transfer"><?= $this->lang->line('New Transfer'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('transactions/income')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>transactions/income"><?= $this->lang->line('Income'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('transactions/expense')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>transactions/expense"><?= $this->lang->line('Expense'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>customers"><?= $this->lang->line('Clients Transactions'); ?></a>
-                                </li>
-                            </ul>
+                        <li class="menu-item <?php if (current_url() == base_url('products/manage_transfer2')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>products/manage_transfer2">Manage Transfer</a>
                         </li>
-                        
-                        
-                                             <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounts") echo 'active'; ?>"><a href="#"><i
-                                        class="ft-briefcase"></i> <span><?php echo $this->lang->line('Accounts') ?></span></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('accounts')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>accounts"
-                                    ><?php echo $this->lang->line('Manage Accounts') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('accounts/balancesheet')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>accounts/balancesheet"><?= $this->lang->line('BalanceSheet'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a></li>
-                            </ul>
-                        </li>
-                        
-                
-            <?php }
-            if ($this->aauth->premission(9)) { ?>
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "carpentry") echo ' open'; ?>"><a href="#"><i
-                                        class="fa fa-gavel"></i> <span>Carpentry</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('carpentry_dashboard')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>carpentry_dashboard">
-                                    <i class="ft-chevron-right"></i> Dashboard</a>
-                        </li>
-                        <li class="menu-item"><a href="#"><i class="ft-chevron-right"></i> Job Sites</a>
-                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('jobsites')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>jobsites" class="menu-item">Manage Job Sites</a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('jobsites/create')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>jobsites/create" class="menu-item">Add Job Site</a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item"><a href="#"><i class="ft-chevron-right"></i> Materials</a>
-                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('project_stock/issue')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>project_stock/issue" class="menu-item">Issue Stock to Project</a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item"><a href="#"><i class="ft-chevron-right"></i> Reports</a>
-                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('carpentry_reports/profitability')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>carpentry_reports/profitability" class="menu-item">Profitability Report</a></li>
-                            </ul>
-                        </li>
-                         <li class="menu-item"><a href="#"><i class="ft-chevron-right"></i> Tools & Assets</a>
-                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('assetmanager')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>assetmanager" class="menu-item">Manage Assets</a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('assetmanager/add')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>assetmanager/add" class="menu-item">Add Asset</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            <?php }
-            if ($this->aauth->premission(3)) {
-                ?>
-                <li class="navigation-header section-erp"><span>Customer Relations</span></li>
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "crm") {
-                    echo ' open';
-                } ?>"><a href="#"><i
-                                class="ft-users"></i> <span><?php echo $this->lang->line('CRM') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item"><a href="#"><i
-                                        class="ft-users"></i> <?php echo $this->lang->line('Clients') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>customers/create"><?php echo $this->lang->line('New Client') ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>customers"><?= $this->lang->line('Manage Clients'); ?></a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('clientgroup')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>clientgroup"><i
-                                        class="icon-grid"></i> <?php echo $this->lang->line('Client Groups'); ?></a>
-                        </li>
-                        
-
                     </ul>
                 </li>
             <?php } ?>
 
-                <?php if ($this->aauth->premission(9)) { ?>
-            <li class="navigation-header section-hr"><span>Human Resources</span></li>
-                <li class="nav-item has-sub section-hr <?php if ($this->li_a == "hrm") { echo ' open'; } ?>">
-                    <a href="#"><i class="ft-users"></i> <span>HRM</span></a>
+            <?php if ($this->aauth->premission(2)) { ?>
+                <!-- Stock -->
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock") echo 'open'; ?>">
+                    <a href="#"><i class="ft-package"></i><span><?php echo $this->lang->line('Stock') ?></span></a>
                     <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('employee')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>employee">
-                            <i class="ft-chevron-right"></i>Employees List</a>
+                        <li class="menu-item <?php if (current_url() == base_url('products/add') || current_url() == base_url('products')) echo 'active'; ?>">
+                            <a href="#"><i class="ft-list"></i><?php echo $this->lang->line('Items Manager') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item <?php if (current_url() == base_url('products/add')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>products/add"><?php echo $this->lang->line('New Product'); ?></a>
+                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('products')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>products"><?= $this->lang->line('Manage Products'); ?></a>
+                                </li>
+                            </ul>
                         </li>
-                        <li class="menu-item <?php if (current_url() == base_url('employee/salaries')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>employee/salaries">
-                            <i class="ft-chevron-right"></i>Salaries</a>
+                        <li class="menu-item <?php if (current_url() == base_url('productcategory')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>productcategory"><i class="ft-umbrella"></i><?php echo $this->lang->line('Product Categories'); ?></a>
                         </li>
-                        
-                        <li class="menu-item <?php if (current_url() == base_url('employee/departments')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>employee/departments">
-                            <i class="ft-chevron-right"></i>Departments</a>
+                        <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>productcategory/warehouse"><i class="ft-home"></i><?php echo $this->lang->line('Warehouses'); ?></a>
                         </li>
-                         <li class="menu-item <?php if (current_url() == base_url('employee/roles')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>employee/roles">
-                            <i class="ft-chevron-right"></i>Role Management</a>
+                        <li class="menu-item <?php if (strpos(current_url(), 'stockreturn') !== false && strpos(current_url(), 'creditnotes') === false) echo 'active'; ?>">
+                            <a href="#"><i class="ft-repeat"></i><?php echo $this->lang->line('Stock Return') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item <?php if (current_url() == base_url('stockreturn')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>stockreturn"><?php echo $this->lang->line('Suppliers') . ' ' . $this->lang->line('Records'); ?></a>
+                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('stockreturn/customer')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>stockreturn/customer"><?php echo $this->lang->line('Customers') . ' ' . $this->lang->line('Records'); ?></a>
+                                </li>
+                            </ul>
                         </li>
-                        
-                        <li class="menu-item has-sub <?php if ($this->li_a == "payroll") echo ' open'; ?>"><a href="#">
-                                <i class="ft-chevron-right"></i>Payroll</a>
-                                <ul class="menu-content">
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollprocessing')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollprocessing">
-                                        <i class="ft-arrow-right"></i>Processing</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollreport')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollreport">
-                                        <i class="ft-file-text"></i>Reports & Payslips</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollbonus')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollbonus">
-                                        <i class="ft-award"></i>Bonus Management</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrolltimesheets')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrolltimesheets">
-                                        <i class="ft-clock"></i>Timesheets</a>
-                                    </li>
-                                     <li class="menu-item <?php if (current_url() == base_url('employeeloans')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>employeeloans">
-                                        <i class="ft-arrow-right"></i>Loans & Advances</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollworkflow')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollworkflow">
-                                        <i class="ft-arrow-right"></i>Approval Workflow</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollanalytics')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollanalytics">
-                                        <i class="ft-pie-chart"></i>Analytics</a>
-                                    </li>
-                                    <li class="menu-item <?php if (current_url() == base_url('payrollsettings')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>payrollsettings">
-                                        <i class="ft-settings"></i>Settings</a>
-                                    </li>
-                                </ul>
+                        <li class="menu-item <?php if (current_url() == base_url('supplier/create') || current_url() == base_url('supplier')) echo 'active'; ?>">
+                            <a href="#"><i class="ft-target"></i><?php echo $this->lang->line('Suppliers') ?></a>
+                            <ul class="menu-content">
+                                <li class="menu-item <?php if (current_url() == base_url('supplier/create')) echo 'active'; ?>">
+                                    <a href="<?= base_url(); ?>supplier/create"><?php echo $this->lang->line('New Supplier'); ?></a>
+                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('supplier')) echo 'active'; ?>">
+                                    <a href="<?php echo base_url(); ?>supplier"><?php echo $this->lang->line('Manage Suppliers'); ?></a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
-                <?php } ?>
 
-                <?php if ($this->aauth->premission(8)) { ?>
-            <li class="navigation-header section-services"><span>Services</span></li>
-                <li class="nav-item has-sub section-services <?php if ($this->li_a == "services") { echo ' open'; } ?>">
-                    <a href="#"><i class="ft-server"></i> <span>Service Management</span></a>
+                <!-- Purchase -->
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "purchase") echo 'active'; ?>">
+                    <a href="#"><i class="ft-shopping-cart"></i><span><?php echo $this->lang->line('Purchase Order') ?></span></a>
                     <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('subscriptions')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>subscriptions">
-                            <i class="ft-chevron-right"></i>Subscriptions</a>
+                        <li class="menu-item <?php if (current_url() == base_url('pos_invoices/purchasecreate')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>pos_invoices/purchasecreate"><?php echo $this->lang->line('New Order'); ?></a>
                         </li>
-                        <li class="menu-item <?php if (current_url() == base_url('tickets')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>tickets">
-                            <i class="ft-chevron-right"></i>Support Tickets</a>
+                        <li class="menu-item <?php if (current_url() == base_url('purchase')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>purchase"><?= $this->lang->line('Manage Orders'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('purchase/createlogs')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>purchase/createlogs">New Logs Order</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('purchase/list')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>purchase/list">Manage Logs Orders</a>
                         </li>
                     </ul>
                 </li>
-                <?php } ?>
 
-            <li class="navigation-header section-tools"><span>Tools & Productivity</span></li>
-                <li class="nav-item has-sub section-tools <?php if ($this->li_a == "tools") { echo ' open'; } ?>">
-                    <a href="#"><i class="ft-briefcase"></i> <span>Tools</span></a>
+                <!-- Trunks -->
+                <li class="nav-item has-sub section-erp <?php if (current_url() == base_url('purchase/newprocessing') || current_url() == base_url('purchase/manageprocessing')) echo 'open active'; ?>">
+                    <a href="#"><i class="ft-cpu"></i><span>Trunks Processing</span></a>
                     <ul class="menu-content">
-                        <?php if ($this->aauth->premission(6)) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('events')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>events">
-                            <i class="ft-chevron-right"></i>Events & Calendar</a>
+                        <li class="menu-item <?php if (current_url() == base_url('purchase/newprocessing')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>purchase/newprocessing"><i class="ft-chevron-right"></i>New Processing</a>
                         </li>
-                        <?php } ?>
-                        <?php if ($this->aauth->premission(6) || $this->aauth->premission(7)) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('manager/todo')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>manager/todo">
-                            <i class="ft-chevron-right"></i>Notes & To-Do</a>
+                        <li class="menu-item <?php if (current_url() == base_url('purchase/manageprocessing')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>purchase/manageprocessing"><i class="ft-chevron-right"></i>Manage Processing</a>
                         </li>
-                        <?php } ?>
-                        <?php if ($this->aauth->get_user()->roleid < 5) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('tools/setgoals')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>tools/setgoals">
-                            <i class="ft-chevron-right"></i>Set Goals</a>
-                        </li>
-                        <?php } ?>
                     </ul>
                 </li>
 
-            <?php
-            if (!$this->aauth->premission(4) && $this->aauth->premission(7)) {
-                ?>
-                <li class="nav-item has-sub section-tools <?php if ($this->li_a == "manager") { echo ' open'; } ?>">
-                    <a href="#"><i class="icon-briefcase"></i> <span><?php echo $this->lang->line('Project') ?></span></a>
+
+            <?php } ?>
+
+            <!-- 2. FINANCIAL CENTER -->
+            <?php if ($this->aauth->premission(2)) { ?>
+                <li class="navigation-header section-erp"><span>Financial Center</span></li>
+                
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "transactions") echo 'active'; ?>">
+                    <a href="#"><i class="ft-repeat"></i><span><?php echo $this->lang->line('Transactions') ?></span></a>
+                    <ul class="menu-content">
+                        <li class="menu-item <?php if (current_url() == base_url('transactions')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>transactions"><?php echo $this->lang->line('View Transactions') ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('transactions/add')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>transactions/add"><?= $this->lang->line('New Transaction'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('transactions/transfer')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>transactions/transfer"><?= $this->lang->line('New Transfer'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('transactions/income')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>transactions/income"><?= $this->lang->line('Income'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('transactions/expense')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>transactions/expense"><?= $this->lang->line('Expense'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('financial_settings')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>financial_settings"><i class="ft-settings"></i> Financial Settings</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('financial/profit_loss')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>financial/profit_loss"><i class="ft-trending-up"></i> Profit & Loss</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('financial/balance_sheet')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>financial/balance_sheet"><i class="ft-briefcase"></i> Balance Sheet</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>customers"><?= $this->lang->line('Clients Transactions'); ?></a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounts") echo 'active'; ?>">
+                    <a href="#"><i class="ft-briefcase"></i><span><?php echo $this->lang->line('Accounts') ?></span></a>
+                    <ul class="menu-content">
+                        <li class="menu-item <?php if (current_url() == base_url('accounts')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>accounts"><?php echo $this->lang->line('Manage Accounts') ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('accounts/balancesheet')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>accounts/balancesheet"><?= $this->lang->line('BalanceSheet'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Hire Purchase -->
+                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "hp") echo 'open active'; ?>">
+                    <a href="#"><i class="ft-credit-card"></i><span>Hire Purchase</span></a>
+                    <ul class="menu-content">
+                        <li class="menu-item <?php if (current_url() == base_url('hp/create')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>hp/create">New HP Contract</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('hp/manage')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>hp/manage">Manage Contracts</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('hp')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>hp">HP Dashboard</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('hp/performance')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>hp/performance">Hire Purchase Performance</a>
+                        </li>
+                    </ul>
+                </li>
+            <?php } ?>
+
+            <!-- 4. SERVICES & PROS -->
+            <li class="navigation-header section-services"><span>💼 Services & Professionals</span></li>
+            <li class="nav-item has-sub section-services <?php if ($this->li_a == "services") echo 'open active'; ?>">
+                <a href="#"><i class="ft-award"></i><span>Workforce Center</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('worker/profiles')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>worker/profiles"><i class="ft-users"></i>Workforce Profiles</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('worker/job_requests')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>worker/job_requests"><i class="ft-mail"></i>Job Requests (Marketplace)</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('worker/attendance')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>worker/attendance"><i class="ft-clock"></i>Attendance & Payroll</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 5. MARKETPLACE ADMIN -->
+            <li class="navigation-header section-tools"><span>🛒 Marketplace Admin</span></li>
+            <li class="nav-item has-sub section-tools <?php if ($this->li_a == "marketplace_admin") echo 'open active'; ?>">
+                <a href="#"><i class="ft-shopping-bag"></i><span>Marketplace Control</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('shop/listings')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>shop/listings"><i class="ft-list"></i>My Products/Listings</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('shop/quotations')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>shop/quotations"><i class="ft-file-text"></i>Received Quotations</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('shop/orders')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>shop/orders"><i class="ft-package"></i>Orders Management</a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- 6. LOGISTICS -->
+            <li class="navigation-header section-data"><span>🚛 Logistics & Transport</span></li>
+            <li class="nav-item has-sub section-data <?php if ($this->li_a == "logistics") echo 'open active'; ?>">
+                <a href="#"><i class="ft-truck"></i><span>Logistics Hub</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('logistics/fleet')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>logistics/fleet"><i class="ft-users"></i>Vehicles & Drivers</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('logistics/orders')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>logistics/orders"><i class="ft-map"></i>Transport Orders</a>
+                    </li>
+                </ul>
+            </li>
+
+            <?php if (!$this->aauth->premission(4) && $this->aauth->premission(7)) { ?>
+                <li class="nav-item has-sub section-tools <?php if ($this->li_a == "manager") echo 'open'; ?>">
+                    <a href="#"><i class="icon-briefcase"></i><span><?php echo $this->lang->line('Project') ?></span></a>
                     <ul class="menu-content">
                         <li class="menu-item <?php if (current_url() == base_url('manager/projects')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>manager/projects"><i
-                                        class="ft-chevron-right"></i> <?php echo $this->lang->line('Manage Projects'); ?></a>
+                            <a href="<?php echo base_url(); ?>manager/projects"><i class="ft-chevron-right"></i> <?php echo $this->lang->line('Manage Projects'); ?></a>
                         </li>
                         <li class="menu-item <?php if (current_url() == base_url('manager/todo')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>manager/todo"><i
-                                        class="ft-chevron-right"></i> <?php echo $this->lang->line('To Do List'); ?></a>
+                            <a href="<?php echo base_url(); ?>manager/todo"><i class="ft-chevron-right"></i> <?php echo $this->lang->line('To Do List'); ?></a>
                         </li>
                     </ul>
                 </li>
-            <?php }
+            <?php } ?>
+
+            <!-- 4. SYSTEM & DATA -->
+            <li class="navigation-header section-tools"><span>System & Data</span></li>
             
-               
-            if ($this->aauth->premission(6)) {
-                ?>
-                <li class="navigation-header section-data"><span>Data & Reports</span></li>
-                <li class="nav-item has-sub section-data <?php if ($this->li_a == "data") {
-                    echo ' open';
-                } ?>"><a href="#"><i
-                                class="icon-pie-chart"></i>
-                        <span><?php echo $this->lang->line('Data & Reports') ?></span></a>
+            <li class="nav-item has-sub section-tools <?php if ($this->li_a == "tools") echo 'open'; ?>">
+                <a href="#"><i class="ft-briefcase"></i><span>Tools</span></a>
+                <ul class="menu-content">
+                    <?php if ($this->aauth->premission(6)) { ?>
+                        <li class="menu-item <?php if (current_url() == base_url('events')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>events"><i class="ft-chevron-right"></i>Events & Calendar</a></li>
+                    <?php } ?>
+                    <?php if ($this->aauth->premission(6) || $this->aauth->premission(7)) { ?>
+                        <li class="menu-item <?php if (current_url() == base_url('manager/todo')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>manager/todo"><i class="ft-chevron-right"></i>Notes & To-Do</a></li>
+                    <?php } ?>
+                    <?php if ($this->aauth->get_user()->roleid < 5) { ?>
+                        <li class="menu-item <?php if (current_url() == base_url('tools/setgoals')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>tools/setgoals"><i class="ft-chevron-right"></i>Set Goals</a></li>
+                    <?php } ?>
+                </ul>
+            </li>
+
+            <?php if ($this->aauth->premission(6)) { ?>
+                <li class="nav-item has-sub section-data <?php if ($this->li_a == "data") echo 'open'; ?>">
+                    <a href="#"><i class="icon-pie-chart"></i><span><?php echo $this->lang->line('Data & Reports') ?></span></a>
                     <ul class="menu-content">
                         <li class="menu-item <?php if ($this->li_a == 'adv_reports') echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>advanced_reports">
-                                <i class="fa fa-line-chart"></i>
-                                <span>Advanced Report Center</span>
-                            </a>
+                            <a href="<?php echo base_url(); ?>advanced_reports"><i class="fa fa-line-chart"></i><span>Advanced Report Center</span></a>
                         </li>
                         <li class="menu-item <?php if (current_url() == base_url('register')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>register"><i
-                                        class="icon-eyeglasses"></i> <?php echo $this->lang->line('Business Registers'); ?></a>
+                            <a href="<?php echo base_url(); ?>register"><i class="icon-eyeglasses"></i> <?php echo $this->lang->line('Business Registers'); ?></a>
                         </li>
-
-                        <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement') || current_url() == base_url('reports/customerstatement') || current_url() == base_url('reports/supplierstatement') || current_url() == base_url('reports/taxstatement')) echo 'active'; ?>"><a href="#"><i
-                                        class="ft-file-text"></i> <?php echo $this->lang->line('Statements') ?></a>
+                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'reports/statement') !== false) echo 'active'; ?>">
+                             <a href="#" class="dropdown-toggle"><i class="ft-file-text"></i> <?php echo $this->lang->line('Statements') ?></a>
                             <ul class="menu-content">
-
-                                <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/customerstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/customerstatement"><?php echo $this->lang->line('Customer') . ' ' . $this->lang->line('Account Statements') ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/supplierstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/supplierstatement"><?php echo $this->lang->line('Supplier') . ' ' . $this->lang->line('Account Statements') ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/taxstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Statements'); ?></a>
-                                </li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/customerstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/customerstatement"><?php echo $this->lang->line('Customer') . ' ' . $this->lang->line('Account Statements') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/supplierstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/supplierstatement"><?php echo $this->lang->line('Supplier') . ' ' . $this->lang->line('Account Statements') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/taxstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Statements'); ?></a></li>
                             </ul>
                         </li>
-
-                        <li class="menu-item <?php if (strpos(current_url(), 'chart/') !== false) echo 'active'; ?>"><a href="#"><i
-                                        class="ft-bar-chart-2"></i> <?php echo $this->lang->line('Graphical Reports') ?>
-                            </a>
+                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'chart/') !== false) echo 'active'; ?>">
+                             <a href="#" class="dropdown-toggle"><i class="ft-bar-chart-2"></i> <?php echo $this->lang->line('Graphical Reports') ?></a>
                             <ul class="menu-content">
-
-                                <li class="menu-item <?php if (current_url() == base_url('chart/product_cat')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>chart/product_cat"><?= $this->lang->line('Product Categories'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('chart/trending_products')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>chart/trending_products"><?= $this->lang->line('Trending Products'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('chart/profit')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>chart/profit"><?= $this->lang->line('Profit'); ?></a>
-                                </li>
-
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>chart/topcustomers"><?php echo $this->lang->line('Top') . ' ' . $this->lang->line('Customers') ?></a>
-                                </li>
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>chart/incvsexp"><?php echo $this->lang->line('Income') . ' vs ' . $this->lang->line('Expenses') ?></a>
-                                </li>
-
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>chart/income"><?= $this->lang->line('Income'); ?></a>
-                                </li>
-                                 <li class="menu-item <?php if (current_url() == base_url('chart/expenses')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>chart/expenses"><?= $this->lang->line('Expenses'); ?></a></li>
-
-
+                                <li class="menu-item <?php if (current_url() == base_url('chart/product_cat')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/product_cat"><?= $this->lang->line('Product Categories'); ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('chart/trending_products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/trending_products"><?= $this->lang->line('Trending Products'); ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('chart/profit')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/profit"><?= $this->lang->line('Profit'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/topcustomers"><?php echo $this->lang->line('Top') . ' ' . $this->lang->line('Customers') ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/incvsexp"><?php echo $this->lang->line('Income') . ' vs ' . $this->lang->line('Expenses') ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/income"><?= $this->lang->line('Income'); ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('chart/expenses')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/expenses"><?= $this->lang->line('Expenses'); ?></a></li>
                             </ul>
                         </li>
-                        <li class="menu-item <?php if (strpos(current_url(), 'reports/') !== false && strpos(current_url(), 'statement') === false) echo 'active'; ?>"><a href="#"><i
-                                        class="ft-pie-chart"></i> <?php echo $this->lang->line('Summary') . ' & ' . $this->lang->line('Report') ?>
-                            </a>
+                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'reports/') !== false && strpos(current_url(), 'statement') === false) echo 'active'; ?>">
+                             <a href="#" class="dropdown-toggle"><i class="ft-pie-chart"></i> <?php echo $this->lang->line('Summary') . ' & ' . $this->lang->line('Report') ?></a>
                             <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('reports/statistics')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/statistics"><?php echo $this->lang->line('Statistics') ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/profitstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/profitstatement"><?= $this->lang->line('Profit'); ?></a>
-                                </li>
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>reports/incomestatement"><?php echo $this->lang->line('Calculate Income'); ?></a>
-                                </li>
-                                <li class="menu-item"><a
-                                            href="<?php echo base_url(); ?>reports/expensestatement"><?php echo $this->lang->line('Calculate Expenses') ?></a>
-                                </li>
-                                 <li class="menu-item <?php if (current_url() == base_url('reports/sales')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/sales"><?php echo $this->lang->line('Sales') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/products')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/products"><?php echo $this->lang->line('Products') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/commission')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>reports/commission"><?= $this->lang->line('Employee'); ?> <?= $this->lang->line('Commission'); ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/statistics')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/statistics"><?php echo $this->lang->line('Statistics') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/profitstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/profitstatement"><?= $this->lang->line('Profit'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>reports/incomestatement"><?php echo $this->lang->line('Calculate Income'); ?></a></li>
+                                <li class="menu-item"><a href="<?php echo base_url(); ?>reports/expensestatement"><?php echo $this->lang->line('Calculate Expenses') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/sales')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/sales"><?php echo $this->lang->line('Sales') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/products"><?php echo $this->lang->line('Products') ?></a></li>
+                                <li class="menu-item <?php if (current_url() == base_url('reports/commission')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/commission"><?= $this->lang->line('Employee'); ?> <?= $this->lang->line('Commission'); ?></a></li>
                             </ul>
                         </li>
-
                     </ul>
                 </li>
-            
-            
-            <?php }  ?>
                 
-                
-                
-                 <?php if ($this->aauth->premission(6)) {
-                ?>
-                
-                <li class="nav-item has-sub section-data <?php if (current_url() == base_url('export/people')) echo 'open active'; ?>"><a href="#"><i
-                                        class="ft-database"></i><span><?php echo $this->lang->line('Backup & Export') . '-' . $this->lang->line('Import'); ?></span>
-                            </a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('export/people')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/people"><?php echo $this->lang->line('Export People Data'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('export/transactions')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/transactions"><?php echo $this->lang->line('Export Transactions'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('export/products')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/products"><?php echo $this->lang->line('Export Products'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('export/account')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/account"><?php echo $this->lang->line('Account Statements'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('export/taxstatement')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Backup & Export'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('export/dbexport')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>export/dbexport"><?php echo $this->lang->line('Database Backup'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('import/products')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>import/products"><?php echo $this->lang->line('Import Products'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('import/customers')) echo 'active'; ?>"><a
-                                            href="<?php echo base_url(); ?>import/customers"><?php echo $this->lang->line('Import Customers'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-<?php }  ?>
-                            
+                <li class="nav-item has-sub section-data <?php if (current_url() == base_url('export/people')) echo 'open active'; ?>">
+                    <a href="#"><i class="ft-database"></i><span><?php echo $this->lang->line('Backup & Export') ?></span></a>
+                    <ul class="menu-content">
+                        <li class="menu-item <?php if (current_url() == base_url('export/people')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/people"><?php echo $this->lang->line('Export People Data'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('export/transactions')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/transactions"><?php echo $this->lang->line('Export Transactions'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('export/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/products"><?php echo $this->lang->line('Export Products'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('export/account')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/account"><?php echo $this->lang->line('Account Statements'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('export/taxstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Backup & Export'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('export/dbexport')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/dbexport"><?php echo $this->lang->line('Database Backup'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('import/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>import/products"><?php echo $this->lang->line('Import Products'); ?></a></li>
+                        <li class="menu-item <?php if (current_url() == base_url('import/customers')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>import/customers"><?php echo $this->lang->line('Import Customers'); ?></a></li>
+                    </ul>
+                </li>
 
+                <!-- ====== SOCIAL GROWTH MODULE ====== -->
+                <li class="nav-item has-sub section-services <?php if (strpos(current_url(), 'social_growth') !== false) echo 'open active'; ?>">
+                    <a href="#"><i class="ft-share-2"></i><span>📢 Social Growth</span></a>
+                    <ul class="menu-content">
+                        <?php if ($this->aauth->is_admin()): ?>
+                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_settings')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>social_growth/admin_settings"><i class="ft-settings"></i> API Settings</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_templates')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>social_growth/admin_templates"><i class="ft-image"></i> Poster Templates</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_logs')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>social_growth/admin_logs"><i class="ft-bar-chart-2"></i> Usage Logs</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_leaderboard')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>social_growth/admin_leaderboard"><i class="ft-award"></i> Leaderboard (Admin)</a>
+                        </li>
+                        <?php endif; ?>
+                        <li class="menu-item <?php if (current_url() == base_url('social_growth/my_insights')) echo 'active'; ?>">
+                            <a href="<?php echo base_url(); ?>social_growth/my_insights"><i class="ft-trending-up"></i> My Insights</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- ====== END SOCIAL GROWTH ====== -->
+
+            <?php } ?>
 
         </ul>
-
     </div>
     <!-- /horizontal menu content-->
 </div>

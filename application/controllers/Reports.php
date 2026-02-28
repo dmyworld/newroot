@@ -170,7 +170,11 @@ class Reports extends CI_Controller
 
         foreach ($list as $row) {
             $balance += $row['credit'] - $row['debit'];
-            echo '<tr><td>' . dateformat($row['date']) . '</td><td>' . $row['note'] . '</td><td>' . amountExchange($row['debit'], 0, $this->aauth->get_user()->loc) . '</td><td>' . amountExchange($row['credit'], 0, $this->aauth->get_user()->loc) . '</td><td>' . amountExchange($balance, 0, $this->aauth->get_user()->loc) . '</td></tr>';
+            $delete_btn = '';
+            if ($this->aauth->get_user()->roleid >= 5) {
+                $delete_btn = ' <a href="#" data-object-id="' . $row['id'] . '" class="btn btn-danger btn-xs delete-object"><span class="fa fa-trash"></span></a>';
+            }
+            echo '<tr><td>' . dateformat($row['date']) . '</td><td>' . $row['account'] . '</td><td>' . $row['note'] . '</td><td>' . $this->lang->line($row['method']) . '</td><td>' . amountExchange($row['debit'], 0, $this->aauth->get_user()->loc) . '</td><td>' . amountExchange($row['credit'], 0, $this->aauth->get_user()->loc) . '</td><td>' . amountExchange($balance, 0, $this->aauth->get_user()->loc) . '</td><td>' . $delete_btn . '</td></tr>';
         }
 
     }

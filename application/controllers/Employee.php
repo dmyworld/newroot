@@ -154,8 +154,12 @@ class Employee extends CI_Controller
             }
 
         } else {
-            echo json_encode(array('status' => 'Error', 'message' =>
-                'There has been an error, please try again.'));
+            $error_message = 'There has been an error, please try again.';
+            $aauth_errors = $this->aauth->get_errors_array();
+            if (!empty($aauth_errors)) {
+                $error_message = implode('<br>', $aauth_errors);
+            }
+            echo json_encode(array('status' => 'Error', 'message' => $error_message));
         }
     }
 
@@ -571,7 +575,9 @@ class Employee extends CI_Controller
                      'can_view' => isset($actions['view']) ? 1 : 0,
                      'can_add' => isset($actions['add']) ? 1 : 0,
                      'can_edit' => isset($actions['edit']) ? 1 : 0,
-                     'can_delete' => isset($actions['delete']) ? 1 : 0
+                     'can_delete' => isset($actions['delete']) ? 1 : 0,
+                     'can_demo' => isset($actions['demo']) ? 1 : 0
+
                  );
                  
                  // Always insert/update to ensure permission state is explicit
