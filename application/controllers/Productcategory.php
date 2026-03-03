@@ -198,6 +198,17 @@ class Productcategory Extends CI_Controller
         }
     }
 
+    public function approve()
+    {
+        if ($this->aauth->get_user()->roleid != 1) { // Only Super Admin
+            exit('<h3>Insufficient permissions</h3>');
+        }
+        $id = $this->input->post('id');
+        if ($this->products_cat->approve($id)) {
+            echo json_encode(array('status' => 'Success', 'message' => 'Category Approved!'));
+        }
+    }
+
 
     public function delete_i()
     {

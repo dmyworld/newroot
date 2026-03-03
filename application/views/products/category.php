@@ -226,7 +226,13 @@
 <div class="content-body">
     <div class="page-header-glass">
         <div class="page-title">
-            <h2><?php echo $this->lang->line('Product Category') ?></h2>
+                <h5><?php echo $this->lang->line('Add New Product Category') ?></h5>
+                <hr>
+                <?php if ($this->aauth->get_user()->roleid != 1) { ?>
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> New categories require approval from a Super Admin before becoming visible to everyone.
+                    </div>
+                <?php } ?>
         </div>
         <div class="header-actions">
             <!-- Updated buttons to Glass/Premium styles -->
@@ -304,7 +310,8 @@
                     <th><?php echo $this->lang->line('Name') ?></th>
                     <th><?php echo $this->lang->line('Total Products') ?></th>
                     <th><?php echo $this->lang->line('Stock Quantity') ?></th>
-                    <th>Worth (Retail  / Wholesale )</th>
+                    <th> Worth (Retail / Wholesale)</th>
+                    <th>Status</th>
                     <th><?php echo $this->lang->line('Action') ?></th>
                 </tr>
                 </thead>
@@ -318,16 +325,24 @@
                     $qty = +$row['qty'];
                     $salessum = amountExchange($row['salessum'], 0, $this->aauth->get_user()->loc);
                     $worthsum = amountExchange($row['worthsum'], 0, $this->aauth->get_user()->loc);
+                    $status = ($row['approved'] == 1) ? '<span class="badge-psy badge-psy-success">Approved</span>' : '<span class="badge-psy badge-psy-warning">Pending</span>';
+                    
                     echo "<tr>
                 <td>$i</td>
                 <td><a href='" . base_url("productcategory/view?id=$cid") . "' >$title</a></td>
                 <td><span class='badge-psy badge-psy-info'>$total Items</span></td>
                 <td><span class='badge-psy badge-psy-warning'>$qty Units</span></td>
                 <td>$salessum / <span class='text-muted'>$worthsum</span></td>
+                <td>$status</td>
                 <td>
                     <a href='" . base_url("productcategory/view?id=$cid") . "' class='btn btn-outline-primary btn-sm rounded'><i class='fa fa-eye'></i></a>&nbsp; 
-                    <a class='btn btn-outline-info btn-sm rounded' href='" . base_url() . "productcategory/report_product?id=" . $cid . "' target='_blank'> <span class='fa fa-pie-chart'></span></a>&nbsp;  
-                    <a href='" . base_url("productcategory/edit?id=$cid") . "' class='btn btn-outline-warning btn-sm rounded'><i class='fa fa-pencil'></i></a>&nbsp;
+                    <a class='btn btn-outline-info btn-sm rounded' href='" . base_url() . "productcategory/report_product?id=" . $cid . "' target='_blank'> <span class='fa fa-pie-chart'></span></a>&nbsp;  ";
+                    
+                    if ($this->aauth->get_user()->roleid == 1 && $row['approved'] == 0) {
+                        echo "<a href='#' data-object-id='$cid' class='btn btn-outline-success btn-sm rounded approve-cat' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
+                    }
+
+                    echo "<a href='" . base_url("productcategory/edit?id=$cid") . "' class='btn btn-outline-warning btn-sm rounded'><i class='fa fa-pencil'></i></a>&nbsp;
                     <a href='#' data-object-id='" . $cid . "' class='btn btn-outline-danger btn-sm rounded delete-object' title='Delete'><i class='fa fa-trash'></i></a>
                 </td></tr>";
                     $i++;
@@ -354,6 +369,28 @@
                     className: 'btn-premium btn-sm mb-2'
                 }
             ],
+        });
+        });
+
+        $(document).on('click', ".approve-cat", function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-object-id');
+            var obj = $(this);
+            jQuery.ajax({
+                url: "<?php echo base_url('productcategory/approve') ?>",
+                type: 'POST',
+                data: {id: id, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == "Success") {
+                        $("#notify .message").html("<strong>" + data.status + "</strong>: " + data.message);
+                        $("#notify").removeClass("alert-danger").addClass("alert-success").fadeIn();
+                        $("html, body").scrollTop($("body").offset().top);
+                        obj.closest('tr').find('.badge-psy-warning').removeClass('badge-psy-warning').addClass('badge-psy-success').text('Approved');
+                        obj.remove();
+                    }
+                }
+            });
         });
     });
 </script>

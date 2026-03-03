@@ -39,9 +39,10 @@ class Employee extends CI_Controller
 
     public function index()
     {
+        $loc = $this->input->get('loc');
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = 'Employees List';
-        $data['employee'] = $this->employee->list_employee();
+        $data['employee'] = $this->employee->list_employee($loc);
         $this->load->view('fixed/header', $head);
         $this->load->view('employee/list', $data);
         $this->load->view('fixed/footer');
@@ -139,6 +140,10 @@ class Employee extends CI_Controller
         $salary = numberClean($this->input->post('salary', true));
         $commission = $this->input->post('commission', true);
         $department = $this->input->post('department', true);
+        
+        // New fields
+        $insurance_id = $this->input->post('insurance_id', true);
+        $security_service = $this->input->post('security_service', true);
 
 
         $a = $this->aauth->create_user($email, $password, $username);
@@ -382,8 +387,31 @@ class Employee extends CI_Controller
                 'Total Sales (Paid Payment):  ' . amountExchange($details['total'], 0, $this->aauth->get_user()->loc)));
 
         }
+    }
 
+    public function verify()
+    {
+        if ($this->aauth->get_user()->roleid != 1) { // Only Super Admin
+            exit('<h3>Insufficient permissions</h3>');
+        }
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        if ($this->employee->verify_employee($id, $status)) {
+            echo json_encode(array('status' => 'Success', 'message' => 'Status Updated!'));
+        }
+    }
 
+    public function benefits()
+    {
+        if ($this->aauth->get_user()->roleid != 1) { // Only Super Admin
+            exit('<h3>Insufficient permissions</h3>');
+        }
+        $id = $this->input->post('id');
+        $insurance = $this->input->post('insurance');
+        $security = $this->input->post('security');
+        if ($this->employee->set_benefits($id, $insurance, $security)) {
+            echo json_encode(array('status' => 'Success', 'message' => 'Benefits Updated!'));
+        }
     }
 
     public function update()

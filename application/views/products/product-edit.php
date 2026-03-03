@@ -221,6 +221,24 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Available for</label>
+                        <div class="col-sm-6">
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" name="is_sale" value="1" id="is_sale" class="custom-control-input" <?php if ($product['is_sale']) echo 'checked' ?>>
+                                <label class="custom-control-label" for="is_sale">Sale</label>
+                            </div>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" name="is_rent" value="1" id="is_rent" class="custom-control-input" <?php if ($product['is_rent']) echo 'checked' ?>>
+                                <label class="custom-control-label" for="is_rent">Rent</label>
+                            </div>
+                            <div class="custom-control custom-checkbox custom-control-inline">
+                                <input type="checkbox" name="is_installment" value="1" id="is_installment" class="custom-control-input" <?php if ($product['is_installment']) echo 'checked' ?>>
+                                <label class="custom-control-label" for="is_installment">Installment</label>
+                            </div>
+                        </div>
+                    </div>
   
           
                     

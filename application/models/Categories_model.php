@@ -23,10 +23,12 @@ class Categories_model extends CI_Model
 
     public function category_list($type = 0, $rel = 0)
     {
-        $query = $this->db->query("SELECT *
-FROM geopos_product_cat WHERE c_type='$type' AND rel_id='$rel'
-
-ORDER BY id DESC");
+        $user = $this->aauth->get_user();
+        $whr = "WHERE c_type='$type' AND rel_id='$rel'";
+        if ($user->roleid != 1) { // Not Super Admin
+            $whr .= " AND (status=1 OR requested_by='" . $user->id . "')";
+        }
+        $query = $this->db->query("SELECT * FROM geopos_product_cat $whr ORDER BY id DESC");
         return $query->result_array();
     }
 	
@@ -142,11 +144,17 @@ p.pid='$id' $qj ");
     {
         if (!$cat_type) $cat_type = 0;
         if (!$cat_rel) $cat_rel = 0;
+        
+        $user = $this->aauth->get_user();
+        $status = ($user->roleid == 1) ? 1 : 0; // Super Admin auto-approves
+        
         $data = array(
             'title' => $cat_name,
             'extra' => $cat_desc,
             'c_type' => $cat_type,
-            'rel_id' => $cat_rel
+            'rel_id' => $cat_rel,
+            'status' => $status,
+            'requested_by' => $user->id
         );
 
         if ($cat_type) {
@@ -157,13 +165,19 @@ p.pid='$id' $qj ");
 
         if ($this->db->insert('geopos_product_cat', $data)) {
             $this->aauth->applog("[Category Created] $cat_name ID " . $this->db->insert_id(), $this->aauth->get_user()->username);
-            echo json_encode(array('status' => 'Success', 'message' =>
-                $this->lang->line('ADDED') . " $url"));
+            $msg = ($status == 1) ? $this->lang->line('ADDED') : "Requested. Awaiting Super Admin approval.";
+            echo json_encode(array('status' => 'Success', 'message' => $msg . " $url"));
         } else {
             echo json_encode(array('status' => 'Error', 'message' =>
                 $this->lang->line('ERROR')));
         }
+    }
 
+    public function approve($id)
+    {
+        $this->db->set('status', 1);
+        $this->db->where('id', $id);
+        return $this->db->update('geopos_product_cat');
     }
 
     public function addwarehouse($cat_name, $cat_desc, $lid)

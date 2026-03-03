@@ -10929,3 +10929,893 @@ INFO - 2026-03-03 20:05:39 --> Helper loaded: language_helper
 INFO - 2026-03-03 20:05:39 --> Language file loaded: language/english/english_lang.php
 INFO - 2026-03-03 20:05:39 --> Database Driver Class Initialized
 INFO - 2026-03-03 20:05:39 --> Controller Class Initialized
+INFO - 2026-03-03 20:24:44 --> Config Class Initialized
+INFO - 2026-03-03 20:24:44 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:24:44 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:24:44 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:24:44 --> URI Class Initialized
+INFO - 2026-03-03 20:24:44 --> Router Class Initialized
+INFO - 2026-03-03 20:24:44 --> Output Class Initialized
+INFO - 2026-03-03 20:24:44 --> Security Class Initialized
+DEBUG - 2026-03-03 20:24:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:24:44 --> Input Class Initialized
+INFO - 2026-03-03 20:24:44 --> Language Class Initialized
+INFO - 2026-03-03 20:24:44 --> Loader Class Initialized
+INFO - 2026-03-03 20:24:44 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:24:44 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:24:44 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:24:44 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:24:44 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:24:44 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:24:44 --> Controller Class Initialized
+INFO - 2026-03-03 20:55:38 --> Config Class Initialized
+INFO - 2026-03-03 20:55:38 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:55:38 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:55:38 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:55:38 --> URI Class Initialized
+DEBUG - 2026-03-03 20:55:38 --> No URI present. Default controller set.
+INFO - 2026-03-03 20:55:38 --> Router Class Initialized
+INFO - 2026-03-03 20:55:38 --> Output Class Initialized
+INFO - 2026-03-03 20:55:38 --> Security Class Initialized
+DEBUG - 2026-03-03 20:55:38 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:55:38 --> Input Class Initialized
+INFO - 2026-03-03 20:55:38 --> Language Class Initialized
+INFO - 2026-03-03 20:55:38 --> Loader Class Initialized
+INFO - 2026-03-03 20:55:38 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:55:38 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:55:38 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:55:38 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:55:38 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:55:38 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:55:38 --> Controller Class Initialized
+INFO - 2026-03-03 20:55:55 --> Config Class Initialized
+INFO - 2026-03-03 20:55:55 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:55:55 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:55:55 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:55:55 --> URI Class Initialized
+DEBUG - 2026-03-03 20:55:55 --> No URI present. Default controller set.
+INFO - 2026-03-03 20:55:55 --> Router Class Initialized
+INFO - 2026-03-03 20:55:55 --> Output Class Initialized
+INFO - 2026-03-03 20:55:55 --> Security Class Initialized
+DEBUG - 2026-03-03 20:55:55 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:55:55 --> Input Class Initialized
+INFO - 2026-03-03 20:55:55 --> Language Class Initialized
+INFO - 2026-03-03 20:55:55 --> Loader Class Initialized
+INFO - 2026-03-03 20:55:55 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:55:55 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:55:55 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:55:55 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:55:55 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:55:55 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:55:55 --> Controller Class Initialized
+INFO - 2026-03-03 20:56:01 --> Config Class Initialized
+INFO - 2026-03-03 20:56:01 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:56:01 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:56:01 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:56:01 --> URI Class Initialized
+INFO - 2026-03-03 20:56:01 --> Router Class Initialized
+INFO - 2026-03-03 20:56:01 --> Output Class Initialized
+INFO - 2026-03-03 20:56:01 --> Security Class Initialized
+DEBUG - 2026-03-03 20:56:01 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:56:01 --> Input Class Initialized
+INFO - 2026-03-03 20:56:01 --> Language Class Initialized
+INFO - 2026-03-03 20:56:01 --> Loader Class Initialized
+INFO - 2026-03-03 20:56:01 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:56:01 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:56:01 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:56:01 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:56:01 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:56:01 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:56:01 --> Controller Class Initialized
+INFO - 2026-03-03 20:56:11 --> Config Class Initialized
+INFO - 2026-03-03 20:56:11 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:56:11 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:56:11 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:56:11 --> URI Class Initialized
+INFO - 2026-03-03 20:56:11 --> Router Class Initialized
+INFO - 2026-03-03 20:56:11 --> Output Class Initialized
+INFO - 2026-03-03 20:56:11 --> Security Class Initialized
+DEBUG - 2026-03-03 20:56:11 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:56:11 --> Input Class Initialized
+INFO - 2026-03-03 20:56:11 --> Language Class Initialized
+INFO - 2026-03-03 20:56:11 --> Loader Class Initialized
+INFO - 2026-03-03 20:56:11 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:56:11 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:56:11 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:56:11 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:56:11 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:56:11 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:56:11 --> Controller Class Initialized
+INFO - 2026-03-03 20:56:17 --> Config Class Initialized
+INFO - 2026-03-03 20:56:17 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:56:17 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:56:17 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:56:17 --> URI Class Initialized
+DEBUG - 2026-03-03 20:56:17 --> No URI present. Default controller set.
+INFO - 2026-03-03 20:56:17 --> Router Class Initialized
+INFO - 2026-03-03 20:56:17 --> Output Class Initialized
+INFO - 2026-03-03 20:56:17 --> Security Class Initialized
+DEBUG - 2026-03-03 20:56:17 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:56:17 --> Input Class Initialized
+INFO - 2026-03-03 20:56:17 --> Language Class Initialized
+INFO - 2026-03-03 20:56:17 --> Loader Class Initialized
+INFO - 2026-03-03 20:56:17 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:56:17 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:56:17 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:56:17 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:56:17 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:56:17 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:56:17 --> Controller Class Initialized
+INFO - 2026-03-03 20:57:31 --> Config Class Initialized
+INFO - 2026-03-03 20:57:31 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:57:31 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:57:31 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:57:31 --> URI Class Initialized
+INFO - 2026-03-03 20:57:31 --> Router Class Initialized
+INFO - 2026-03-03 20:57:31 --> Output Class Initialized
+INFO - 2026-03-03 20:57:31 --> Security Class Initialized
+DEBUG - 2026-03-03 20:57:31 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:57:31 --> Input Class Initialized
+INFO - 2026-03-03 20:57:31 --> Language Class Initialized
+INFO - 2026-03-03 20:57:31 --> Loader Class Initialized
+INFO - 2026-03-03 20:57:31 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:57:31 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:57:31 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:57:31 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:57:31 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:57:31 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:57:32 --> Controller Class Initialized
+INFO - 2026-03-03 20:57:34 --> Config Class Initialized
+INFO - 2026-03-03 20:57:34 --> Hooks Class Initialized
+DEBUG - 2026-03-03 20:57:34 --> UTF-8 Support Enabled
+INFO - 2026-03-03 20:57:34 --> Utf8 Class Initialized
+INFO - 2026-03-03 20:57:34 --> URI Class Initialized
+INFO - 2026-03-03 20:57:34 --> Router Class Initialized
+INFO - 2026-03-03 20:57:34 --> Output Class Initialized
+INFO - 2026-03-03 20:57:34 --> Security Class Initialized
+DEBUG - 2026-03-03 20:57:34 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 20:57:34 --> Input Class Initialized
+INFO - 2026-03-03 20:57:34 --> Language Class Initialized
+INFO - 2026-03-03 20:57:34 --> Loader Class Initialized
+INFO - 2026-03-03 20:57:34 --> Helper loaded: url_helper
+INFO - 2026-03-03 20:57:34 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 20:57:34 --> Helper loaded: form_helper
+INFO - 2026-03-03 20:57:34 --> Helper loaded: language_helper
+INFO - 2026-03-03 20:57:34 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 20:57:34 --> Database Driver Class Initialized
+INFO - 2026-03-03 20:57:34 --> Controller Class Initialized
+INFO - 2026-03-03 21:04:05 --> Config Class Initialized
+INFO - 2026-03-03 21:04:05 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:04:05 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:04:05 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:04:05 --> URI Class Initialized
+INFO - 2026-03-03 21:04:05 --> Router Class Initialized
+INFO - 2026-03-03 21:04:05 --> Output Class Initialized
+INFO - 2026-03-03 21:04:05 --> Security Class Initialized
+DEBUG - 2026-03-03 21:04:05 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:04:05 --> Input Class Initialized
+INFO - 2026-03-03 21:04:05 --> Language Class Initialized
+INFO - 2026-03-03 21:04:05 --> Loader Class Initialized
+INFO - 2026-03-03 21:04:05 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:04:05 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:04:05 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:04:05 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:04:06 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:04:06 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:04:06 --> Controller Class Initialized
+INFO - 2026-03-03 21:04:10 --> Config Class Initialized
+INFO - 2026-03-03 21:04:10 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:04:10 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:04:10 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:04:10 --> URI Class Initialized
+INFO - 2026-03-03 21:04:10 --> Router Class Initialized
+INFO - 2026-03-03 21:04:11 --> Output Class Initialized
+INFO - 2026-03-03 21:04:11 --> Security Class Initialized
+DEBUG - 2026-03-03 21:04:11 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:04:11 --> Input Class Initialized
+INFO - 2026-03-03 21:04:11 --> Language Class Initialized
+INFO - 2026-03-03 21:04:11 --> Loader Class Initialized
+INFO - 2026-03-03 21:04:11 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:04:11 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:04:11 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:04:11 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:04:11 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:04:11 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:04:11 --> Controller Class Initialized
+INFO - 2026-03-03 21:05:39 --> Config Class Initialized
+INFO - 2026-03-03 21:05:39 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:05:39 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:05:39 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:05:39 --> URI Class Initialized
+INFO - 2026-03-03 21:05:39 --> Router Class Initialized
+INFO - 2026-03-03 21:05:39 --> Output Class Initialized
+INFO - 2026-03-03 21:05:39 --> Security Class Initialized
+DEBUG - 2026-03-03 21:05:39 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:05:39 --> Input Class Initialized
+INFO - 2026-03-03 21:05:39 --> Language Class Initialized
+INFO - 2026-03-03 21:05:39 --> Loader Class Initialized
+INFO - 2026-03-03 21:05:39 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:05:39 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:05:39 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:05:39 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:05:39 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:05:39 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:05:39 --> Controller Class Initialized
+INFO - 2026-03-03 21:05:40 --> Config Class Initialized
+INFO - 2026-03-03 21:05:40 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:05:40 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:05:40 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:05:40 --> URI Class Initialized
+INFO - 2026-03-03 21:05:40 --> Router Class Initialized
+INFO - 2026-03-03 21:05:40 --> Output Class Initialized
+INFO - 2026-03-03 21:05:40 --> Security Class Initialized
+DEBUG - 2026-03-03 21:05:40 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:05:40 --> Input Class Initialized
+INFO - 2026-03-03 21:05:40 --> Language Class Initialized
+INFO - 2026-03-03 21:05:40 --> Loader Class Initialized
+INFO - 2026-03-03 21:05:40 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:05:40 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:05:41 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:05:41 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:05:41 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:05:41 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:05:41 --> Controller Class Initialized
+INFO - 2026-03-03 21:05:43 --> Config Class Initialized
+INFO - 2026-03-03 21:05:43 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:05:43 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:05:43 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:05:43 --> URI Class Initialized
+INFO - 2026-03-03 21:05:43 --> Router Class Initialized
+INFO - 2026-03-03 21:05:43 --> Output Class Initialized
+INFO - 2026-03-03 21:05:43 --> Security Class Initialized
+DEBUG - 2026-03-03 21:05:43 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:05:43 --> Input Class Initialized
+INFO - 2026-03-03 21:05:43 --> Language Class Initialized
+INFO - 2026-03-03 21:05:43 --> Loader Class Initialized
+INFO - 2026-03-03 21:05:43 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:05:43 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:05:43 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:05:43 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:05:43 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:05:43 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:05:43 --> Controller Class Initialized
+INFO - 2026-03-03 21:05:49 --> Config Class Initialized
+INFO - 2026-03-03 21:05:49 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:05:49 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:05:49 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:05:49 --> URI Class Initialized
+INFO - 2026-03-03 21:05:49 --> Router Class Initialized
+INFO - 2026-03-03 21:05:49 --> Output Class Initialized
+INFO - 2026-03-03 21:05:49 --> Security Class Initialized
+DEBUG - 2026-03-03 21:05:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:05:49 --> Input Class Initialized
+INFO - 2026-03-03 21:05:49 --> Language Class Initialized
+INFO - 2026-03-03 21:05:49 --> Loader Class Initialized
+INFO - 2026-03-03 21:05:49 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:05:49 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:05:49 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:05:49 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:05:49 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:05:49 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:05:49 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:19 --> Config Class Initialized
+INFO - 2026-03-03 21:18:19 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:19 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:19 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:19 --> URI Class Initialized
+INFO - 2026-03-03 21:18:19 --> Router Class Initialized
+INFO - 2026-03-03 21:18:19 --> Output Class Initialized
+INFO - 2026-03-03 21:18:19 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:19 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:19 --> Input Class Initialized
+INFO - 2026-03-03 21:18:19 --> Language Class Initialized
+INFO - 2026-03-03 21:18:19 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:19 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:19 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:19 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:19 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:19 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:19 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:19 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:20 --> Config Class Initialized
+INFO - 2026-03-03 21:18:20 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:20 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:20 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:20 --> URI Class Initialized
+INFO - 2026-03-03 21:18:20 --> Router Class Initialized
+INFO - 2026-03-03 21:18:20 --> Output Class Initialized
+INFO - 2026-03-03 21:18:20 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:20 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:20 --> Input Class Initialized
+INFO - 2026-03-03 21:18:20 --> Language Class Initialized
+INFO - 2026-03-03 21:18:20 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:20 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:20 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:20 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:20 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:20 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:20 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:20 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:22 --> Config Class Initialized
+INFO - 2026-03-03 21:18:22 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:22 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:22 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:22 --> URI Class Initialized
+INFO - 2026-03-03 21:18:22 --> Router Class Initialized
+INFO - 2026-03-03 21:18:22 --> Output Class Initialized
+INFO - 2026-03-03 21:18:22 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:22 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:22 --> Input Class Initialized
+INFO - 2026-03-03 21:18:22 --> Language Class Initialized
+INFO - 2026-03-03 21:18:22 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:22 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:22 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:22 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:22 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:22 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:22 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:22 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:22 --> Config Class Initialized
+INFO - 2026-03-03 21:18:22 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:23 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:23 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:23 --> URI Class Initialized
+INFO - 2026-03-03 21:18:23 --> Router Class Initialized
+INFO - 2026-03-03 21:18:23 --> Output Class Initialized
+INFO - 2026-03-03 21:18:23 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:23 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:23 --> Input Class Initialized
+INFO - 2026-03-03 21:18:23 --> Language Class Initialized
+INFO - 2026-03-03 21:18:23 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:23 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:23 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:23 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:23 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:23 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:23 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:23 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:41 --> Config Class Initialized
+INFO - 2026-03-03 21:18:41 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:41 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:41 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:41 --> URI Class Initialized
+INFO - 2026-03-03 21:18:41 --> Router Class Initialized
+INFO - 2026-03-03 21:18:41 --> Output Class Initialized
+INFO - 2026-03-03 21:18:41 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:41 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:41 --> Input Class Initialized
+INFO - 2026-03-03 21:18:41 --> Language Class Initialized
+INFO - 2026-03-03 21:18:41 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:41 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:41 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:41 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:41 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:41 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:41 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:41 --> Controller Class Initialized
+INFO - 2026-03-03 21:18:44 --> Config Class Initialized
+INFO - 2026-03-03 21:18:44 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:18:44 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:18:44 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:18:44 --> URI Class Initialized
+INFO - 2026-03-03 21:18:44 --> Router Class Initialized
+INFO - 2026-03-03 21:18:44 --> Output Class Initialized
+INFO - 2026-03-03 21:18:44 --> Security Class Initialized
+DEBUG - 2026-03-03 21:18:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:18:44 --> Input Class Initialized
+INFO - 2026-03-03 21:18:44 --> Language Class Initialized
+INFO - 2026-03-03 21:18:44 --> Loader Class Initialized
+INFO - 2026-03-03 21:18:44 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:18:44 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:18:44 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:18:44 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:18:44 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:18:44 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:18:44 --> Controller Class Initialized
+INFO - 2026-03-03 21:33:21 --> Config Class Initialized
+INFO - 2026-03-03 21:33:21 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:33:21 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:33:21 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:33:21 --> URI Class Initialized
+INFO - 2026-03-03 21:33:21 --> Router Class Initialized
+INFO - 2026-03-03 21:33:21 --> Output Class Initialized
+INFO - 2026-03-03 21:33:21 --> Security Class Initialized
+DEBUG - 2026-03-03 21:33:21 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:33:21 --> Input Class Initialized
+INFO - 2026-03-03 21:33:21 --> Language Class Initialized
+INFO - 2026-03-03 21:33:21 --> Loader Class Initialized
+INFO - 2026-03-03 21:33:21 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:33:21 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:33:21 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:33:21 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:33:21 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:33:21 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:33:21 --> Controller Class Initialized
+INFO - 2026-03-03 21:33:22 --> Config Class Initialized
+INFO - 2026-03-03 21:33:22 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:33:22 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:33:22 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:33:22 --> URI Class Initialized
+INFO - 2026-03-03 21:33:22 --> Router Class Initialized
+INFO - 2026-03-03 21:33:22 --> Output Class Initialized
+INFO - 2026-03-03 21:33:22 --> Security Class Initialized
+DEBUG - 2026-03-03 21:33:22 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:33:22 --> Input Class Initialized
+INFO - 2026-03-03 21:33:22 --> Language Class Initialized
+INFO - 2026-03-03 21:33:22 --> Loader Class Initialized
+INFO - 2026-03-03 21:33:22 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:33:22 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:33:22 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:33:22 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:33:22 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:33:22 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:33:23 --> Controller Class Initialized
+INFO - 2026-03-03 21:34:41 --> Config Class Initialized
+INFO - 2026-03-03 21:34:41 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:34:41 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:34:41 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:34:42 --> URI Class Initialized
+INFO - 2026-03-03 21:34:42 --> Router Class Initialized
+INFO - 2026-03-03 21:34:42 --> Output Class Initialized
+INFO - 2026-03-03 21:34:42 --> Security Class Initialized
+DEBUG - 2026-03-03 21:34:42 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:34:42 --> Input Class Initialized
+INFO - 2026-03-03 21:34:42 --> Language Class Initialized
+INFO - 2026-03-03 21:34:42 --> Loader Class Initialized
+INFO - 2026-03-03 21:34:42 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:34:42 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:34:42 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:34:42 --> Controller Class Initialized
+INFO - 2026-03-03 21:34:42 --> Config Class Initialized
+INFO - 2026-03-03 21:34:42 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:34:42 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:34:42 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:34:42 --> URI Class Initialized
+INFO - 2026-03-03 21:34:42 --> Router Class Initialized
+INFO - 2026-03-03 21:34:42 --> Output Class Initialized
+INFO - 2026-03-03 21:34:42 --> Security Class Initialized
+DEBUG - 2026-03-03 21:34:42 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:34:42 --> Input Class Initialized
+INFO - 2026-03-03 21:34:42 --> Language Class Initialized
+INFO - 2026-03-03 21:34:42 --> Loader Class Initialized
+INFO - 2026-03-03 21:34:42 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:34:42 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:34:42 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:34:42 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:34:42 --> Controller Class Initialized
+INFO - 2026-03-03 21:34:53 --> Config Class Initialized
+INFO - 2026-03-03 21:34:53 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:34:53 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:34:53 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:34:53 --> URI Class Initialized
+INFO - 2026-03-03 21:34:53 --> Router Class Initialized
+INFO - 2026-03-03 21:34:53 --> Output Class Initialized
+INFO - 2026-03-03 21:34:53 --> Security Class Initialized
+DEBUG - 2026-03-03 21:34:53 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:34:53 --> Input Class Initialized
+INFO - 2026-03-03 21:34:53 --> Language Class Initialized
+INFO - 2026-03-03 21:34:53 --> Loader Class Initialized
+INFO - 2026-03-03 21:34:53 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:34:53 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:34:53 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:34:53 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:34:53 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:34:53 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:34:53 --> Controller Class Initialized
+INFO - 2026-03-03 21:34:53 --> Config Class Initialized
+INFO - 2026-03-03 21:34:53 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:34:53 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:34:53 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:34:53 --> URI Class Initialized
+INFO - 2026-03-03 21:34:53 --> Router Class Initialized
+INFO - 2026-03-03 21:34:53 --> Output Class Initialized
+INFO - 2026-03-03 21:34:53 --> Security Class Initialized
+DEBUG - 2026-03-03 21:34:53 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:34:53 --> Input Class Initialized
+INFO - 2026-03-03 21:34:54 --> Language Class Initialized
+ERROR - 2026-03-03 21:34:54 --> 404 Page Not Found: Userfiles/company
+INFO - 2026-03-03 21:35:31 --> Config Class Initialized
+INFO - 2026-03-03 21:35:31 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:31 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:31 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:31 --> URI Class Initialized
+INFO - 2026-03-03 21:35:31 --> Router Class Initialized
+INFO - 2026-03-03 21:35:31 --> Output Class Initialized
+INFO - 2026-03-03 21:35:31 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:31 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:31 --> Input Class Initialized
+INFO - 2026-03-03 21:35:31 --> Language Class Initialized
+INFO - 2026-03-03 21:35:31 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:31 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:31 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:31 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:31 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:31 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:31 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:31 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:32 --> Config Class Initialized
+INFO - 2026-03-03 21:35:32 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:32 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:32 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:32 --> URI Class Initialized
+INFO - 2026-03-03 21:35:32 --> Router Class Initialized
+INFO - 2026-03-03 21:35:32 --> Output Class Initialized
+INFO - 2026-03-03 21:35:32 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:32 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:32 --> Input Class Initialized
+INFO - 2026-03-03 21:35:32 --> Language Class Initialized
+INFO - 2026-03-03 21:35:32 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:32 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:32 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:32 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:32 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:32 --> Config Class Initialized
+INFO - 2026-03-03 21:35:32 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:32 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:32 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:32 --> URI Class Initialized
+INFO - 2026-03-03 21:35:32 --> Router Class Initialized
+INFO - 2026-03-03 21:35:32 --> Output Class Initialized
+INFO - 2026-03-03 21:35:32 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:32 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:32 --> Input Class Initialized
+INFO - 2026-03-03 21:35:32 --> Language Class Initialized
+INFO - 2026-03-03 21:35:32 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:32 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:32 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:32 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:32 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:32 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:36 --> Config Class Initialized
+INFO - 2026-03-03 21:35:36 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:36 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:36 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:36 --> URI Class Initialized
+INFO - 2026-03-03 21:35:36 --> Router Class Initialized
+INFO - 2026-03-03 21:35:36 --> Output Class Initialized
+INFO - 2026-03-03 21:35:36 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:36 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:36 --> Input Class Initialized
+INFO - 2026-03-03 21:35:36 --> Language Class Initialized
+INFO - 2026-03-03 21:35:36 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:37 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:37 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:37 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:37 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:37 --> Config Class Initialized
+INFO - 2026-03-03 21:35:37 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:37 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:37 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:37 --> URI Class Initialized
+INFO - 2026-03-03 21:35:37 --> Router Class Initialized
+INFO - 2026-03-03 21:35:37 --> Output Class Initialized
+INFO - 2026-03-03 21:35:37 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:37 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:37 --> Input Class Initialized
+INFO - 2026-03-03 21:35:37 --> Language Class Initialized
+INFO - 2026-03-03 21:35:37 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:37 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:37 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:37 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:37 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:37 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:51 --> Config Class Initialized
+INFO - 2026-03-03 21:35:51 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:51 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:51 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:51 --> URI Class Initialized
+INFO - 2026-03-03 21:35:51 --> Router Class Initialized
+INFO - 2026-03-03 21:35:51 --> Output Class Initialized
+INFO - 2026-03-03 21:35:51 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:51 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:51 --> Input Class Initialized
+INFO - 2026-03-03 21:35:51 --> Language Class Initialized
+INFO - 2026-03-03 21:35:51 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:51 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:51 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:51 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:51 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:51 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:51 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:51 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:54 --> Config Class Initialized
+INFO - 2026-03-03 21:35:54 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:54 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:54 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:54 --> URI Class Initialized
+INFO - 2026-03-03 21:35:54 --> Router Class Initialized
+INFO - 2026-03-03 21:35:54 --> Output Class Initialized
+INFO - 2026-03-03 21:35:54 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:54 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:54 --> Input Class Initialized
+INFO - 2026-03-03 21:35:54 --> Language Class Initialized
+INFO - 2026-03-03 21:35:54 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:54 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:54 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:54 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:54 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:54 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:54 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:54 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:57 --> Config Class Initialized
+INFO - 2026-03-03 21:35:57 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:57 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:57 --> URI Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> No URI present. Default controller set.
+INFO - 2026-03-03 21:35:57 --> Router Class Initialized
+INFO - 2026-03-03 21:35:57 --> Output Class Initialized
+INFO - 2026-03-03 21:35:57 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:57 --> Input Class Initialized
+INFO - 2026-03-03 21:35:57 --> Language Class Initialized
+INFO - 2026-03-03 21:35:57 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:57 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:57 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:57 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:57 --> Config Class Initialized
+INFO - 2026-03-03 21:35:57 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:57 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:57 --> URI Class Initialized
+INFO - 2026-03-03 21:35:57 --> Router Class Initialized
+INFO - 2026-03-03 21:35:57 --> Output Class Initialized
+INFO - 2026-03-03 21:35:57 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:57 --> Input Class Initialized
+INFO - 2026-03-03 21:35:57 --> Language Class Initialized
+INFO - 2026-03-03 21:35:57 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:57 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:57 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:57 --> Controller Class Initialized
+INFO - 2026-03-03 21:35:57 --> Config Class Initialized
+INFO - 2026-03-03 21:35:57 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:35:57 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:35:57 --> URI Class Initialized
+INFO - 2026-03-03 21:35:57 --> Router Class Initialized
+INFO - 2026-03-03 21:35:57 --> Output Class Initialized
+INFO - 2026-03-03 21:35:57 --> Security Class Initialized
+DEBUG - 2026-03-03 21:35:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:35:57 --> Input Class Initialized
+INFO - 2026-03-03 21:35:57 --> Language Class Initialized
+INFO - 2026-03-03 21:35:57 --> Loader Class Initialized
+INFO - 2026-03-03 21:35:57 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:35:57 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:35:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:35:57 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:35:57 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:16 --> Config Class Initialized
+INFO - 2026-03-03 21:36:16 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:16 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:16 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:16 --> URI Class Initialized
+INFO - 2026-03-03 21:36:16 --> Router Class Initialized
+INFO - 2026-03-03 21:36:16 --> Output Class Initialized
+INFO - 2026-03-03 21:36:16 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:16 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:16 --> Input Class Initialized
+INFO - 2026-03-03 21:36:16 --> Language Class Initialized
+INFO - 2026-03-03 21:36:16 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:16 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:16 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:16 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:16 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:16 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:16 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:16 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:19 --> Config Class Initialized
+INFO - 2026-03-03 21:36:19 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:19 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:19 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:19 --> URI Class Initialized
+INFO - 2026-03-03 21:36:19 --> Router Class Initialized
+INFO - 2026-03-03 21:36:19 --> Output Class Initialized
+INFO - 2026-03-03 21:36:19 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:19 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:19 --> Input Class Initialized
+INFO - 2026-03-03 21:36:19 --> Language Class Initialized
+INFO - 2026-03-03 21:36:19 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:19 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:19 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:19 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:20 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:20 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:20 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:20 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:23 --> Config Class Initialized
+INFO - 2026-03-03 21:36:23 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:23 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:23 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:23 --> URI Class Initialized
+INFO - 2026-03-03 21:36:23 --> Router Class Initialized
+INFO - 2026-03-03 21:36:23 --> Output Class Initialized
+INFO - 2026-03-03 21:36:23 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:23 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:23 --> Input Class Initialized
+INFO - 2026-03-03 21:36:23 --> Language Class Initialized
+INFO - 2026-03-03 21:36:23 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:23 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:23 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:23 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:23 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:23 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:23 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:23 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:25 --> Config Class Initialized
+INFO - 2026-03-03 21:36:25 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:25 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:25 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:25 --> URI Class Initialized
+INFO - 2026-03-03 21:36:25 --> Router Class Initialized
+INFO - 2026-03-03 21:36:25 --> Output Class Initialized
+INFO - 2026-03-03 21:36:25 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:25 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:25 --> Input Class Initialized
+INFO - 2026-03-03 21:36:25 --> Language Class Initialized
+INFO - 2026-03-03 21:36:25 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:25 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:25 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:25 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:25 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:25 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:25 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:25 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:28 --> Config Class Initialized
+INFO - 2026-03-03 21:36:28 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:28 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:28 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:28 --> URI Class Initialized
+INFO - 2026-03-03 21:36:28 --> Router Class Initialized
+INFO - 2026-03-03 21:36:28 --> Output Class Initialized
+INFO - 2026-03-03 21:36:28 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:28 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:28 --> Input Class Initialized
+INFO - 2026-03-03 21:36:28 --> Language Class Initialized
+INFO - 2026-03-03 21:36:28 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:28 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:28 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:28 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:28 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:28 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:28 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:28 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:44 --> Config Class Initialized
+INFO - 2026-03-03 21:36:44 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:44 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:44 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:44 --> URI Class Initialized
+INFO - 2026-03-03 21:36:44 --> Router Class Initialized
+INFO - 2026-03-03 21:36:44 --> Output Class Initialized
+INFO - 2026-03-03 21:36:44 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:44 --> Input Class Initialized
+INFO - 2026-03-03 21:36:44 --> Language Class Initialized
+INFO - 2026-03-03 21:36:44 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:44 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:44 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:44 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:44 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:44 --> Config Class Initialized
+INFO - 2026-03-03 21:36:44 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:44 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:44 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:44 --> URI Class Initialized
+INFO - 2026-03-03 21:36:44 --> Router Class Initialized
+INFO - 2026-03-03 21:36:44 --> Output Class Initialized
+INFO - 2026-03-03 21:36:44 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:44 --> Input Class Initialized
+INFO - 2026-03-03 21:36:44 --> Language Class Initialized
+INFO - 2026-03-03 21:36:44 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:44 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:44 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:44 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:44 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:44 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:57 --> Config Class Initialized
+INFO - 2026-03-03 21:36:57 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:57 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:57 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:57 --> URI Class Initialized
+INFO - 2026-03-03 21:36:57 --> Router Class Initialized
+INFO - 2026-03-03 21:36:57 --> Output Class Initialized
+INFO - 2026-03-03 21:36:57 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:57 --> Input Class Initialized
+INFO - 2026-03-03 21:36:57 --> Language Class Initialized
+INFO - 2026-03-03 21:36:57 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:57 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:57 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:57 --> Controller Class Initialized
+INFO - 2026-03-03 21:36:57 --> Config Class Initialized
+INFO - 2026-03-03 21:36:57 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:36:57 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:36:57 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:36:57 --> URI Class Initialized
+INFO - 2026-03-03 21:36:57 --> Router Class Initialized
+INFO - 2026-03-03 21:36:57 --> Output Class Initialized
+INFO - 2026-03-03 21:36:57 --> Security Class Initialized
+DEBUG - 2026-03-03 21:36:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:36:57 --> Input Class Initialized
+INFO - 2026-03-03 21:36:57 --> Language Class Initialized
+INFO - 2026-03-03 21:36:57 --> Loader Class Initialized
+INFO - 2026-03-03 21:36:57 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:36:57 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:36:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:36:57 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:36:57 --> Controller Class Initialized
+INFO - 2026-03-03 21:37:13 --> Config Class Initialized
+INFO - 2026-03-03 21:37:13 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:37:13 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:37:13 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:37:13 --> URI Class Initialized
+INFO - 2026-03-03 21:37:13 --> Router Class Initialized
+INFO - 2026-03-03 21:37:13 --> Output Class Initialized
+INFO - 2026-03-03 21:37:13 --> Security Class Initialized
+DEBUG - 2026-03-03 21:37:13 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:37:13 --> Input Class Initialized
+INFO - 2026-03-03 21:37:13 --> Language Class Initialized
+INFO - 2026-03-03 21:37:13 --> Loader Class Initialized
+INFO - 2026-03-03 21:37:13 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:37:13 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:37:13 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:37:13 --> Controller Class Initialized
+INFO - 2026-03-03 21:37:13 --> Config Class Initialized
+INFO - 2026-03-03 21:37:13 --> Hooks Class Initialized
+DEBUG - 2026-03-03 21:37:13 --> UTF-8 Support Enabled
+INFO - 2026-03-03 21:37:13 --> Utf8 Class Initialized
+INFO - 2026-03-03 21:37:13 --> URI Class Initialized
+INFO - 2026-03-03 21:37:13 --> Router Class Initialized
+INFO - 2026-03-03 21:37:13 --> Output Class Initialized
+INFO - 2026-03-03 21:37:13 --> Security Class Initialized
+DEBUG - 2026-03-03 21:37:13 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-03 21:37:13 --> Input Class Initialized
+INFO - 2026-03-03 21:37:13 --> Language Class Initialized
+INFO - 2026-03-03 21:37:13 --> Loader Class Initialized
+INFO - 2026-03-03 21:37:13 --> Helper loaded: url_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: form_helper
+INFO - 2026-03-03 21:37:13 --> Helper loaded: language_helper
+INFO - 2026-03-03 21:37:13 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-03 21:37:13 --> Database Driver Class Initialized
+INFO - 2026-03-03 21:37:13 --> Controller Class Initialized

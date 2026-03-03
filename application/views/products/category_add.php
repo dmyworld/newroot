@@ -12,6 +12,11 @@
 
                 <h5><?php echo $this->lang->line('Add New Product Category') ?></h5>
                 <hr>
+                <?php if ($this->aauth->get_user()->roleid != 1) { ?>
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> New categories require approval from a Super Admin before becoming visible to everyone.
+                    </div>
+                <?php } ?>
 
                 <div class="form-group row">
 

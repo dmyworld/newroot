@@ -495,7 +495,12 @@ class Products extends CI_Controller
         $code_type = $this->input->post('code_type');
         $sub_cat = $this->input->post('sub_cat');
         $brand = $this->input->post('brand');
+    $special_category = $this->input->post('special_category', true);
 
+        $is_sale = $this->input->post('is_sale') ? 1 : 0;
+        $is_rent = $this->input->post('is_rent') ? 1 : 0;
+        $is_installment = $this->input->post('is_installment') ? 1 : 0;
+        $master_pid = $this->input->post('master_pid') ?: 0;
 
               // Convert inches to feet
             $widthfeet = $product_width / 12;
@@ -504,12 +509,9 @@ class Products extends CI_Controller
             // Calculate cubic feet
             $product_quick = $product_desc * $widthfeet * $heightfeet;
 
-         //$product_quick = 12*12*12;
-
         if ($catid) {
-            $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost);
-        }
-    }
+        $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $is_sale, $is_rent, $is_installment, $master_pid, $special_category);
+    }    }
 
     public function delete_i()
     {
@@ -589,7 +591,10 @@ class Products extends CI_Controller
         if (!$sub_cat) $sub_cat = 0;
         $brand = $this->input->post('brand');
         $local_imported = $this->input->post('local_imported');
-        
+
+        $is_sale = $this->input->post('is_sale') ? 1 : 0;
+        $is_rent = $this->input->post('is_rent') ? 1 : 0;
+        $is_installment = $this->input->post('is_installment') ? 1 : 0;
         
               // Convert inches to feet
             $widthfeet = $product_width / 12;
@@ -601,7 +606,7 @@ class Products extends CI_Controller
          //$product_quick = 12*12*12;
         
         if ($pid) {
-            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty,$product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $local_imported);
+            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty,$product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $local_imported, $is_sale, $is_rent, $is_installment);
         }
     }
     public function warehouseproduct_list()
@@ -797,12 +802,7 @@ $result = $this->products->transfer(
 // Send proper JSON response
 header('Content-Type: application/json');
 echo json_encode($result);
-exit;       
-            
-            
-            
-            
-            
+exit;
         } else {
             
             
@@ -1827,5 +1827,33 @@ public function export_transfers_excel() {
         }
     }
 
+    public function master_list()
+    {
+        if (!$this->aauth->premission(2, 'view')) {
+            exit('<h3>Permission Denied</h3>');
+        }
+        $data['products'] = $this->products->get_master_products();
+        $data['warehouse'] = $this->categories_model->warehouse_list();
+        $head['title'] = "Master Product List (One-Click Warehouse)";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $this->load->view('fixed/header', $head);
+        $this->load->view('products/master_list', $data);
+        $this->load->view('fixed/footer');
+    }
+
+    public function add_from_master()
+    {
+        if (!$this->aauth->premission(2, 'add')) {
+            exit('<h3>Permission Denied</h3>');
+        }
+        $pid = $this->input->post('pid');
+        $wid = $this->input->post('warehouse');
+        $qty = $this->input->post('qty');
+        if ($this->products->clone_to_warehouse($pid, $wid, $qty)) {
+            echo json_encode(array('status' => 'Success', 'message' => 'Product imported to warehouse!'));
+        } else {
+            echo json_encode(array('status' => 'Error', 'message' => 'Failed to import product.'));
+        }
+    }
 
 }

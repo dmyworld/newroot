@@ -21,11 +21,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Employee_model extends CI_Model
 {
 
-    public function list_employee()
+    public function list_employee($loc = 0)
     {
         $this->db->select('geopos_employees.*,geopos_users.banned,geopos_users.roleid,geopos_users.loc');
         $this->db->from('geopos_employees');
         $this->db->join('geopos_users', 'geopos_employees.id = geopos_users.id', 'left');
+
+        // Location Isolation
+        $user = $this->aauth->get_user();
+        if ($loc > 0) {
+            $this->db->where('geopos_users.loc', $loc);
+        } elseif ($user->roleid == 2) { // Business Owner
+            $this->db->where('geopos_users.loc', $user->loc);
+        } elseif ($user->roleid > 2 && $user->roleid != 1) { // Other staff (not Super Admin)
+             $this->db->where('geopos_users.loc', $user->loc);
+        }
+
         $this->db->order_by('geopos_users.roleid', 'DESC');
         $query = $this->db->get();
         return $query->result_array();
@@ -373,7 +384,10 @@ class Employee_model extends CI_Model
             'bank_name' => $this->input->post('bank_name') ?? '',
             'bank_ac' => $this->input->post('bank_ac') ?? '',
             'cola_amount' => numberClean($this->input->post('cola_amount') ?? 0),
-            'epf_no' => $this->input->post('epf_no') ?? ''
+            'epf_no' => $this->input->post('epf_no') ?? '',
+            'verified' => 0,
+            'insurance_id' => $this->input->post('insurance_id') ?? '',
+            'security_service' => $this->input->post('security_service') ?? 0
         );
 
 
@@ -427,6 +441,21 @@ class Employee_model extends CI_Model
     public function employee_permissions()
     {
          return [];
+    }
+
+    public function verify_employee($id, $status)
+    {
+        $this->db->set('verified', $status);
+        $this->db->where('id', $id);
+        return $this->db->update('geopos_employees');
+    }
+
+    public function set_benefits($id, $insurance, $security)
+    {
+        $this->db->set('insurance_id', $insurance);
+        $this->db->set('security_service', $security);
+        $this->db->where('id', $id);
+        return $this->db->update('geopos_employees');
     }
 
     //documents list

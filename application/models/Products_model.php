@@ -1102,7 +1102,7 @@ public function manage_transfer_details($id, $eid = '')
         return $this->db->count_all_results();
     }
 
-    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '',$product_width, $product_thickness, $product_quick, $product_quick_code,$new_fproduct_cost)
+    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '',$product_width, $product_thickness, $product_quick, $product_quick_code,$new_fproduct_cost, $is_sale = 1, $is_rent = 0, $is_installment = 0, $master_pid = 0, $special_category = '')
     {
         $ware_valid = $this->valid_warehouse($warehouse);
         if(!$sub_cat) $sub_cat=0;
@@ -1143,7 +1143,12 @@ public function manage_transfer_details($id, $eid = '')
                        'pthickness' => $product_thickness,
                        'pquick' => $product_quick,
                         'pquick_code' => $product_quick_code,
-                        'fproduct_cost' => $new_fproduct_cost
+                        'fproduct_cost' => $new_fproduct_cost,
+                        'is_sale' => $is_sale,
+                        'is_rent' => $is_rent,
+                        'is_installment' => $is_installment,
+                        'master_pid' => $master_pid,
+                        'special_category' => $special_category
                     );
 
                 } else {
@@ -1174,8 +1179,12 @@ public function manage_transfer_details($id, $eid = '')
                        'pthickness' => $product_thickness,
                         'pquick' => $product_quick,
                        'pquick_code' => $product_quick_code,
-                              'fproduct_cost' => $new_fproduct_cost
-
+                              'fproduct_cost' => $new_fproduct_cost,
+                        'is_sale' => $is_sale,
+                        'is_rent' => $is_rent,
+                        'is_installment' => $is_installment,
+                        'master_pid' => $master_pid,
+                        'special_category' => $special_category
                     );
                 }
                 $this->db->trans_start();
@@ -1258,8 +1267,12 @@ public function manage_transfer_details($id, $eid = '')
                    'pthickness' => $product_thickness,
                  'pquick' => $product_quick,
                     'pquick_code' => $product_quick_code,
-                      'fproduct_cost' => $new_fproduct_cost
-                    
+                      'fproduct_cost' => $new_fproduct_cost,
+                    'is_sale' => $is_sale,
+                    'is_rent' => $is_rent,
+                    'is_installment' => $is_installment,
+                    'master_pid' => $master_pid,
+                    'special_category' => $special_category
                 );
             } else {
                 $barcode = rand(100, 999) . rand(0, 9) . rand(1000000, 9999999) . rand(0, 9);
@@ -1287,7 +1300,12 @@ public function manage_transfer_details($id, $eid = '')
                     'pthickness' => $product_thickness,
                     'pquick' => $product_quick,
                     'pquick_code' => $product_quick_code,
-                      'fproduct_cost' => $new_fproduct_cost
+                      'fproduct_cost' => $new_fproduct_cost,
+                    'is_sale' => $is_sale,
+                    'is_rent' => $is_rent,
+                    'is_installment' => $is_installment,
+                    'master_pid' => $master_pid,
+                    'special_category' => $special_category
                 );
             }
             $this->db->trans_start();
@@ -1347,7 +1365,7 @@ public function manage_transfer_details($id, $eid = '')
         }
     }
 
-    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '',$product_width,   $product_thickness,   $product_quick,   $product_quick_code, $new_fproduct_cost, $local_imported = '')
+    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '',$product_width,   $product_thickness,   $product_quick,   $product_quick_code, $new_fproduct_cost, $local_imported = '', $is_sale = 1, $is_rent = 0, $is_installment = 0)
     {
         $this->db->select('qty,qty2');
         $this->db->from('geopos_products');
@@ -1390,7 +1408,10 @@ public function manage_transfer_details($id, $eid = '')
                       'pquick' => $product_quick,
                         'pquick_code' => $product_quick_code,
                       'fproduct_cost' => $new_fproduct_cost,
-                      'local_imported' => $local_imported
+                      'local_imported' => $local_imported,
+                    'is_sale' => $is_sale,
+                    'is_rent' => $is_rent,
+                    'is_installment' => $is_installment
                 );
 
 $this->db->where('pid', $pid);
@@ -1455,7 +1476,10 @@ if ($this->db->update('geopos_products', $data)) {
 
 
 
-                'local_imported' => $local_imported
+                'local_imported' => $local_imported,
+                'is_sale' => $is_sale,
+                'is_rent' => $is_rent,
+                'is_installment' => $is_installment
             );
 
 $this->db->where('pid', $pid);
@@ -1990,7 +2014,11 @@ public function transfer($from_warehouse, $products_l, $to_warehouse, $qty, $inv
                     // Track relationship if needed
                     'merge' => 2,
                     'sub' => $product_id,
-                    'vb' => $to_warehouse
+                    'vb' => $to_warehouse,
+                    'is_sale' => $source_product['is_sale'],
+                    'is_rent' => $source_product['is_rent'],
+                    'is_installment' => $source_product['is_installment'],
+                    'master_pid' => $source_product['master_pid']
                 );
                 
                 $this->db->insert('geopos_products', $new_product_data);
@@ -2144,7 +2172,11 @@ private function handlePartialTransfer($product_id, $product, $qty, $to_warehous
             'pthickness' => $product['pthickness'],
             'pquick' => $product['pquick'],
             'pquick_code' => $product['pquick_code'],
-            'fproduct_cost' => $product['fproduct_cost']
+            'fproduct_cost' => $product['fproduct_cost'],
+            'is_sale' => $product['is_sale'],
+            'is_rent' => $product['is_rent'],
+            'is_installment' => $product['is_installment'],
+            'master_pid' => $product['master_pid']
         );
         
         $this->db->insert('geopos_products', $new_product);
@@ -2219,15 +2251,40 @@ public function movers($type = 0, $rid1 = 0, $rid2 = 0, $rid3 = 0, $note = '')
 
     public function valid_warehouse($warehouse)
     {
-        $this->db->select('id,loc');
+        $this->db->select('id,title,loc');
         $this->db->from('geopos_warehouse');
         $this->db->where('id', $warehouse);
         $query = $this->db->get();
-        $row = $query->row_array();
-        return $row;
+        return $query->row_array();
     }
 
+    public function get_master_products()
+    {
+        $this->db->select('p.*, w.title as warehouse_name');
+        $this->db->from('geopos_products p');
+        $this->db->join('geopos_warehouse w', 'p.warehouse = w.id', 'left');
+        $this->db->where('w.loc', 0); // Master location
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 
+    public function clone_to_warehouse($pid, $target_warehouse, $qty = 0)
+    {
+        $this->db->select('*');
+        $this->db->from('geopos_products');
+        $this->db->where('pid', $pid);
+        $query = $this->db->get();
+        $product = $query->row_array();
+
+        if ($product) {
+            unset($product['pid']);
+            $product['warehouse'] = $target_warehouse;
+            $product['qty'] = $qty;
+            $product['master_pid'] = $pid;
+            return $this->db->insert('geopos_products', $product);
+        }
+        return false;
+    }
 
 
 }

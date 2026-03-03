@@ -78,7 +78,32 @@
                                 <strong>EMail</strong> <?php echo $employee['email']; ?>
                             </div>
 
+                        <div class="row m-t-lg">
+                            <div class="col-md-12">
+                                <strong>Verification Status: </strong> 
+                                <?php if ($employee['is_verified']) { ?>
+                                    <span class="badge badge-success">Verified</span>
+                                <?php } else { ?>
+                                    <span class="badge badge-warning">Pending</span>
+                                <?php } ?>
+                            </div>
                         </div>
+
+                        <?php if ($this->aauth->get_user()->roleid == 1) { ?>
+                        <hr>
+                        <h5>Admin Actions</h5>
+                        <div class="btn-group-vertical btn-block">
+                            <button class="btn btn-outline-success btn-sm verify-emp" data-id="<?php echo $eid ?>">
+                                <i class="fa fa-check-circle"></i> Verify Documents
+                            </button>
+                            <button class="btn btn-outline-info btn-sm benefit-emp" data-id="<?php echo $eid ?>" data-type="health">
+                                <i class="fa fa-heartbeat"></i> Grant Health Insurance
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm benefit-emp" data-id="<?php echo $eid ?>" data-type="security">
+                                <i class="fa fa-shield"></i> Grant Security Service
+                            </button>
+                        </div>
+                        <?php } ?>
 
 
                     </div>
@@ -276,6 +301,38 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(document).on('click', ".verify-emp", function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            jQuery.ajax({
+                url: "<?php echo base_url('employee/verify') ?>",
+                type: 'POST',
+                data: {id: id, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.status == "Success") {
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', ".benefit-emp", function (e) {
+            e.preventDefault();
+            var id = $(this).attr('data-id');
+            var type = $(this).attr('data-type');
+            jQuery.ajax({
+                url: "<?php echo base_url('employee/grant_benefit') ?>",
+                type: 'POST',
+                data: {id: id, type: type, '<?=$this->security->get_csrf_token_name()?>': crsf_hash},
+                dataType: 'json',
+                success: function (data) {
+                    alert(data.message);
+                }
+            });
+        });
+    </script>
     <div id="pop_model2" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
