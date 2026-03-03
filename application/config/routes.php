@@ -57,6 +57,11 @@ $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] = 'OwnerDashboard';
 $route['dashboard/(:any)'] = 'OwnerDashboard/$1';
 
+/* ------ Sample Data Seeder ------ */
+$route['sample_data']           = 'Sample_data/index';
+$route['sample_data/install']   = 'Sample_data/install';
+$route['sample_data/reset']     = 'Sample_data/reset';
+
 /* ------ Stock Transfer ------ */
 $route['stock_transfer'] = 'stock_transfer/index';
 $route['stock_transfer/search_product'] = 'stock_transfer/search_product';

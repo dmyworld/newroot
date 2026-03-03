@@ -1,10 +1,3 @@
-<?php
-$pageTitle = "TimberPro ERP - Stop Losing Money, Start Building Your Empire | Sri Lanka's #1 Profit Protection System";
-$metaDescription = "Join 1,000+ Sri Lankan businesses using TimberPro to prevent theft, stop fraud, and access premium buyers. 15 powerful modules. Free trial. No credit card required.";
-include 'includes/header.php';
-?>
-
-<?php include 'includes/nav.php'; ?>
 
 <main class="overflow-x-hidden bg-[rgb(20,21,24)]">
     
@@ -52,7 +45,7 @@ include 'includes/header.php';
     
 </main>
 
-<?php include 'includes/footer.php'; ?>
+
 
 <style>
 /* Smooth scroll behavior */

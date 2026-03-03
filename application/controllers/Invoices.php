@@ -26,6 +26,7 @@ class Invoices extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
         $this->load->model('invoices_model', 'invocies');
         $this->load->library("Aauth");
 
@@ -305,6 +306,26 @@ class Invoices extends CI_Controller
                         'body' => $text_message
                     )
                 );
+            }
+            // === WhatsApp Auto Notification ===
+            if ($auto['other'] == 1) {
+                try {
+                    $this->load->model('WhatsApp_model', 'whatsapp');
+                    $this->db->select('name,phone');
+                    $this->db->from('geopos_customers');
+                    $this->db->where('id', $customer_id);
+                    $query = $this->db->get();
+                    $wa_customer = $query->row_array();
+                    if (!empty($wa_customer['phone'])) {
+                        $template_data = [
+                            'BillNumber' => $invocieno2,
+                            'Amount'     => amountExchange($total, $currency),
+                            'DueDate'    => dateformat($bill_due_date),
+                            'Name'       => $wa_customer['name'],
+                        ];
+                        $this->whatsapp->send_template($wa_customer['phone'], 40, $template_data);
+                    }
+                } catch (Exception $e) { /* Non-critical — invoice save already succeeded */ }
             }
 
             //profit calculation

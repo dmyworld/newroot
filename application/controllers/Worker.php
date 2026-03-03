@@ -224,4 +224,51 @@ class Worker extends CI_Controller
         $this->load->view('worker/attendance', $data);
         $this->load->view('fixed/footer');
     }
+
+    public function clock()
+    {
+        if (!$this->aauth->is_loggedin()) { redirect('/user/'); return; }
+        
+        $user_id = $this->aauth->get_user()->id;
+        
+        // Handle Clock Action
+        if ($this->input->post('action')) {
+            $action = $this->input->post('action');
+            $note = $this->input->post('note') ?? '';
+            $this->worker->log_attendance($user_id, $action, $note);
+            redirect('worker/clock');
+        }
+
+        $data['status'] = $this->worker->get_clock_status($user_id);
+        $data['history'] = $this->worker->get_attendance_history($user_id);
+        
+        $head['title'] = "Professional Attendance Clock";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $this->load->view('fixed/header', $head);
+        $this->load->view('worker/clock', $data);
+        $this->load->view('fixed/footer');
+    }
+
+    public function payroll()
+    {
+        if (!$this->aauth->is_loggedin()) { redirect('/user/'); return; }
+        
+        $user_id = $this->aauth->get_user()->id;
+        $month = $this->input->get('month') ?? date('m');
+        $year = $this->input->get('year') ?? date('Y');
+        
+        $start_date = "$year-$month-01";
+        $end_date = date('Y-m-t', strtotime($start_date));
+        
+        $data['earnings'] = $this->worker->calculate_earnings($user_id, $start_date, $end_date);
+        $data['history'] = $this->worker->get_attendance_history($user_id, 30);
+        $data['month'] = $month;
+        $data['year'] = $year;
+        
+        $head['title'] = "Earnings & Payroll Dashboard";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        $this->load->view('fixed/header', $head);
+        $this->load->view('worker/payroll', $data);
+        $this->load->view('fixed/footer');
+    }
 }

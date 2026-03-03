@@ -548,4 +548,148 @@ class Cronjob extends CI_Controller
     }
 
 
+    /**
+     * WhatsApp: HP Installment Reminders
+     * Sends payment reminders to HP customers 3 days and 1 day before due date.
+     * Cron: Run daily → /cronjob/whatsapp_hp_reminders?token=YOUR_TOKEN
+     */
+    public function whatsapp_hp_reminders()
+    {
+        $corn = $this->cronjob->config();
+        $cornkey = $corn['cornkey'];
+
+        echo "--- WhatsApp HP Installment Reminder Cron ---\n";
+
+        if ($cornkey != $this->input->get('token')) {
+            echo "--- Error! Invalid Token! ---\n";
+            return;
+        }
+
+        $this->load->model('WhatsApp_model', 'whatsapp');
+        $sent = 0;
+        $errors = 0;
+
+        foreach ([3, 1] as $days_ahead) {
+            $target_date = date('Y-m-d', strtotime("+{$days_ahead} days"));
+
+            $this->db->select('i.id, i.installment_num, i.amount, i.due_date, i.contract_id, c.customer_id');
+            $this->db->from('geopos_hp_installments i');
+            $this->db->join('geopos_hp_contracts c', 'c.id = i.contract_id');
+            $this->db->where('i.status', 'unpaid');
+            $this->db->where('i.due_date', $target_date);
+            $due_rows = $this->db->get()->result_array();
+
+            echo count($due_rows) . " installments due in {$days_ahead} day(s).\n";
+
+            foreach ($due_rows as $row) {
+                $customer = $this->db->select('name, phone')
+                    ->where('id', $row['customer_id'])
+                    ->get('geopos_customers')->row_array();
+
+                if (empty($customer['phone'])) continue;
+
+                $result = $this->whatsapp->send_template($customer['phone'], 42, [
+                    'Name'           => $customer['name'],
+                    'Amount'         => number_format($row['amount'], 2),
+                    'DueDate'        => $row['due_date'],
+                    'InstallmentNum' => $row['installment_num'],
+                    'ContractID'     => $row['contract_id'],
+                ]);
+
+                if (isset($result['status']) && $result['status'] == 'Success') {
+                    $sent++;
+                    echo "  ✓ Sent to {$customer['name']} ({$customer['phone']})\n";
+                } else {
+                    $errors++;
+                    echo "  ✗ Failed for {$customer['name']}: " . ($result['message'] ?? 'Unknown') . "\n";
+                }
+            }
+        }
+
+        echo "--- Done. Sent: {$sent} | Errors: {$errors} ---\n";
+    }
+
+    /**
+     * WhatsApp: Overdue Invoice Alerts
+     * Sends WhatsApp notifications for invoices past their due date (unpaid).
+     * Cron: Run daily → /cronjob/whatsapp_overdue_invoices?token=YOUR_TOKEN
+     */
+    public function whatsapp_overdue_invoices()
+    {
+        $corn = $this->cronjob->config();
+        $cornkey = $corn['cornkey'];
+
+        echo "--- WhatsApp Overdue Invoice Alert Cron ---\n";
+
+        if ($cornkey != $this->input->get('token')) {
+            echo "--- Error! Invalid Token! ---\n";
+            return;
+        }
+
+        $this->load->model('WhatsApp_model', 'whatsapp');
+
+        // Get invoices past due and not fully paid
+        $this->db->select('i.id, i.tid, i.invoiceduedate, i.total, i.multi, c.name, c.phone, i.loc');
+        $this->db->from('geopos_invoices i');
+        $this->db->join('geopos_customers c', 'c.id = i.csd', 'left');
+        $this->db->where('DATE(i.invoiceduedate) <', date('Y-m-d'));
+        $this->db->where('i.status !=', 'Paid');
+        $this->db->where('i.status !=', 'Draft');
+        $this->db->where('c.phone !=', '');
+        $this->db->where('c.phone IS NOT NULL', null, false);
+
+        // Avoid re-alerting the same invoice today: skip if already messaged today
+        // (check via geopos_metadata type=99)
+        $today_tagged = $this->db->select('rid')
+            ->where('type', 99)
+            ->where('DATE(d_date)', date('Y-m-d'))
+            ->get('geopos_metadata')->result_array();
+        $already_alerted = array_column($today_tagged, 'rid');
+
+        $this->db->select('i.id, i.tid, i.invoiceduedate, i.total, i.multi, c.name, c.phone, i.loc');
+        $this->db->from('geopos_invoices i');
+        $this->db->join('geopos_customers c', 'c.id = i.csd', 'left');
+        $this->db->where('DATE(i.invoiceduedate) <', date('Y-m-d'));
+        $this->db->where('i.status !=', 'Paid');
+        $this->db->where('i.status !=', 'Draft');
+        if (!empty($already_alerted)) {
+            $this->db->where_not_in('i.id', $already_alerted);
+        }
+        $invoices = $this->db->get()->result_array();
+
+        echo count($invoices) . " overdue invoices to alert.\n";
+
+        $sent = 0;
+        $errors = 0;
+
+        foreach ($invoices as $invoice) {
+            if (empty($invoice['phone'])) continue;
+
+            $validtoken = hash_hmac('ripemd160', $invoice['id'], $this->config->item('encryption_key'));
+            $link = base_url('billing/view?id=' . $invoice['id'] . '&token=' . $validtoken);
+
+            $result = $this->whatsapp->send_template($invoice['phone'], 40, [
+                'Name'       => $invoice['name'],
+                'BillNumber' => $invoice['tid'],
+                'Amount'     => amountExchange($invoice['total'], $invoice['multi']),
+                'DueDate'    => dateformat($invoice['invoiceduedate']),
+            ]);
+
+            if (isset($result['status']) && $result['status'] == 'Success') {
+                $sent++;
+                // Tag as alerted to prevent duplicates
+                $this->db->insert('geopos_metadata', [
+                    'type' => 99, 'rid' => $invoice['id'], 'd_date' => date('Y-m-d H:i:s')
+                ]);
+                echo "  ✓ Alerted: Invoice #{$invoice['tid']} → {$invoice['name']}\n";
+            } else {
+                $errors++;
+                echo "  ✗ Failed: Invoice #{$invoice['tid']} → " . ($result['message'] ?? 'Unknown') . "\n";
+            }
+        }
+
+        echo "--- Done. Sent: {$sent} | Errors: {$errors} ---\n";
+    }
+
+
 }

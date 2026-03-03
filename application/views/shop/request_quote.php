@@ -1,190 +1,97 @@
-<?php $this->load->view('shop/styles') ?>
-<div class="container section">
-  <div style="max-width:720px;margin:0 auto">
-    <div class="section-title">📄 Request a Quote</div>
-    <div class="section-subtitle">Fill in your requirements — we'll respond within 24 hours</div>
-
-    <div style="background:#fff;border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);border:1px solid var(--border);margin-top:20px">
-      <form id="quote-form">
-        <?php if ($lot): ?>
-          <div style="background:var(--green-light);border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin-bottom:20px;display:flex;gap:12px;align-items:center">
-            <i class="fa-solid fa-tree" style="color:var(--green);font-size:1.3rem"></i>
-            <div>
-              <div style="font-weight:700;font-size:.95rem"><?= htmlspecialchars($lot['species'] ?? 'Selected Lot') ?></div>
-              <div style="font-size:.8rem;color:var(--text-muted)"><?= ucfirst($lot_type) ?> • <?= htmlspecialchars($lot['lot_name'] ?? '') ?></div>
+<div class="max-w-4xl mx-auto px-4 py-16">
+    <div class="flex flex-col md:flex-row items-center gap-12">
+        
+        <!-- Left Illustration/Text -->
+        <div class="flex-1 space-y-8">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest border border-blue-100">
+                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full animate-pulse"></span>
+                <span>Islandwide Service</span>
             </div>
-          </div>
-        <?php endif ?>
+            
+            <h1 class="text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
+                Get Bids from <span class="text-blue-600">Verified</span> Suppliers.
+            </h1>
+            
+            <p class="text-lg text-slate-500 leading-relaxed">
+                Post your timber or hardware requirements and let our netowrk of verified suppliers compete to give you the best price.
+            </p>
 
-        <input type="hidden" name="lot_id"   value="<?= isset($lot) ? ($lot['id']??0) : '' ?>">
-        <input type="hidden" name="lot_type" value="<?= htmlspecialchars($lot_type) ?>">
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div>
-            <label class="f-label">Your Name *</label>
-            <input name="customer_name" class="f-input" required placeholder="Full name">
-          </div>
-          <div>
-            <label class="f-label">Phone / WhatsApp *</label>
-            <input name="customer_phone" class="f-input" required type="tel" placeholder="07XXXXXXXX">
-          </div>
-          <div>
-            <label class="f-label">Email</label>
-            <input name="customer_email" class="f-input" type="email" placeholder="you@email.com">
-          </div>
-          <div>
-            <label class="f-label">Address / Location</label>
-            <input name="customer_address" class="f-input" placeholder="City or Address">
-          </div>
-        </div>
-
-        <hr style="margin:20px 0;border-color:var(--border)">
-        <div style="font-weight:600;font-size:.95rem;margin-bottom:14px">🪵 Timber Requirements</div>
-
-        <?php if (!$lot): ?>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-          <div>
-            <label class="f-label">Species *</label>
-            <select name="species" class="f-input" required>
-              <option value="">-- Select Species --</option>
-              <?php foreach ($wood_types as $wt): ?>
-                <option><?= htmlspecialchars($wt['name'] ?? $wt['wood_name'] ?? '') ?></option>
-              <?php endforeach ?>
-              <option value="Teak">Teak</option>
-              <option value="Kos">Kos</option>
-              <option value="Mahogany">Mahogany</option>
-              <option value="Nadun">Nadun</option>
-              <option value="Other">Other (describe below)</option>
-            </select>
-          </div>
-          <div>
-            <label class="f-label">Type</label>
-            <select name="lot_type" class="f-input">
-              <option value="logs">Round Logs</option>
-              <option value="sawn">Sawn Timber</option>
-              <option value="standing">Standing Timber</option>
-            </select>
-          </div>
-        </div>
-        <?php else: ?>
-          <input type="hidden" name="species" value="<?= htmlspecialchars($lot['species'] ?? '') ?>">
-        <?php endif ?>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-          <div>
-            <label class="f-label">Thickness (Inches)</label>
-            <input name="thickness_inches" class="f-input" type="number" step="0.25" placeholder="e.g. 2">
-          </div>
-          <div>
-            <label class="f-label">Width (Inches)</label>
-            <input name="width_inches" class="f-input" type="number" step="0.25" placeholder="e.g. 8">
-          </div>
-          <div>
-            <label class="f-label">Length (Feet)</label>
-            <input name="length_ft" class="f-input" type="number" step="0.5" placeholder="e.g. 10">
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-          <div>
-            <label class="f-label">Quantity</label>
-            <input name="quantity" class="f-input" type="number" value="1" min="1">
-          </div>
-          <div>
-            <label class="f-label">Unit</label>
-            <select name="unit" class="f-input">
-              <option value="pieces">Pieces</option>
-              <option value="cubic_ft">Cubic Feet</option>
-              <option value="sq_ft">Square Feet</option>
-              <option value="loads">Loads</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="f-label">Special Requirements</label>
-          <textarea name="custom_size_note" class="f-input" rows="3" style="resize:vertical" placeholder="Any custom dimensions, grade requirements, delivery needs..."></textarea>
-        </div>
-
-        <hr style="margin:20px 0;border-color:var(--border)">
-        <div style="display:flex;gap:16px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
-          <div style="flex:1">
-            <label class="f-label">Payment Method</label>
-            <select name="payment_method" class="f-input">
-              <option value="cash">Cash</option>
-              <option value="bank_transfer">Bank Transfer</option>
-            </select>
-          </div>
-          <div style="flex:1">
-            <label class="f-label" style="margin-bottom:12px">Delivery Required?</label>
-            <div style="display:flex;gap:12px">
-              <label style="display:flex;gap:6px;align-items:center;cursor:pointer">
-                <input type="checkbox" name="delivery_required" value="1" id="need-delivery" onchange="toggleDelivery(this)"> Yes, I need delivery
-              </label>
+            <div class="grid grid-cols-2 gap-6 pt-4">
+                <div class="space-y-2">
+                    <div class="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-blue-600">
+                        <i class="fa fa-shield-alt"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm">Safe & Verified</h4>
+                    <p class="text-xs text-slate-400">All suppliers are identity-checked.</p>
+                </div>
+                <div class="space-y-2">
+                    <div class="w-10 h-10 bg-white shadow-sm border border-slate-100 rounded-xl flex items-center justify-center text-blue-600">
+                        <i class="fa fa-lightning-ray"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm">Instant Alerts</h4>
+                    <p class="text-xs text-slate-400">Suppliers get notified instantly.</p>
+                </div>
             </div>
-          </div>
         </div>
 
-        <div id="delivery-address" style="display:none;margin-bottom:16px">
-          <label class="f-label">Delivery Address</label>
-          <textarea name="delivery_address" class="f-input" rows="2" placeholder="Full delivery address..."></textarea>
+        <!-- Right Side: The Form Card -->
+        <div class="flex-1 w-full">
+            <div class="bg-white rounded-[40px] shadow-2xl shadow-blue-100/50 border border-slate-100 p-8 lg:p-10">
+                <form action="<?= base_url('shop/save_quote_request') ?>" method="POST" class="space-y-6">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Requirement Title</label>
+                        <input type="text" name="title" required class="custom-input" placeholder="e.g. Need 500ft of 2x2 Mahogany Battens">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Category</label>
+                            <select name="category" class="custom-select" required>
+                                <option value="timber">Timber</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="services">Services</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Budget (LKR)</label>
+                            <input type="number" name="budget" class="custom-input" placeholder="Optional">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Location / District</label>
+                        <select name="district" class="custom-select" required>
+                            <option value="">Select District</option>
+                            <?php foreach($districts as $d): ?>
+                            <option value="<?= $d ?>"><?= $d ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3 ml-1">Detailed Description</label>
+                        <textarea name="description" rows="4" required class="custom-input" placeholder="Specify dimensions, species, quantity, and quality requirements..."></textarea>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl shadow-xl shadow-blue-200 transition-all duration-300 transform hover:-translate-y-1">
+                            Submit Request Hub
+                        </button>
+                        <p class="text-center text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-4 italic">
+                            By submitting, you agree to our Marketplace Terms.
+                        </p>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <textarea name="customer_note" class="f-input" rows="2" placeholder="Any other notes..." style="margin-bottom:16px"></textarea>
-
-        <button type="submit" class="btn btn-green btn-lg btn-block">
-          <i class="fa-solid fa-paper-plane"></i> Submit Quote Request
-        </button>
-        <p style="text-align:center;color:var(--text-muted);font-size:.8rem;margin-top:12px">
-          <i class="fa-solid fa-lock"></i> Your information is secure. We respond within 24 hours.
-        </p>
-      </form>
     </div>
-
-    <!-- Success message -->
-    <div id="quote-success" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:var(--radius);padding:32px;text-align:center;margin-top:20px">
-      <div style="font-size:3rem;margin-bottom:12px">✅</div>
-      <h3 style="font-size:1.2rem;margin-bottom:8px;color:var(--green-dark)">Quote Request Sent!</h3>
-      <p style="color:var(--text-muted);margin-bottom:16px">Your order number: <strong id="order-num" style="color:var(--green-dark)"></strong></p>
-      <a href="#" id="track-link" class="btn btn-green">
-        <i class="fa-solid fa-location-dot"></i> Track Order
-      </a>
-      <a href="/newroot/shop" class="btn btn-outline" style="margin-left:8px">Continue Browsing</a>
-    </div>
-  </div>
 </div>
 
 <style>
-.f-label{display:block;font-size:.8rem;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-.f-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:.95rem;outline:none;font-family:inherit;transition:.15s}
-.f-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(30,124,58,.1)}
+    .custom-input {
+        @apply w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20 transition-all placeholder:text-slate-300;
+    }
+    .custom-select {
+        @apply w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer;
+    }
 </style>
-
-<script>
-function toggleDelivery(cb) {
-  document.getElementById('delivery-address').style.display = cb.checked ? '' : 'none';
-}
-
-document.getElementById('quote-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const fd = new FormData(this);
-  const btn = this.querySelector('button[type="submit"]');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-
-  fetch('/newroot/shop/submit_quote', { method:'POST', body:fd })
-    .then(r=>r.json())
-    .then(d => {
-      if (d.status === 'Success') {
-        document.getElementById('quote-form').style.display = 'none';
-        document.getElementById('quote-success').style.display = '';
-        document.getElementById('order-num').textContent = d.order_number;
-        document.getElementById('track-link').href = '/newroot/shop/track/' + d.order_number;
-      } else {
-        alert('Error: ' + (d.message || 'Something went wrong'));
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Quote Request';
-      }
-    });
-});
-</script>

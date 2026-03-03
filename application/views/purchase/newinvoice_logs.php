@@ -69,7 +69,7 @@
 
                                         <div type="text" id="customer_phone"></div>
                                     </div>
-                                    <hr><?php echo $this->lang->line('Warehouse') ?> <select id="s_warehouses"
+                                    <hr><?php echo $this->lang->line('Warehouse') ?> <select id="s_warehouses" name="s_warehouses"
                                                                                              class="selectpicker form-control">
                                         <?php echo $this->common->default_warehouse();
                                         echo '<option value="0">' . $this->lang->line('All') ?></option><?php foreach ($warehouse as $row) {
@@ -143,7 +143,30 @@
                                     </div>
                                 </div>
 
-                               
+                                <div class="form-group row">
+                                     <div class="col-sm-6"><label for="district"
+                                                                  class="caption">District</label>
+                                         <select name="district" class="form-control">
+                                             <option value="">Select District</option>
+                                             <?php
+                                             $districts = ["Ampara", "Anuradhapura", "Badulla", "Batticaloa", "Colombo", "Galle", "Gampaha", "Hambantota", "Jaffna", "Kalutara", "Kandy", "Kegalle", "Kilinochchi", "Kurunegala", "Mannar", "Matale", "Matara", "Moneragala", "Mullaitivu", "Nuwara Eliya", "Polonnaruwa", "Puttalam", "Ratnapura", "Trincomalee", "Vavuniya"];
+                                             foreach($districts as $d) echo "<option value='$d'>$d</option>";
+                                             ?>
+                                         </select>
+                                     </div>
+                                     <div class="col-sm-6"><label for="location_gps"
+                                                                  class="caption">GPS Location</label>
+                                         <div class="input-group">
+                                             <div class="input-group-addon"><span class="icon-map-marker"
+                                                                                  aria-hidden="true"></span></div>
+                                             <input type="text" class="form-control" name="location_gps" id="location_gps" placeholder="GPS Coordinates">
+                                             <div class="input-group-addon" style="padding: 0;">
+                                                <button type="button" class="btn btn-info btn-sm" style="height: 100%; border-radius: 0;" onclick="getGPS('location_gps')"><i class="fa fa-crosshairs"></i></button>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <label for="toAddInfo"
@@ -533,4 +556,17 @@ $(document).ready(function () {
         }
     });
 });
+
+function getGPS(inputId) {
+    if ("geolocation" in navigator) {
+        $(`#${inputId}`).val('Locating...');
+        navigator.geolocation.getCurrentPosition(function(position) {
+            $(`#${inputId}`).val(position.coords.latitude + ', ' + position.coords.longitude);
+        }, function(error) {
+            $(`#${inputId}`).val('Error: ' + error.message);
+        }, { enableHighAccuracy: true });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
 </script>

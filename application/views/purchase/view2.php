@@ -95,6 +95,8 @@
                     </div>
                     <div class="offset-md-3 col-md-3 col-sm-12 text-xs-center text-md-left">
                         <?php echo '<p><span class="text-muted">' . $this->lang->line('Order Date') . ' :</span> ' . dateformat_time($invoice['invoicedate']) . '</p> <p><span class="text-muted">' . $this->lang->line('Due Date') . ' :</span> ' . dateformat($invoice['invoiceduedate']) . '</p>  <p><span class="text-muted">' . $this->lang->line('Terms') . ' :</span> ' . $invoice['termtit'] . '</p>';
+                        if (!empty($invoice['district'])) echo '<p><span class="text-muted">District :</span> ' . $invoice['district'] . '</p>';
+                        if (!empty($invoice['location_gps'])) echo '<p><span class="text-muted">GPS :</span> ' . $invoice['location_gps'] . '</p>';
                         ?>
                     </div>
                 </div>

@@ -151,6 +151,31 @@ class Hp Extends CI_Controller
         $account = $this->input->post('account_id');
 
         if ($this->hp->pay_installment($id, $amount, $account)) {
+            // === WhatsApp Confirmation ===
+            try {
+                $this->load->model('WhatsApp_model', 'whatsapp');
+                $this->load->model('Hp_model', 'hp_m');
+                // Fetch installment + contract + customer details
+                $this->db->select('i.amount, i.contract_id, i.installment_num, c.customer_id');
+                $this->db->from('geopos_hp_installments i');
+                $this->db->join('geopos_hp_contracts c', 'c.id = i.contract_id', 'left');
+                $this->db->where('i.id', $id);
+                $ins = $this->db->get()->row_array();
+                if ($ins) {
+                    $this->db->select('name, phone');
+                    $this->db->where('id', $ins['customer_id']);
+                    $customer = $this->db->get('geopos_customers')->row_array();
+                    if (!empty($customer['phone'])) {
+                        $template_data = [
+                            'Name'           => $customer['name'],
+                            'Amount'         => number_format($amount, 2),
+                            'InstallmentNum' => $ins['installment_num'],
+                            'ContractID'     => $ins['contract_id'],
+                        ];
+                        $this->whatsapp->send_template($customer['phone'], 41, $template_data);
+                    }
+                }
+            } catch (Exception $e) { /* Silently fail - WhatsApp is non-critical */ }
             echo json_encode(array('status' => 'Success', 'message' => 'Payment Recorded Successfully'));
         } else {
             echo json_encode(array('status' => 'Error', 'message' => 'Failed to Record Payment'));

@@ -1362,6 +1362,23 @@
                             </ul>
                         </li>
                     <?php } ?>
+                    <!-- 🎓 Guided Tour Button -->
+                    <li class="dropdown nav-item" id="guided-tour-btn" data-lang="si">
+                        <a class="nav-link nav-link-label dropdown-toggle" href="#" data-toggle="dropdown"
+                           title="Guided Tour / මඟ පෙන්වීම" style="font-size:1.2rem; color:var(--timber-green);">
+                            🎓
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" style="background:#0f172a;border:1px solid rgba(59,130,246,0.2);border-radius:12px;min-width:180px;">
+                            <li class="dropdown-item" style="color:#94a3b8;font-size:0.75rem;font-weight:700;padding:8px 16px;">🌐 Tour Language</li>
+                            <li><a class="dropdown-item" href="#" onclick="startGuidedTour('si');return false;" style="color:white;">🇱🇰 සිංහල</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="startGuidedTour('ta');return false;" style="color:white;">🇱🇰 தமிழ்</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="startGuidedTour('en');return false;" style="color:white;">🇬🇧 English</a></li>
+                            <div class="dropdown-divider" style="border-top-color:rgba(255,255,255,0.1);"></div>
+                            <li><a class="dropdown-item" href="#" onclick="localStorage.removeItem('timber_tour_done');startGuidedTour(tourLang);return false;" style="color:#22c55e;">↩️ Restart Tour</a></li>
+                        </ul>
+                    </li>
+                    <!-- End Guided Tour Button -->
+
                     <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link"
                                                                    href="#" data-toggle="dropdown"><span
                                     class="avatar avatar-online" style="border: 2px solid var(--timber-accent); border-radius: 50%; padding: 1px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);"><img
@@ -1369,7 +1386,7 @@
                                         alt="avatar" style="border-radius: 50%;"><i></i></span><span
                                     class="user-name" style="color: var(--timber-accent) !important; font-weight: 700; margin-left: 8px;"><?php echo $this->lang->line('Account') ?></span></a>
                         <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
-                                                                          href="<?php echo base_url(); ?>user/profile"><i
+                                                                           href="<?php echo base_url(); ?>user/profile"><i
                                         class="ft-user"></i> <?php echo $this->lang->line('Profile') ?></a>
                            
 
@@ -1378,6 +1395,7 @@
                                         class="ft-power"></i> <?php echo $this->lang->line('Logout') ?></a>
                         </div>
                     </li>
+
                 </ul>
 
             </div>
@@ -1394,9 +1412,29 @@
             <input type="text" id="menu-search" class="sidebar-search" placeholder="Quick search menu...">
         </div>
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+            <?php
+                $roleid = $this->aauth->get_user()->roleid;
+                $username = $this->aauth->get_user()->username;
+                $is_superadmin = ($roleid == 5);
+                $is_owner      = ($roleid == 5 || $roleid == 4);
+                $is_manager    = ($roleid >= 3);
+                $is_staff      = ($roleid >= 1);
+                $is_customer   = ($roleid == 0);
+                
+                // Blueprint visibility flags
+                $show_erp         = ($is_manager); 
+                $show_finance     = ($is_manager || $username == 'accountant');
+                $show_timber      = ($is_manager || $roleid == 2);
+                $show_hr          = ($is_manager || $username == 'accountant');
+                $show_logistics   = ($is_manager || $roleid == 2);
+                $show_marketplace = ($is_staff || $is_customer);
+                $show_workforce   = ($is_manager || $username == 'servicepro' || $username == 'accountant');
+            ?>
             
             <!-- 1. MY ORGANIZATION & CORE -->
+            <?php if ($show_erp) { ?>
             <li class="navigation-header section-erp"><span>🏢 My Organization</span></li>
+            <?php } ?>
             
             <li class="nav-item section-erp <?php if (current_url() == base_url('dashboard')) echo 'active'; ?>">
                 <a href="<?= base_url(); ?>dashboard/"><i class="ft-home"></i><span>Dashboard (Main)</span></a>
@@ -1405,9 +1443,11 @@
             <li class="nav-item has-sub section-erp <?php if ($this->li_a == "org") echo 'open active'; ?>">
                 <a href="#"><i class="ft-briefcase"></i><span>Organization (Locations අනුව)</span></a>
                 <ul class="menu-content">
+                    <?php if ($is_manager) { ?>
                     <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
                         <a href="<?= base_url(); ?>productcategory/warehouse"><i class="ft-map-pin"></i>Locations & Warehouses</a>
                     </li>
+                    <?php } ?>
                     <?php if ($this->aauth->premission(9) || $this->aauth->is_admin()) { ?>
                     <li class="menu-item <?php if ($this->li_a == 'employee') echo 'active'; ?>">
                         <a href="<?= base_url(); ?>employee"><i class="ft-users"></i>Staff Management</a>
@@ -1420,6 +1460,7 @@
             </li>
 
             <!-- 2. ACCOUNTING & FINANCE -->
+            <?php if ($show_finance) { ?>
             <li class="navigation-header section-erp"><span>💰 Accounting (Locations අනුව)</span></li>
             <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounting") echo 'open active'; ?>">
                 <a href="#"><i class="ft-trending-up"></i><span>Accounting Center</span></a>
@@ -1438,9 +1479,10 @@
                     </li>
                 </ul>
             </li>
+            <?php } ?>
 
             <!-- 3. TIMBER OPERATIONS -->
-            <?php if ($this->aauth->premission(4) || $this->aauth->is_admin()) { ?>
+            <?php if ($show_timber) { ?>
             <li class="navigation-header section-erp"><span>🌲 Timber Operations</span></li>
             <li class="nav-item has-sub section-erp <?php if ($this->li_a == "timberpro") echo 'open active'; ?>">
                 <a href="#"><i class="ft-layers"></i><span>Operations Engine</span></a>
@@ -1457,6 +1499,14 @@
                     <li class="menu-item <?php if (current_url() == base_url('TimberPro')) echo 'active'; ?>">
                         <a href="<?= base_url(); ?>TimberPro"><i class="ft-activity"></i>Timber Dashboard</a>
                     </li>
+                    <li class="menu-item <?php if (current_url() == base_url('transfers')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>transfers"><i class="ft-shuffle"></i>Inter-Location Transfers</a>
+                    </li>
+                    <?php if ($this->aauth->get_user()->roleid == 9) { ?>
+                    <li class="menu-item <?php if (current_url() == base_url('TimberPro/global_inventory')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>TimberPro/global_inventory"><i class="ft-globe"></i>Global Stock Report</a>
+                    </li>
+                    <?php } ?>
                 </ul>
             </li>
             <?php } ?>
@@ -1601,12 +1651,11 @@
                     </ul>
                 </li>
 
-
             <?php } ?>
-
+            
             <!-- 2. FINANCIAL CENTER -->
-            <?php if ($this->aauth->premission(2)) { ?>
-                <li class="navigation-header section-erp"><span>Financial Center</span></li>
+            <?php if ($show_finance) { ?>
+                <li class="navigation-header section-erp"><span>💰 Financial Center</span></li>
                 
                 <li class="nav-item has-sub section-erp <?php if ($this->li_a == "transactions") echo 'active'; ?>">
                     <a href="#"><i class="ft-repeat"></i><span><?php echo $this->lang->line('Transactions') ?></span></a>
@@ -1637,6 +1686,9 @@
                         </li>
                         <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>">
                             <a href="<?php echo base_url(); ?>customers"><?= $this->lang->line('Clients Transactions'); ?></a>
+                        </li>
+                        <li class="menu-item <?php if (strpos(current_url(), 'escrow') !== false) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>escrow"><i class="ft-shield"></i>Escrow Vault</a>
                         </li>
                     </ul>
                 </li>
@@ -1676,24 +1728,34 @@
                 </li>
             <?php } ?>
 
-            <!-- 4. SERVICES & PROS -->
-            <li class="navigation-header section-services"><span>💼 Services & Professionals</span></li>
-            <li class="nav-item has-sub section-services <?php if ($this->li_a == "services") echo 'open active'; ?>">
-                <a href="#"><i class="ft-award"></i><span>Workforce Center</span></a>
+            <!-- 4. WORKFORCE & SERVICES -->
+            <?php if ($show_workforce) { ?>
+            <li class="navigation-header section-services"><span>⚡ Workforce & Services</span></li>
+            <li class="nav-item has-sub section-services <?php if ($this->li_a == "services" || $this->li_a == "worker") echo 'open active'; ?>">
+                <a href="#"><i class="ft-award"></i><span>Workforce Hub</span></a>
                 <ul class="menu-content">
                     <li class="menu-item <?php if (current_url() == base_url('worker/profiles')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/profiles"><i class="ft-users"></i>Workforce Profiles</a>
+                        <a href="<?= base_url(); ?>worker/profiles"><i class="ft-users"></i>Management Desk</a>
                     </li>
                     <li class="menu-item <?php if (current_url() == base_url('worker/job_requests')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/job_requests"><i class="ft-mail"></i>Job Requests (Marketplace)</a>
+                        <a href="<?= base_url(); ?>worker/job_requests"><i class="ft-mail"></i>Marketplace Hub</a>
                     </li>
                     <li class="menu-item <?php if (current_url() == base_url('worker/attendance')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/attendance"><i class="ft-clock"></i>Attendance & Payroll</a>
+                        <a href="<?= base_url(); ?>worker/attendance"><i class="ft-clock"></i>Time & Payroll</a>
                     </li>
                 </ul>
             </li>
+            
+            <li class="nav-item section-services <?php if (strpos(current_url(), 'ring') !== false) echo 'active'; ?>">
+                <a href="<?= base_url(); ?>ring"><i class="ft-bell"></i><span>Ring (Service Logs)</span></a>
+            </li>
+            <li class="nav-item section-services <?php if ($this->li_a == 'whatsapp') echo 'active'; ?>">
+                <a href="<?= base_url(); ?>whatsapp"><i class="fab fa-whatsapp"></i><span>WhatsApp Automation</span></a>
+            </li>
+            <?php } ?>
 
             <!-- 5. MARKETPLACE ADMIN -->
+            <?php if ($show_marketplace) { ?>
             <li class="navigation-header section-tools"><span>🛒 Marketplace Admin</span></li>
             <li class="nav-item has-sub section-tools <?php if ($this->li_a == "marketplace_admin") echo 'open active'; ?>">
                 <a href="#"><i class="ft-shopping-bag"></i><span>Marketplace Control</span></a>
@@ -1709,8 +1771,10 @@
                     </li>
                 </ul>
             </li>
+            <?php } ?>
 
             <!-- 6. LOGISTICS -->
+            <?php if ($show_logistics) { ?>
             <li class="navigation-header section-data"><span>🚛 Logistics & Transport</span></li>
             <li class="nav-item has-sub section-data <?php if ($this->li_a == "logistics") echo 'open active'; ?>">
                 <a href="#"><i class="ft-truck"></i><span>Logistics Hub</span></a>
@@ -1723,6 +1787,7 @@
                     </li>
                 </ul>
             </li>
+            <?php } ?>
 
             <?php if (!$this->aauth->premission(4) && $this->aauth->premission(7)) { ?>
                 <li class="nav-item has-sub section-tools <?php if ($this->li_a == "manager") echo 'open'; ?>">
@@ -1739,6 +1804,7 @@
             <?php } ?>
 
             <!-- 4. SYSTEM & DATA -->
+            <?php if ($is_manager) { ?>
             <li class="navigation-header section-tools"><span>System & Data</span></li>
             
             <li class="nav-item has-sub section-tools <?php if ($this->li_a == "tools") echo 'open'; ?>">
@@ -1837,16 +1903,59 @@
                         <li class="menu-item <?php if (current_url() == base_url('social_growth/my_insights')) echo 'active'; ?>">
                             <a href="<?php echo base_url(); ?>social_growth/my_insights"><i class="ft-trending-up"></i> My Insights</a>
                         </li>
+                        <li class="menu-item <?php if (strpos(current_url(), 'referral') !== false) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>referral"><i class="ft-users"></i> Referral Program</a>
+                        </li>
                     </ul>
                 </li>
                 <!-- ====== END SOCIAL GROWTH ====== -->
 
-            <?php } ?>
+                <!-- ====== BLUEPRINT ENTERPRISE FEATURES ====== -->
+                <?php if ($is_manager) { ?>
+                <li class="navigation-header section-erp"><span>🚀 Enterprise Blueprints</span></li>
 
-        </ul>
+                <!-- ====== GREEN FUTURE (Section 11 CSR) — has-sub ====== -->
+                <li class="nav-item has-sub section-erp <?php if (strpos(current_url(), 'greenfuture') !== false) echo 'open active'; ?>">
+                    <a href="#"><i class="ft-globe" style="color:#22c55e;"></i><span>🌳 Green Future (CSR)</span></a>
+                    <ul class="menu-content">
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture"><i class="ft-bar-chart-2"></i> CSR Dashboard</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/donate')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/donate"><i class="ft-heart"></i> Donate (Manual)</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/invoice_settings')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/invoice_settings"><i class="ft-percent"></i> Invoice Donation %</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/plant')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/plant"><i class="ft-plus-circle"></i> Request Tree Planting</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/planting_list')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/planting_list"><i class="ft-list"></i> Planting Requests List</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/maintenance')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/maintenance"><i class="ft-settings"></i> Maintenance Fund (Admin)</a>
+                        </li>
+                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/apply_maintenance')) echo 'active'; ?>">
+                            <a href="<?= base_url(); ?>greenfuture/apply_maintenance"><i class="ft-camera"></i> Apply for Maintenance</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- ====== END GREEN FUTURE ====== -->
+
+                <li class="nav-item section-erp <?php if (strpos(current_url(), 'subscriptions') !== false) echo 'active'; ?>">
+                    <a href="<?= base_url(); ?>subscriptions"><i class="ft-credit-card"></i><span>Subscriptions</span></a>
+                </li>
+                <?php } ?>
+                <?php } ?>
+                <?php } ?>
+            </ul>
+        </div>
+        <!-- /main menu content-->
     </div>
-    <!-- /horizontal menu content-->
+    <!-- /main menu-->
 </div>
+
 <script>
 $(document).ready(function() {
     $('#menu-search').on('keyup', function() {
@@ -1869,6 +1978,80 @@ $(document).ready(function() {
     });
 });
 </script>
+
+<!-- ===== GUIDED TOUR (Intro.js — Sinhala / Tamil / English) ===== -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+<script>
+var tourLang = <?php echo json_encode($this->session->userdata('lang') ?: 'si'); ?>;
+var tourSteps = {
+    si: [
+        { element: '.main-menu', intro: '👋 <strong>ආයුබෝවන්!</strong><br>මේ ප්‍රදහන සිරස් මැනැවය. ඔබඩේ සියලු මොඩල් මැතැනින් ප්‍රවේශ කල හැක.', title: 'ප්‍රදහන මැනු' },
+        { element: '#menu-search', intro: '🔍 <strong>මැනු සේවුම</strong><br>ඔනෙේම මොඩලයක් ඉක්මනින් සොයා ගන්න.', title: 'වේගවත් සේවුම' },
+        { element: '.section-erp li', intro: '🏢 <strong>ආයතනය සහ මූල්‍ය</strong><br>Dashboard, ගිණුම්, ගනුදේනු සියල්.', title: 'ව්‍යාපාර කලමානාකරණය' },
+        { element: 'a[href*="shop"]', intro: '🛒 <strong>Shop</strong><br>ලී ද්‍රව්‍ය, දෘඩාංග, සේවා සොයා ගැන මිලදී ගන්න. Smart Filter භාළිතා කරන්න!', title: 'Shop මාර්කේට්ප්ලස්' },
+        { element: 'a[href*="greenfuture"]', intro: '🌳 <strong>Green Future</strong><br>ගස් රෝපන ඉල්ලීම් කරන්න, නඩත්තු දීමනාවට ඉල්ලුම් කරන්න.', title: 'Green Future CSR' },
+        { element: '.section-services li', intro: '⚡ <strong>Workforce Hub</strong><br>සේවකයින් කලමානාකරණය, Ring Service Logs.', title: 'Workforce' },
+        { element: '#guided-tour-btn', intro: '🎓 ඔනෙේ අවස්ඐවක tour යරඉ ආරම්භ කීරීමට මැතැන ක්ලික් කරන්න!', title: 'Tour නැවත ආරම්භ කරන්න' }
+    ],
+    ta: [
+        { element: '.main-menu', intro: '👋 <strong>வரவேற்கிறோம்!</strong><br>இது முதன்மை பக்கப்பட்டி. அனைத்து தொகுதிகளையும் இங்கிருந்து அணுகலாம்.', title: 'பக்கப்பட்டி மெனு' },
+        { element: '#menu-search', intro: '🔍 மெனு தேடல் மூலம் எண்ணிய தொகுதியை விரைவாக கண்டுபிடிக்க.', title: 'விரைவு தேடல்' },
+        { element: 'a[href*="greenfuture"]', intro: '🌳 Green Future - மரம் நடவு கோரிக்கைகள், பராமரிப்பு உதவிதொகை விண்ணப்பிக்கவும்.', title: 'Green Future CSR' },
+        { element: '#guided-tour-btn', intro: '🎓 எந்நேரமும் tour மீண்டும் தொடங்க இங்கே கிளிக் செய்யவும்!', title: 'Tour மீண்டும் தொடங்கு' }
+    ],
+    en: [
+        { element: '.main-menu', intro: '👋 <strong>Welcome!</strong><br>This is the main sidebar. Access all modules from here.', title: 'Main Navigation' },
+        { element: '#menu-search', intro: '🔍 <strong>Menu Search</strong><br>Quickly find any module or page by typing here.', title: 'Quick Search' },
+        { element: 'a[href*="shop"]', intro: '🛒 Use the <strong>Shop</strong> to browse timber &amp; hardware. Use the <strong>Smart Filter</strong> on the left to find products by location, price and type.', title: 'Marketplace' },
+        { element: 'a[href*="greenfuture"]', intro: '🌳 <strong>Green Future</strong><br>Donate to the CSR fund, request tree planting with Grama Niladhari &amp; Sabhapathi certificates, and apply for monthly maintenance stipends verified by photo.', title: 'Green Future CSR' },
+        { element: '#guided-tour-btn', intro: '🎓 Click here anytime to restart this guided tour!', title: 'Restart Tour' }
+    ]
+};
+
+function startGuidedTour(lang) {
+    lang = lang || tourLang || 'si';
+    var steps = tourSteps[lang] || tourSteps['si'];
+    var validSteps = steps.filter(function(s) {
+        if (!s.element) return true;
+        return document.querySelector(s.element) !== null;
+    });
+    introJs().setOptions({
+        steps: validSteps,
+        nextLabel: lang === 'si' ? 'ඉල්ලග ➡️' : (lang === 'ta' ? 'அடுத்து ➡️' : 'Next ➡️'),
+        prevLabel: lang === 'si' ? '⬅️ ආපසු' : (lang === 'ta' ? '⬅️ முந்தையது' : '⬅️ Back'),
+        doneLabel: lang === 'si' ? '✅ අවසන්' : (lang === 'ta' ? '✅ முடிந்தது' : '✅ Done'),
+        showProgress: true,
+        showBullets: true,
+        exitOnOverlayClick: false,
+        overlayOpacity: 0.5,
+        tooltipClass: 'timber-tour-tooltip',
+    }).start();
+}
+
+$(document).ready(function() {
+    // Language switcher in tour
+    $('#guided-tour-btn').on('click', function() {
+        var lang = $(this).data('lang') || tourLang;
+        startGuidedTour(lang);
+    });
+
+    // Auto-start for first-time visitors only
+    if (!localStorage.getItem('timber_tour_done')) {
+        setTimeout(function() { startGuidedTour(tourLang); }, 2000);
+    }
+});
+</script>
+<style>
+.timber-tour-tooltip { font-family: inherit !important; border-radius: 12px !important; max-width: 320px; }
+.timber-tour-tooltip .introjs-tooltip-title { color: #1e3c72 !important; font-weight: 700; font-size: 1rem; }
+.timber-tour-tooltip .introjs-button { border-radius: 8px !important; font-weight: 600; font-size: 0.85rem; }
+.timber-tour-tooltip .introjs-nextbutton { background: #2a5298 !important; color: white !important; border-color: #2a5298 !important; }
+.timber-tour-tooltip .introjs-donebutton { background: #22c55e !important; color: white !important; border-color: #22c55e !important; }
+.timber-tour-tooltip .introjs-skipbutton { color: #64748b; }
+.introjs-helperLayer { border-radius: 8px; }
+</style>
+<!-- ===== END GUIDED TOUR ===== -->
 <!-- Horizontal navigation-->
 <div id="c_body"></div>
 <div class="app-content content">

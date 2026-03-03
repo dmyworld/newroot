@@ -348,4 +348,23 @@ class TimberPro extends CI_Controller
             $this->load->view('fixed/footer');
         }
     }
+
+    public function global_inventory()
+    {
+        // Only allow Owner (Role 9) to see global inventory
+        if ($this->aauth->get_user()->roleid != 9) {
+            exit('<h3>Access Denied: Owner-only feature</h3>');
+        }
+
+        $head['title'] = "Global Timber Inventory (All Locations)";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        
+        $data['inventory'] = $this->timberpro->get_global_inventory();
+        $this->db->select('id, cname');
+        $data['locations'] = $this->db->get('geopos_locations')->result_array();
+
+        $this->load->view('fixed/header', $head);
+        $this->load->view('timber/global_inventory', $data);
+        $this->load->view('fixed/footer');
+    }
 }

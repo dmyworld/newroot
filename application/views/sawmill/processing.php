@@ -3,7 +3,8 @@
         <div class="card-header">
             <h4 class="card-title">Sawmill Processing Center</h4>
             <div class="heading-elements">
-                <button class="btn btn-success btn-sm"><i class="fa fa-cogs"></i> New Processing Job</button>
+                <a href="<?php echo base_url('sawmill/new_job') ?>" class="btn btn-success btn-sm"><i class="fa fa-cogs"></i> New Processing Job</a>
+                <a href="<?php echo base_url('sawmill/slabs_inventory') ?>" class="btn btn-info btn-sm"><i class="fa fa-cubes"></i> Slab Inventory</a>
             </div>
         </div>
         <div class="card-content">
@@ -25,6 +26,7 @@
                             <th>Log Source</th>
                             <th>Input Vol (cuft)</th>
                             <th>Output Vol (cuft)</th>
+                            <th>Slabs (cuft)</th>
                             <th>Wastage %</th>
                             <th>Status</th>
                         </tr>
@@ -36,6 +38,7 @@
                             <td><?= strtoupper($row['source_lot_type']) ?> #<?= $row['source_lot_id'] ?></td>
                             <td><?= number_format($row['input_qty'], 2) ?></td>
                             <td><?= number_format($row['output_qty'], 2) ?></td>
+                            <td><?= number_format($row['slabs_qty'], 2) ?></td>
                             <td><?= number_format($row['wastage'], 1) ?>%</td>
                             <td><span class="badge badge-success">COMPLETED</span></td>
                         </tr>

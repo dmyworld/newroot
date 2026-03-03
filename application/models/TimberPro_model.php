@@ -145,6 +145,7 @@ class TimberPro_model extends CI_Model
                 'source_lot_id' => array('type' => 'INT', 'constraint' => 11),
                 'input_qty' => array('type' => 'DECIMAL', 'constraint' => '15,2'),
                 'output_qty' => array('type' => 'DECIMAL', 'constraint' => '15,2'),
+                'slabs_qty' => array('type' => 'DECIMAL', 'constraint' => '15,2', 'default' => 0),
                 'wastage' => array('type' => 'DECIMAL', 'constraint' => '15,2'),
                 'operator_id' => array('type' => 'INT', 'constraint' => 11),
                 'loc' => array('type' => 'INT', 'constraint' => 11, 'default' => 0),
@@ -152,8 +153,15 @@ class TimberPro_model extends CI_Model
             ));
             $this->dbforge->add_key('id', TRUE);
             $this->dbforge->create_table('geopos_timber_sawmill');
+        } else {
+            // Self-healing: add slabs_qty if missing
+            if (!$this->db->field_exists('slabs_qty', 'geopos_timber_sawmill')) {
+                $this->dbforge->add_column('geopos_timber_sawmill', array(
+                    'slabs_qty' => array('type' => 'DECIMAL', 'constraint' => '15,2', 'default' => 0)
+                ));
+            }
         }
-
+    
         // 3. Logistics Fleet
         if (!$this->db->table_exists('geopos_logistics_fleet')) {
             $this->dbforge->add_field(array(
@@ -202,6 +210,60 @@ class TimberPro_model extends CI_Model
             ));
             $this->dbforge->add_key('id', TRUE);
             $this->dbforge->create_table('geopos_job_requests');
+        }
+
+        // 6. Byproducts (Slabs/Offcuts)
+        if (!$this->db->table_exists('geopos_timber_byproducts')) {
+            $this->dbforge->add_field(array(
+                'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+                'job_id' => array('type' => 'INT', 'constraint' => 11),
+                'product_name' => array('type' => 'VARCHAR', 'constraint' => 100, 'default' => 'Slabs'),
+                'qty' => array('type' => 'DECIMAL', 'constraint' => '15,2'),
+                'warehouse_id' => array('type' => 'INT', 'constraint' => 11),
+                'loc' => array('type' => 'INT', 'constraint' => 11, 'default' => 0),
+                'status' => array('type' => 'ENUM("available","sold","used")', 'default' => 'available'),
+                'created_at' => array('type' => 'DATETIME', 'null' => TRUE)
+            ));
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->create_table('geopos_timber_byproducts');
+        }
+
+        // 7. Stock Transfers
+        if (!$this->db->table_exists('geopos_timber_transfers')) {
+            $this->dbforge->add_field(array(
+                'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+                'lot_type' => array('type' => 'ENUM("log","sawn")', 'default' => 'log'),
+                'lot_id' => array('type' => 'INT', 'constraint' => 11),
+                'from_loc' => array('type' => 'INT', 'constraint' => 11),
+                'to_loc' => array('type' => 'INT', 'constraint' => 11),
+                'request_qty' => array('type' => 'DECIMAL', 'constraint' => '15,2'),
+                'status' => array('type' => 'ENUM("pending","on_way","completed","cancelled")', 'default' => 'pending'),
+                'requested_by' => array('type' => 'INT', 'constraint' => 11),
+                'approved_by' => array('type' => 'INT', 'constraint' => 11, 'null' => TRUE),
+                'created_at' => array('type' => 'DATETIME', 'null' => TRUE),
+                'updated_at' => array('type' => 'DATETIME', 'null' => TRUE)
+            ));
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->create_table('geopos_timber_transfers');
+        }
+
+        // 8. Wood Types
+        if (!$this->db->table_exists('geopos_timber_wood_types')) {
+            $this->dbforge->add_field(array(
+                'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+                'name' => array('type' => 'VARCHAR', 'constraint' => 100),
+                'code' => array('type' => 'VARCHAR', 'constraint' => 20, 'null' => TRUE),
+                'created_at' => array('type' => 'DATETIME', 'null' => TRUE)
+            ));
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->create_table('geopos_timber_wood_types');
+            
+            // Seed defaults
+            $defaults = [['name' => 'Teak'], ['name' => 'Mahogany'], ['name' => 'Jack'], ['name' => 'Satinwood']];
+            foreach ($defaults as $d) {
+                $d['created_at'] = date('Y-m-d H:i:s');
+                $this->db->insert('geopos_timber_wood_types', $d);
+            }
         }
     }
 
@@ -604,19 +666,47 @@ class TimberPro_model extends CI_Model
     /**
      * Sawmill Operation Logic
      */
-    public function add_sawmill_job($data)
+    public function add_sawmill_job($data, $items = array(), $lot_name = '', $warehouse_id = 0)
     {
+        $this->db->trans_start();
+        
         $data['created_at'] = date('Y-m-d H:i:s');
-        if ($this->db->insert('geopos_timber_sawmill', $data)) {
-            // Processing logic: usually deduct from source lot
-            if ($data['source_lot_type'] == 'logs') {
-                $this->db->set('total_cubic_feet', "total_cubic_feet - " . $data['input_qty'], FALSE);
-                $this->db->where('id', $data['source_lot_id']);
-                $this->db->update('geopos_timber_logs');
-            }
-            return $this->db->insert_id();
+        $this->db->insert('geopos_timber_sawmill', $data);
+        $job_id = $this->db->insert_id();
+        
+        // 1. Deduct from source lot
+        if ($data['source_lot_type'] == 'logs') {
+            $this->db->set('total_cubic_feet', "total_cubic_feet - " . (float)$data['input_qty'], FALSE);
+            $this->db->where('id', $data['source_lot_id']);
+            $this->db->update('geopos_timber_logs');
         }
-        return false;
+        
+        // 2. Create Sawn Lot
+        if (!empty($items) && $lot_name && $warehouse_id) {
+            $this->save_sawn($lot_name, $warehouse_id, null, $items, 'available', array(), $data['loc']);
+        }
+
+        // 3. Create Slab record if exists
+        if (isset($data['slabs_qty']) && (float)$data['slabs_qty'] > 0) {
+            $byproduct = array(
+                'job_id' => $job_id,
+                'product_name' => 'Slabs (Sawing Job #' . $job_id . ')',
+                'qty' => (float)$data['slabs_qty'],
+                'warehouse_id' => $warehouse_id,
+                'loc' => $data['loc'],
+                'status' => 'available',
+                'created_at' => date('Y-m-d H:i:s')
+            );
+            $this->db->insert('geopos_timber_byproducts', $byproduct);
+        }
+        
+        $this->db->trans_complete();
+        
+        if ($this->db->trans_status() === FALSE) {
+            return false;
+        }
+        
+        return $job_id;
     }
 
     public function get_sawmill_jobs($loc = 0)
@@ -624,5 +714,44 @@ class TimberPro_model extends CI_Model
         if ($loc > 0) $this->db->where('loc', $loc);
         $this->db->order_by('created_at', 'DESC');
         return $this->db->get('geopos_timber_sawmill')->result_array();
+    }
+
+    public function initiate_transfer($data)
+    {
+        $data['created_at'] = date('Y-m-d H:i:s');
+        return $this->db->insert('geopos_timber_transfers', $data);
+    }
+
+    public function transfer_lot($transfer_id)
+    {
+        $this->db->trans_start();
+        
+        $transfer = $this->db->get_where('geopos_timber_transfers', array('id' => $transfer_id))->row_array();
+        if (!$transfer) return false;
+
+        $table = ($transfer['lot_type'] == 'log') ? 'geopos_timber_logs' : 'geopos_timber_sawn';
+        
+        // Update lot location
+        $this->db->where('id', $transfer['lot_id']);
+        $this->db->update($table, array('loc' => $transfer['to_loc']));
+
+        // Update transfer status
+        $this->db->where('id', $transfer_id);
+        $this->db->update('geopos_timber_transfers', array(
+            'status' => 'completed',
+            'approved_by' => $this->aauth->get_user()->id,
+            'updated_at' => date('Y-m-d H:i:s')
+        ));
+
+        $this->db->trans_complete();
+        return $this->db->trans_status();
+    }
+
+    public function get_global_inventory()
+    {
+        $logs = $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc')->get('geopos_timber_logs')->result_array();
+        $sawn = $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc')->get('geopos_timber_sawn')->result_array();
+        
+        return array('logs' => $logs, 'sawn' => $sawn);
     }
 }

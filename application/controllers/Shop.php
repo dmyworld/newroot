@@ -24,6 +24,7 @@ class Shop extends CI_Controller
         $this->load->model('Wood_types_model', 'wood');
         $this->load->model('Worker_model', 'worker');
         $this->load->model('Audit_model', 'audit');
+        $this->load->model('Categories_model', 'categories');
         $this->_ensure_tables();
     }
 
@@ -132,6 +133,21 @@ class Shop extends CI_Controller
             $market_prices = $this->db->get()->result_array();
         }
 
+        // 8. Dynamic Filter Data
+        $main_categories = $this->categories->category_list(0);
+        
+        $location_data = [
+            'Western' => ['Colombo', 'Gampaha', 'Kalutara'],
+            'Central' => ['Kandy', 'Matale', 'Nuwara Eliya'],
+            'Southern' => ['Galle', 'Matara', 'Hambantota'],
+            'Northern' => ['Jaffna', 'Kilinochchi', 'Mannar', 'Mullaitivu', 'Vavuniya'],
+            'Eastern' => ['Batticaloa', 'Ampara', 'Trincomalee'],
+            'North Western' => ['Kurunegala', 'Puttalam'],
+            'North Central' => ['Anuradhapura', 'Polonnaruwa'],
+            'Uva' => ['Badulla', 'Moneragala'],
+            'Sabaragamuwa' => ['Ratnapura', 'Kegalle']
+        ];
+
         $data = [
             'lots'          => $lots,
             'featured_lots' => $featured_lots,
@@ -140,13 +156,18 @@ class Shop extends CI_Controller
             'jobs'          => $jobs,
             'quote_requests'=> $quote_requests,
             'market_prices' => $market_prices,
+            'categories'    => $main_categories,
+            'locations'     => $location_data,
             'filters'       => compact('type', 'species', 'district', 'grade', 'max_price'),
             'is_logged_in'  => $this->aauth->is_loggedin(),
             'usernm'        => $this->aauth->get_user()->username ?? '',
             'title'         => "TimberPro Ecosystem - Market, Services & Logistics"
         ];
 
+        $this->load->view('public/header', $data);
         $this->load->view('shop/index', $data);
+        $this->load->view('public/footer');
+
     }
 
     public function track_share()
@@ -156,6 +177,16 @@ class Shop extends CI_Controller
             $this->audit->log('share', 'shop', $input['listing_id'], $input['platform']);
             echo json_encode(['status' => 'Success']);
         }
+    }
+
+    /* ------------------------------------------------------------------
+     * AJAX: Get Sub-categories for a Main Category
+     * ------------------------------------------------------------------ */
+    public function get_subcategories()
+    {
+        $cat_id = $this->input->get('cat_id');
+        $subs = $this->categories->category_list(1, $cat_id);
+        echo json_encode($subs);
     }
 
     /* ------------------------------------------------------------------
@@ -211,9 +242,9 @@ class Shop extends CI_Controller
             'is_logged_in'=> $this->aauth->is_loggedin(),
         ];
 
-        $this->load->view('shop/header', $head);
+        $this->load->view('public/header', $head);
         $this->load->view('shop/product_detail', $data);
-        $this->load->view('shop/footer');
+        $this->load->view('public/footer');
     }
 
     /* ------------------------------------------------------------------
@@ -222,17 +253,10 @@ class Shop extends CI_Controller
      * ------------------------------------------------------------------ */
     public function calculator()
     {
-        $head = [
-            'title'   => 'දැව ගණනය කිරීම | Free Timber Calculator - Volume, Price, Wastage',
-            'is_shop' => true,
-        ];
-        $data = [
-            'wood_types' => $this->db->table_exists('wood_types') ? $this->db->get('wood_types')->result_array() : [],
-        ];
-
-        $this->load->view('shop/header', $head);
-        $this->load->view('shop/calculator', $data);
-        $this->load->view('shop/footer');
+        $data['title'] = "Timber Volume Calculator";
+        $this->load->view('public/header', $data);
+        $this->load->view('shop/calculator');
+        $this->load->view('public/footer');
     }
 
     /* ------------------------------------------------------------------
@@ -242,24 +266,10 @@ class Shop extends CI_Controller
      * ------------------------------------------------------------------ */
     public function request_quote()
     {
-        $lot_id   = $this->input->get('lot_id');
-        $lot_type = $this->input->get('lot_type') ?: 'logs';
-
-        $lot = null;
-        if ($lot_id) {
-            $lot = $this->mp->get_lot_details($lot_id, $lot_type);
-        }
-
-        $head = ['title' => 'Request a Quote | TimberPro Shop', 'is_shop' => true];
-        $data = [
-            'lot'      => $lot,
-            'lot_type' => $lot_type,
-            'wood_types' => $this->db->table_exists('wood_types') ? $this->db->get('wood_types')->result_array() : [],
-        ];
-
-        $this->load->view('shop/header', $head);
-        $this->load->view('shop/request_quote', $data);
-        $this->load->view('shop/footer');
+        $data['title'] = "Request a Quote";
+        $this->load->view('public/header', $data);
+        $this->load->view('shop/request_quote');
+        $this->load->view('public/footer');
     }
 
     public function submit_quote()
@@ -346,9 +356,9 @@ class Shop extends CI_Controller
         $head = ['title' => 'Checkout | TimberPro Shop', 'is_shop' => true];
         $data = ['lot' => $lot, 'lot_type' => $lot_type];
 
-        $this->load->view('shop/header', $head);
+        $this->load->view('public/header', $head);
         $this->load->view('shop/checkout', $data);
-        $this->load->view('shop/footer');
+        $this->load->view('public/footer');
     }
 
     /* ------------------------------------------------------------------
@@ -366,9 +376,9 @@ class Shop extends CI_Controller
         $head = ['title' => 'Track Order | TimberPro Shop', 'is_shop' => true];
         $data = ['order' => $order, 'order_number' => $order_number];
 
-        $this->load->view('shop/header', $head);
+        $this->load->view('public/header', $head);
         $this->load->view('shop/track', $data);
-        $this->load->view('shop/footer');
+        $this->load->view('public/footer');
     }
 
     /* ------------------------------------------------------------------
@@ -389,9 +399,9 @@ class Shop extends CI_Controller
         $head = ['title' => 'My Orders | TimberPro Shop', 'is_shop' => true];
         $data = ['orders' => $orders];
 
-        $this->load->view('shop/header', $head);
+        $this->load->view('public/header', $head);
         $this->load->view('shop/my_orders', $data);
-        $this->load->view('shop/footer');
+        $this->load->view('public/footer');
     }
 
     /* ------------------------------------------------------------------

@@ -12,11 +12,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Order #</th>
                             <th>Supplier</th>
-                            <th>Species</th>
+                            <th>Date</th>
                             <th>Vol (cuft)</th>
                             <th>Total Price</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,7 +32,31 @@
 <script type="text/javascript">
 $(document).ready(function () {
     $('#logPurchasingTable').DataTable({
-        'responsive': true
+        'processing': true,
+        'serverSide': true,
+        'stateSave': true,
+        'responsive': true,
+        'ajax': {
+            'url': "<?php echo site_url('purchase/ajax_list2') ?>",
+            'type': 'POST',
+            'data': "<?php echo $this->security->get_csrf_token_name(); ?>=<?php echo $this->security->get_csrf_hash(); ?>"
+        },
+        'columnDefs': [
+            {
+                'targets': [0],
+                'orderable': false,
+            },
+        ],
+        dom: 'Blfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                footer: true,
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5]
+                }
+            }
+        ],
     });
 });
 </script>

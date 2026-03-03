@@ -25,6 +25,7 @@ class Purchase extends CI_Controller
         parent::__construct();
         $this->load->model('purchase_model', 'purchase');
         $this->load->model('locations_model', 'locations');
+        $this->load->model('TimberPro_model', 'timber');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
             redirect('/user/', 'refresh');
@@ -438,7 +439,7 @@ $this->db->update('geopos_products');
     
 
 
-     //action2
+    //action2
     public function action2()
     {
         if (!$this->aauth->premission(2, 'add')) {
@@ -451,7 +452,10 @@ $this->db->update('geopos_products');
         $invocieduedate = $this->input->post('invocieduedate');
         
         $overall_cubic_feet_total = $this->input->post('overall_cubic_feet_total');        
-        
+        $district = $this->input->post('district');
+        $location_gps = $this->input->post('location_gps');
+        $warehouse_id = $this->input->post('s_warehouses');
+
         $notes = $this->input->post('notes', true);
         $tax = $this->input->post('tax_handle');
         $subtotal = rev_amountExchange_s($this->input->post('subtotal2'), $currency, $this->aauth->get_user()->loc);
@@ -478,141 +482,102 @@ $this->db->update('geopos_products');
             exit;
         }
         $this->db->trans_start();
-        //products
         $transok = true;
-        //Invoice Data
         $bill_date = datefordatabase($invoicedate . ' ' . date('H:i:s'));
         $bill_due_date = datefordatabase($invocieduedate);
-        $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'loc' => $this->aauth->get_user()->loc, 'multi' => $currency, 'pquick' => $overall_cubic_feet_total);
-
+        $data = array('tid' => $invocieno, 'invoicedate' => $bill_date, 'invoiceduedate' => $bill_due_date, 'subtotal' => $subtotal, 'shipping' => $shipping, 'ship_tax' => $shipping_tax, 'ship_tax_type' => $ship_taxtype, 'total' => $total, 'notes' => $notes, 'csd' => $customer_id, 'eid' => $this->aauth->get_user()->id, 'taxstatus' => $tax, 'discstatus' => $discstatus, 'format_discount' => $discountFormat, 'refer' => $refer, 'term' => $pterms, 'loc' => $this->aauth->get_user()->loc, 'multi' => $currency, 'pquick' => $overall_cubic_feet_total, 'district' => $district, 'location_gps' => $location_gps);
 
         if ($this->db->insert('geopos_purchase_logs', $data)) {
             $invocieno = $this->db->insert_id();
-
             $pid = $this->input->post('pid');
             $productlist = array();
             $prodindex = 0;
             $itc = 0;
-            $flag = false;
+            
             $product_id = $this->input->post('pid');
             $product_name1 = $this->input->post('product_name2', true);
             $product_qty = $this->input->post('product_qty');
-            
             $product_price = $this->input->post('product_price');
-            
-            
             $product_tax = $this->input->post('product_tax');
             $product_discount = $this->input->post('product_discount');
             $product_subtotal = $this->input->post('product_subtotal');
-          //  $ptotal_tax = $this->input->post('taxa');
-          //  $ptotal_disc = $this->input->post('disca');
-          //  $product_des = $this->input->post('product_description', true);
             $product_unit = $this->input->post('unit');
             $product_hsn = $this->input->post('hsn');
             $product_pwith = $this->input->post('product_r');
             $product_pthickness = $this->input->post('product_l');
             $product_pquick = $this->input->post('product_quick');
             $product_pquick_code = $this->input->post('hsn');
-            
-            
-            
-
 
             foreach ($pid as $key => $value) {
-              //  $total_discount += numberClean(@$ptotal_disc[$key]);
-              //  $total_tax += numberClean($ptotal_tax[$key]);
-
-
-                $data = array(
+                $productlist[] = array(
                     'tid' => $invocieno,
                     'pid' => $product_id[$key],
                     'product' => $product_name1[$key],
                     'code' => $product_hsn[$key],
                     'qty' => numberClean($product_qty[$key]),
                     'price' => rev_amountExchange_s($product_price[$key], $currency, $this->aauth->get_user()->loc),
-                    //'tax' => numberClean($product_tax[$key]),
-                    //'discount' => numberClean($product_discount[$key]),
                     'subtotal' => rev_amountExchange_s($product_subtotal[$key], $currency, $this->aauth->get_user()->loc),
-                   // 'totaltax' => rev_amountExchange_s($ptotal_tax[$key], $currency, $this->aauth->get_user()->loc),
-                    //'totaldiscount' => rev_amountExchange_s($ptotal_disc[$key], $currency, $this->aauth->get_user()->loc),
-                    //'product_des' => $product_des[$key],
                     'unit' => $product_unit[$key],
                     'pwith' => $product_pwith[$key],
                     'pthickness' => $product_pthickness[$key],
                     'pquick' => $product_pquick[$key],
                     'pquick_code' => $product_pquick_code[$key]
                 );
-
-                $flag = true;
-                $productlist[$prodindex] = $data;
-                $i++;
-                $prodindex++;
-       
-                
-                 
-                $amt2 = numberClean($product_pquick[$key]);
-                $itemCount = count($product_qty);  // Count the number of items in the list
-
-                $amt = numberClean($product_qty[$key]);
-
-                
-                
                 
                 if ($product_id[$key] > 0) {
-                   // if ($this->input->post('update_stock') == 'yes') {
+                    $amt = numberClean($product_qty[$key]);
+                    $amt2 = numberClean($product_pquick[$key]);
+                    
+                    $this->db->set('qty', "qty+$amt", FALSE);
+                    $this->db->set('qty2', "qty2+$amt2", FALSE);
+                    $this->db->where('pid', $product_id[$key]);
+                    $this->db->update('geopos_products');
+                    
+                    $itc += $amt;
+                }
+                $prodindex++;
+            }
 
-                        $this->db->set('qty2', "qty2+$amt2", FALSE);
-                        $this->db->where('pid', $product_id[$key]);
-                        $this->db->update('geopos_products');
-
-                        $this->db->set('qty', "qty+$amt", FALSE);
-                        $this->db->where('pid', $product_id[$key]);
-                        $this->db->update('geopos_products');
-                    //}
-                    // Assuming $items is being updated in a loop
-                $itc += numberClean($product_qty[$key]);
-
-
-
-                }                
-                
-                
-                
-                
-                
-     
-
+            // TimberPro Integration: Save as Timber Lot
+            $timber_logs = array();
+            foreach ($pid as $key => $value) {
+                if (numberClean($product_qty[$key]) > 0) {
+                    $timber_logs[] = array(
+                        'girth' => (float)$product_pwith[$key],
+                        'length' => (float)$product_pthickness[$key],
+                        'unit_price' => rev_amountExchange_s($product_price[$key], $currency, $this->aauth->get_user()->loc),
+                        'subtotal' => rev_amountExchange_s($product_subtotal[$key], $currency, $this->aauth->get_user()->loc)
+                    );
+                }
             }
             
-            
+            if (!empty($timber_logs)) {
+                $lot_name = "PURCHASE-ID-" . $invocieno . " / REF-" . $refer;
+                $this->timber->save_logs($lot_name, $warehouse_id, $timber_logs, $location_gps, 'available', array(), $this->aauth->get_user()->loc, 0, $total, $district);
+            }
+
             if ($prodindex > 0) {
                 $this->db->insert_batch('geopos_purchase_items_logs', $productlist);
-                $this->db->set(array('discount' => rev_amountExchange_s(amountFormat_general($total_discount), $currency, $this->aauth->get_user()->loc), 'tax' => rev_amountExchange_s(amountFormat_general($total_tax), $currency, $this->aauth->get_user()->loc), 'items' => $itc));
+                $this->db->set(array('discount' => 0, 'tax' => 0, 'items' => $itc));
                 $this->db->where('id', $invocieno);
                 $this->db->update('geopos_purchase_logs');
 
+                echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('Purchase order success') . "<a href='view2?id=$invocieno' class='btn btn-info btn-lg'><span class='fa fa-eye' aria-hidden='true'></span>" . $this->lang->line('View2') . " </a>"));
             } else {
-                echo json_encode(array('status' => 'Error', 'message' =>
-                    "Please choose product from product list. Go to Item manager section if you have not added the products."));
+                echo json_encode(array('status' => 'Error', 'message' => "Please choose product from product list."));
                 $transok = false;
             }
-
-
-            echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('Purchase order success') . "<a href='view2?id=$invocieno' class='btn btn-info btn-lg'><span class='fa fa-eye' aria-hidden='true'></span>" . $this->lang->line('View2') . " </a>"));
         } else {
             echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR') . ' ' . $this->db->error()['message']));
             $transok = false;
         }
-
 
         if ($transok) {
             $this->db->trans_complete();
         } else {
             $this->db->trans_rollback();
         }
-
-
-    }   
+    }
     
 //action woodprocessing
     public function action_woodprocessing()
@@ -838,6 +803,7 @@ $this->db->update('geopos_products');
             $row[] = $invoices->tid;
             $row[] = $invoices->name;
             $row[] = dateformat_time($invoices->invoicedate);
+            $row[] = $invoices->pquick;
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
             $row[] = '<span class="st-' . $invoices->status . '">' . $this->lang->line(ucwords($invoices->status)) . '</span>';
             $row[] = '<a href="' . base_url("purchase/view2?id=$invoices->id") . '" class="btn btn-success btn-xs"><i class="fa fa-eye"></i> ' . $this->lang->line('View') . '</a> &nbsp; <a href="' . base_url("purchase/printinvoice2?id=$invoices->id") . '&d=1" class="btn btn-info btn-xs"  title="Download"><span class="fa fa-download"></span></a>&nbsp; &nbsp;<a href="#" data-object-id="' . $invoices->id . '" class="btn btn-danger btn-xs delete-object"><span class="fa fa-trash"></span></a>';

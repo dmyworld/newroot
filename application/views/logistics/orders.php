@@ -2,6 +2,10 @@
     <div class="card">
         <div class="card-header">
             <h4 class="card-title">Logistics & Transport Orders</h4>
+            <div class="heading-elements">
+                <a href="<?php echo base_url('logistics/new_order') ?>" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> New Transport Order</a>
+                <a href="<?php echo base_url('logistics/schedule') ?>" class="btn btn-info btn-sm"><i class="fa fa-calendar"></i> View Schedule</a>
+            </div>
         </div>
         <div class="card-content">
             <div class="card-body">

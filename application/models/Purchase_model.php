@@ -38,6 +38,19 @@ class Purchase_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->dbforge();
+        if ($this->db->table_exists('geopos_purchase_logs')) {
+            if (!$this->db->field_exists('district', 'geopos_purchase_logs')) {
+                $this->dbforge->add_column('geopos_purchase_logs', [
+                    'district' => ['type' => 'VARCHAR', 'constraint' => '50', 'default' => '']
+                ]);
+            }
+            if (!$this->db->field_exists('location_gps', 'geopos_purchase_logs')) {
+                $this->dbforge->add_column('geopos_purchase_logs', [
+                    'location_gps' => ['type' => 'VARCHAR', 'constraint' => '100', 'default' => '']
+                ]);
+            }
+        }
     }
 
     public function lastpurchase()
@@ -549,7 +562,7 @@ $this->db->join('geopos_supplier', 'geopos_purchase_wood.csd = geopos_supplier.i
 
     private function _get_datatables_query_logs()
     {
-        $this->db->select('geopos_purchase_logs.id, geopos_purchase_logs.tid, geopos_purchase_logs.invoicedate, geopos_purchase_logs.invoiceduedate, geopos_purchase_logs.total, geopos_purchase_logs.status, geopos_supplier.name');
+        $this->db->select('geopos_purchase_logs.id, geopos_purchase_logs.tid, geopos_purchase_logs.invoicedate, geopos_purchase_logs.invoiceduedate, geopos_purchase_logs.total, geopos_purchase_logs.status, geopos_purchase_logs.pquick, geopos_supplier.name');
         $this->db->from($this->table_logs);
         $this->db->join('geopos_supplier', 'geopos_purchase_logs.csd = geopos_supplier.id', 'left');
 

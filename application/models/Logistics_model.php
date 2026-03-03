@@ -42,4 +42,24 @@ class Logistics_model extends CI_Model
         $this->db->order_by('o.id', 'DESC');
         return $this->db->get()->result_array();
     }
+
+    public function get_invoices($loc = 0)
+    {
+        $this->db->select('id, tid, total, cur, status');
+        $this->db->from('geopos_invoices');
+        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(100);
+        return $this->db->get()->result_array();
+    }
+
+    public function get_purchases($loc = 0)
+    {
+        $this->db->select('id, tid, total, status');
+        $this->db->from('geopos_purchase');
+        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(100);
+        return $this->db->get()->result_array();
+    }
 }

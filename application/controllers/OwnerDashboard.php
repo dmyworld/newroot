@@ -15,8 +15,18 @@ class OwnerDashboard extends CI_Controller
             redirect('/user/', 'refresh');
         }
         
-        if ($this->aauth->get_user()->roleid < 5) {
-             exit('Authorization Failed');
+        if ($this->aauth->get_user()->roleid < 3) {
+             // Redirect based on role
+             $roleid = $this->aauth->get_user()->roleid;
+             if ($roleid == 2) {
+                 redirect('/pos_invoices/create', 'refresh');
+             } else if ($roleid == 1) {
+                 redirect('/worker/profiles', 'refresh');
+             } else if ($roleid == 0) {
+                 redirect('/shop/', 'refresh');
+             } else {
+                 exit('Authorization Failed');
+             }
         }
 
         $this->load->model('dashboard_model');

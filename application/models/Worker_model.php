@@ -314,17 +314,101 @@ class Worker_model extends CI_Model
         $this->db->select('p.*, u.username, u.email');
         $this->db->from('geopos_worker_profiles p');
         $this->db->join('geopos_users u', 'u.id = p.user_id', 'left');
-        if ($loc > 0) $this->db->where('p.loc', $loc);
+        if ($loc > 0) $this->db->where('u.loc', $loc);
         $this->db->order_by('p.id', 'DESC');
         return $this->db->get()->result_array();
     }
 
     public function get_attendance($loc = 0)
     {
-        $this->db->select('e.name, e.loc, e.salary, p.username');
+        $today = date('Y-m-d');
+        $this->db->select('e.id, e.name, e.loc, e.salary, p.username, a.tfrom, a.tto, a.adate');
         $this->db->from('geopos_employees e');
         $this->db->join('geopos_users p', 'p.id = e.id', 'left');
+        $this->db->join('geopos_attendance a', "a.emp = e.id AND a.adate = '$today'", 'left');
         if ($loc > 0) $this->db->where('e.loc', $loc);
+        $this->db->order_by('a.tfrom', 'DESC');
         return $this->db->get()->result_array();
+    }
+
+    public function log_attendance($user_id, $action, $note = '')
+    {
+        $today = date('Y-m-d');
+        $now = date('H:i:s');
+        
+        if ($action == 'clock_in') {
+            $data = array(
+                'emp' => $user_id,
+                'adate' => $today,
+                'tfrom' => $now,
+                'tto' => '',
+                'note' => $note,
+                'created' => date('Y-m-d H:i:s')
+            );
+            return $this->db->insert('geopos_attendance', $data);
+        } else if ($action == 'clock_out') {
+            $this->db->set('tto', $now);
+            $this->db->where('emp', $user_id);
+            $this->db->where('adate', $today);
+            $this->db->where('tto', ''); 
+            $this->db->order_by('id', 'DESC');
+            $this->db->limit(1);
+            return $this->db->update('geopos_attendance');
+        }
+        return false;
+    }
+
+    public function get_clock_status($user_id)
+    {
+        $today = date('Y-m-d');
+        $this->db->where('emp', $user_id);
+        $this->db->where('adate', $today);
+        $this->db->order_by('id', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get('geopos_attendance');
+        return $query->row_array();
+    }
+
+    public function get_attendance_history($user_id, $limit = 10)
+    {
+        $this->db->where('emp', $user_id);
+        $this->db->order_by('adate', 'DESC');
+        $this->db->order_by('tfrom', 'DESC');
+        $this->db->limit($limit);
+        return $this->db->get('geopos_attendance')->result_array();
+    }
+
+    public function calculate_earnings($user_id, $start_date, $end_date)
+    {
+        $this->db->where('emp', $user_id);
+        $this->db->where('adate >=', $start_date);
+        $this->db->where('adate <=', $end_date);
+        $this->db->where('tto !=', '');
+        $query = $this->db->get('geopos_attendance');
+        $logs = $query->result_array();
+
+        $total_seconds = 0;
+        foreach ($logs as $log) {
+            $from = strtotime($log['tfrom']);
+            $to = strtotime($log['tto']);
+            if ($to > $from) {
+                $total_seconds += ($to - $from);
+            }
+        }
+
+        $total_hours = $total_seconds / 3600;
+        
+        $this->db->select('hourly_rate');
+        $this->db->from('geopos_worker_profiles');
+        $this->db->where('user_id', $user_id);
+        $worker = $this->db->get()->row_array();
+        $rate = $worker['hourly_rate'] ?? 0;
+
+        return array(
+            'total_hours' => round($total_hours, 2),
+            'hourly_rate' => $rate,
+            'total_earnings' => round($total_hours * $rate, 2),
+            'logs_count' => count($logs)
+        );
     }
 }
