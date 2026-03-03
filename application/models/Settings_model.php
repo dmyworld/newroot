@@ -581,4 +581,67 @@ class Settings_model extends CI_Model
     }
 
 
+    /**
+     * 1. Public Settings ලබාගැනීම
+     */
+    public function get_public_settings() {
+        $this->db->where('access_level', 'public');
+        $query = $this->db->get('geopos_system_settings');
+        return $this->format_settings($query->result_array());
+    }
+
+    /**
+     * 2. Super Admin සඳහා සියලුම Settings ලබාගැනීම
+     */
+    public function get_super_admin_settings() {
+        $query = $this->db->get('geopos_system_settings');
+        return $this->format_settings($query->result_array());
+    }
+
+    /**
+     * 3. විශේෂිත User Role එකකට අදාළ Settings ලබාගැනීම
+     * @param int $role_id
+     */
+    public function get_settings_by_role($role_id) {
+        $this->db->select('*');
+        $this->db->from('geopos_system_settings');
+        
+        $this->db->group_start();
+            $this->db->where('access_level', 'public');
+            $this->db->or_group_start();
+                $this->db->where('access_level', 'role_specific');
+                $this->db->where("JSON_CONTAINS(allowed_roles, '$role_id')");
+            $this->db->group_end();
+        $this->db->group_end();
+
+        $query = $this->db->get();
+        return $this->format_settings($query->result_array());
+    }
+
+    /**
+     * 4. දැනට Login වී සිටින User ගේ Role එක අනුව අදාළ Settings එකවර ලබා දීම
+     * @param int $role_id
+     * @param bool $is_super_admin
+     */
+    public function get_authorized_settings($role_id = null, $is_super_admin = false) {
+        if ($is_super_admin) {
+            return $this->get_super_admin_settings();
+        } elseif (!empty($role_id)) {
+            return $this->get_settings_by_role($role_id);
+        } else {
+            return $this->get_public_settings();
+        }
+    }
+
+    /**
+     * දත්ත array එක සරල Key => Value format එකකට හැරවීම
+     */
+    private function format_settings($settings) {
+        $formatted = [];
+        foreach ($settings as $setting) {
+            $formatted[$setting['setting_key']] = $setting['setting_value'];
+        }
+        return $formatted;
+    }
+
 }

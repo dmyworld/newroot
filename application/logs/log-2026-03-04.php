@@ -2096,3 +2096,200 @@ DEBUG - 2026-03-04 03:07:13 --> Session class already loaded. Second attempt ign
 INFO - 2026-03-04 03:07:13 --> Database Driver Class Initialized
 INFO - 2026-03-04 03:07:13 --> Form Validation Class Initialized
 ERROR - 2026-03-04 03:07:13 --> Severity: error --> Exception: Call to undefined function getIcon() C:\Users\user\Documents\GitHub\www\newroot\application\views\landing_page\includes\floating.php 18
+INFO - 2026-03-04 03:31:53 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:31:53 --> Controller Class Initialized
+INFO - 2026-03-04 03:31:53 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 03:31:53 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 03:31:53 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 03:31:53 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:31:53 --> Model "GreenFuture_model" initialized
+INFO - 2026-03-04 03:31:53 --> Form Validation Class Initialized
+INFO - 2026-03-04 03:31:57 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:31:57 --> Controller Class Initialized
+INFO - 2026-03-04 03:31:57 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 03:31:57 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 03:31:57 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 03:31:57 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:31:57 --> Database Forge Class Initialized
+INFO - 2026-03-04 03:31:57 --> Model "Marketplace_model" initialized
+INFO - 2026-03-04 03:31:57 --> Model "Wood_types_model" initialized
+INFO - 2026-03-04 03:31:57 --> Model "Worker_model" initialized
+INFO - 2026-03-04 03:31:57 --> Model "Audit_model" initialized
+INFO - 2026-03-04 03:31:57 --> Model "Categories_model" initialized
+INFO - 2026-03-04 03:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 03:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 03:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/hero_premium.php
+INFO - 2026-03-04 03:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/index.php
+INFO - 2026-03-04 03:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 03:31:57 --> Final output sent to browser
+DEBUG - 2026-03-04 03:31:57 --> Total execution time: 0.3311
+INFO - 2026-03-04 03:32:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:32:28 --> Controller Class Initialized
+INFO - 2026-03-04 03:32:28 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 03:32:28 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 03:32:28 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 03:32:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:32:29 --> Model "GreenFuture_model" initialized
+INFO - 2026-03-04 03:32:29 --> Form Validation Class Initialized
+INFO - 2026-03-04 03:32:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 03:32:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 03:32:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\green_future/hero_premium.php
+INFO - 2026-03-04 03:32:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\green_future/index.php
+INFO - 2026-03-04 03:32:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 03:32:29 --> Final output sent to browser
+DEBUG - 2026-03-04 03:32:29 --> Total execution time: 0.3016
+INFO - 2026-03-04 03:33:12 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:33:12 --> Controller Class Initialized
+INFO - 2026-03-04 03:33:12 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 03:33:12 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 03:33:12 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 03:33:12 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:33:12 --> Database Forge Class Initialized
+INFO - 2026-03-04 03:33:12 --> Model "Marketplace_model" initialized
+INFO - 2026-03-04 03:33:12 --> Model "Wood_types_model" initialized
+INFO - 2026-03-04 03:33:12 --> Model "Worker_model" initialized
+INFO - 2026-03-04 03:33:12 --> Model "Audit_model" initialized
+INFO - 2026-03-04 03:33:12 --> Model "Categories_model" initialized
+INFO - 2026-03-04 03:33:12 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 03:33:12 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 03:33:12 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/hero_premium.php
+INFO - 2026-03-04 03:33:12 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/index.php
+INFO - 2026-03-04 03:33:12 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 03:33:12 --> Final output sent to browser
+DEBUG - 2026-03-04 03:33:12 --> Total execution time: 0.2708
+INFO - 2026-03-04 03:43:07 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:43:07 --> Controller Class Initialized
+INFO - 2026-03-04 03:43:07 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 03:43:07 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 03:43:07 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 03:43:07 --> Database Driver Class Initialized
+INFO - 2026-03-04 03:43:07 --> Database Forge Class Initialized
+INFO - 2026-03-04 03:43:07 --> Model "Marketplace_model" initialized
+INFO - 2026-03-04 03:43:07 --> Model "Wood_types_model" initialized
+INFO - 2026-03-04 03:43:07 --> Model "Worker_model" initialized
+INFO - 2026-03-04 03:43:07 --> Model "Audit_model" initialized
+INFO - 2026-03-04 03:43:07 --> Model "Categories_model" initialized
+INFO - 2026-03-04 03:43:07 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 03:43:07 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 03:43:07 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/hero_premium.php
+INFO - 2026-03-04 03:43:07 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/index.php
+INFO - 2026-03-04 03:43:07 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 03:43:07 --> Final output sent to browser
+DEBUG - 2026-03-04 03:43:07 --> Total execution time: 0.4453
+INFO - 2026-03-04 04:04:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:04:56 --> Controller Class Initialized
+INFO - 2026-03-04 04:04:56 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:04:56 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:04:56 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:04:56 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 04:04:56 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 04:04:56 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 04:04:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:04:56 --> Form Validation Class Initialized
+INFO - 2026-03-04 04:04:56 --> Model "Employee_model" initialized
+INFO - 2026-03-04 04:04:56 --> Model "Tenant_model" initialized
+INFO - 2026-03-04 04:04:56 --> Model "Locations_model" initialized
+INFO - 2026-03-04 04:04:56 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\user/index.php
+INFO - 2026-03-04 04:04:56 --> Final output sent to browser
+DEBUG - 2026-03-04 04:04:56 --> Total execution time: 0.2950
+INFO - 2026-03-04 04:05:00 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:00 --> Controller Class Initialized
+INFO - 2026-03-04 04:05:00 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:05:00 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:05:00 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:05:00 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 04:05:00 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 04:05:00 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 04:05:00 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:00 --> Form Validation Class Initialized
+INFO - 2026-03-04 04:05:00 --> Helper loaded: email_helper
+INFO - 2026-03-04 04:05:01 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:01 --> Controller Class Initialized
+INFO - 2026-03-04 04:05:01 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:05:01 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:05:01 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:05:01 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:01 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 04:05:01 --> Model "Communication_model" initialized
+INFO - 2026-03-04 04:05:01 --> Model "Risk_model" initialized
+INFO - 2026-03-04 04:05:01 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 04:05:01 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 04:05:01 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "Top"
+INFO - 2026-03-04 04:05:01 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:01 --> Could not find the language line "None"
+INFO - 2026-03-04 04:05:01 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 04:05:01 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 04:05:01 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 04:05:01 --> Final output sent to browser
+DEBUG - 2026-03-04 04:05:01 --> Total execution time: 0.8581
+INFO - 2026-03-04 04:05:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:04 --> Controller Class Initialized
+INFO - 2026-03-04 04:05:04 --> Model "Manager_model" initialized
+INFO - 2026-03-04 04:05:05 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:05:05 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:05:05 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:05:05 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:05 --> Final output sent to browser
+DEBUG - 2026-03-04 04:05:05 --> Total execution time: 1.0206
+INFO - 2026-03-04 04:05:15 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:15 --> Controller Class Initialized
+INFO - 2026-03-04 04:05:15 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:05:15 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:05:15 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:05:15 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:15 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 04:05:15 --> Model "Communication_model" initialized
+INFO - 2026-03-04 04:05:15 --> Model "Risk_model" initialized
+INFO - 2026-03-04 04:05:15 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 04:05:15 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 04:05:15 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "Top"
+INFO - 2026-03-04 04:05:16 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+ERROR - 2026-03-04 04:05:16 --> Could not find the language line "None"
+INFO - 2026-03-04 04:05:16 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 04:05:16 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 04:05:16 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 04:05:16 --> Final output sent to browser
+DEBUG - 2026-03-04 04:05:16 --> Total execution time: 1.0415
+INFO - 2026-03-04 04:05:19 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:19 --> Controller Class Initialized
+INFO - 2026-03-04 04:05:19 --> Model "Manager_model" initialized
+INFO - 2026-03-04 04:05:19 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 04:05:19 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 04:05:19 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 04:05:19 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:05:19 --> Final output sent to browser
+DEBUG - 2026-03-04 04:05:19 --> Total execution time: 0.1935
