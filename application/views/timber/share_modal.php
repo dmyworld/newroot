@@ -16,13 +16,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <h6 class="text-uppercase small font-weight-bold text-muted mb-3">AI GEN AD POSTER</h6>
                         <?php if($poster_url): ?>
                             <img src="<?= $poster_url ?>" class="img-fluid rounded shadow-lg mb-3" id="generatedPoster" style="max-height: 450px;">
-                            <a href="<?= $poster_url ?>" download="timber_ad.jpg" class="btn btn-outline-primary btn-sm btn-block">
+                            <a href="<?= $poster_url ?>" download="timber_ad.jpg" class="btn btn-outline-primary btn-sm btn-block mb-3">
                                 <i class="fa fa-download"></i> Download Poster
                             </a>
                         <?php else: ?>
-                            <div class="p-5 bg-light rounded text-muted">
+                            <div class="p-5 bg-light rounded text-muted mb-3">
                                 <i class="fa fa-spinner fa-spin fa-3x mb-2"></i>
                                 <p>Generating Ad...</p>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if(!empty($lot['revid_video_url'])): ?>
+                            <div class="mt-4 pt-3 border-top">
+                                <h6 class="text-uppercase small font-weight-bold text-warning mb-3"><i class="fa fa-film"></i> AI VIDEO AD</h6>
+                                <video controls class="img-fluid rounded shadow-lg mb-2" style="max-height: 250px; width: 100%;">
+                                    <source src="<?= $lot['revid_video_url'] ?>" type="video/mp4">
+                                </video>
+                                <a href="<?= $lot['revid_video_url'] ?>" download class="btn btn-outline-warning btn-sm btn-block">
+                                    <i class="fa fa-download"></i> Download Video
+                                </a>
                             </div>
                         <?php endif; ?>
                     </div>

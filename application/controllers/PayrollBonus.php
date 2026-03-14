@@ -9,7 +9,7 @@ class PayrollBonus extends CI_Controller
         $this->load->model('payroll_bonus_model', 'bonus');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(14)) { // Assuming permission ID 14 or generally HR
              exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');

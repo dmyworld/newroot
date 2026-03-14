@@ -12,7 +12,7 @@ class Project_command extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         // Permission 4 is projects in this system
         if (!$this->aauth->premission(4)) {

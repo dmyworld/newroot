@@ -10,7 +10,7 @@ class Logistics extends CI_Controller
         $this->load->model('locations_model', 'locations');
         $this->load->model('Logistics_model', 'logistics');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

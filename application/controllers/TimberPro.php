@@ -8,7 +8,7 @@ class TimberPro extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(2)) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');

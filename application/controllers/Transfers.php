@@ -10,7 +10,7 @@ class Transfers extends CI_Controller
         $this->load->model('TimberPro_model', 'timber');
         $this->load->model('locations_model', 'locations');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

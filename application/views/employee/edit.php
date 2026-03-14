@@ -137,7 +137,7 @@
                         <div class="form-group row">
 
                             <label class="col-sm-2 col-form-label"
-                                   for="name"><?php echo $this->lang->line('Business Location') ?></label>
+                                   for="name"><?php echo $this->lang->line('Business Location') ?> (Primary)</label>
 
                             <div class="col-sm-5">
                                 <select name="location" class="form-control margin-bottom">
@@ -153,6 +153,25 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+
+                            <label class="col-sm-2 col-form-label"
+                                   for="locations">Assigned Branches</label>
+
+                            <div class="col-sm-5">
+                                <select name="locations[]" class="form-control margin-bottom select-box" multiple="multiple">
+                                    <?php
+                                    $saved_locs = isset($user['locations']) ? $user['locations'] : array();
+                                    foreach ($loc as $row) {
+                                        $selected = in_array($row['id'], $saved_locs) ? 'selected' : '';
+                                        echo ' <option value="' . $row['id'] . '" ' . $selected . '> ' . $row['cname'] . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <small>Select additional branches for Business Owners and Service Providers.</small>
+                            </div>
+                        </div>
                         <?php if ($this->aauth->get_user()->roleid >= 0) { ?>
                             <div class="form-group row">
 
@@ -160,16 +179,13 @@
                                        for="roleid"><?php echo $this->lang->line('UserRole') ?></label>
 
                                 <div class="col-sm-5">
-                                    <select name="roleid"
-                                            class="form-control margin-bottom" <? if ($user['roleid'] == 5) echo 'disabled' ?>>
-                                        <option value="<?= $user['roleid'] ?>">--<?= user_role($user['roleid']) ?>--
-                                        </option>
-                                        <option value="4"><?= $this->lang->line('Business Manager') ?></option>
-                                        <option value="3"><?= $this->lang->line('Sales Manager') ?></option>
-                                        <option value="5"><?= $this->lang->line('Business Owner') ?></option>
-                                        <option value="2"><?= $this->lang->line('Sales Person') ?></option>
-                                        <option value="1"><?= $this->lang->line('Inventory Manager') ?></option>
-                                        <option value="-1"><?= $this->lang->line('Project Manager') ?></option>
+                                    <select name="roleid" class="form-control margin-bottom">
+                                        <?php
+                                        foreach ($roles as $row) {
+                                            $selected = ($row['id'] == $user['roleid']) ? 'selected' : '';
+                                            echo ' <option value="' . $row['id'] . '" ' . $selected . '> ' . $row['name'] . '</option>';
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>

@@ -26,9 +26,9 @@ class Quote extends CI_Controller
         $this->load->model('quote_model', 'quote');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->li_a = 'sales';

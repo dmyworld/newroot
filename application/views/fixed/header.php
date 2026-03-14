@@ -43,6 +43,22 @@
     <!-- BEGIN Custom CSS-->
     <link rel="stylesheet" type="text/css" href="<?= assets_url() ?>assets/css/style.css<?= APPVER ?>">
     <link rel="stylesheet" type="text/css" href="<?= assets_url() ?>assets/custom/timber.css<?= APPVER ?>">
+    <!-- Tailwind CSS (Play CDN for Dynamic Styles) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        premium: {
+                            blue: '#1e3c72',
+                            green: '#10b981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- END Custom CSS-->
     <script src="<?= assets_url() ?>app-assets/vendors/js/vendors.min.js"></script>
     <script type="text/javascript" src="<?= assets_url() ?>app-assets/vendors/js/ui/jquery.sticky.js"></script>
@@ -80,6 +96,63 @@
     </script>
     <script src="<?php echo assets_url(); ?>assets/portjs/accounting.min.js" type="text/javascript"></script>
     <?php accounting() ?>
+    
+    <!-- Real-Time Sync (Socket.io) -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script type="text/javascript">
+        if (typeof io !== 'undefined') {
+            var socket = io('http://localhost:3000');
+            var r_biz_id = '<?php echo isset($ci->aauth) ? ($ci->aauth->get_user()->business_id ?: 0) : 0; ?>';
+            var r_loc_id = '<?php echo isset($ci->aauth) ? ($ci->aauth->get_user()->loc ?: 0) : 0; ?>';
+            
+            socket.on('connect', function() {
+                console.log('Real-Time Sync Connected');
+                socket.emit('join_room', {business_id: r_biz_id, location_id: r_loc_id});
+            });
+
+            // Handle Ledger / Transaction Updates
+            socket.on('new_transaction', function(data) {
+                console.log('Real-Time Ledger Update:', data);
+                show_rt_notification('New Transaction: ' + data.amount + ' (' + data.type + ')');
+            });
+
+            // Handle Ring Updates
+            socket.on('new_ring', function(data) {
+                console.log('New Active Ring:', data);
+                show_rt_notification('New Gig Request! Title: ' + data.title);
+            });
+
+            // Handle GPS Updates
+            socket.on('gps_update', function(data) {
+                console.log('Live GPS Data:', data);
+                // If dashboard has a map update function, call it
+                if (typeof update_live_map === 'function') {
+                    update_live_map(data);
+                }
+            });
+
+            // Display floating notification
+            function show_rt_notification(message) {
+                var toast = document.createElement('div');
+                toast.style.position = 'fixed';
+                toast.style.bottom = '20px';
+                toast.style.right = '20px';
+                toast.style.backgroundColor = '#10C888';
+                toast.style.color = '#fff';
+                toast.style.padding = '15px 25px';
+                toast.style.borderRadius = '5px';
+                toast.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                toast.style.zIndex = '9999';
+                toast.style.fontSize = '14px';
+                toast.style.fontWeight = 'bold';
+                toast.innerText = message;
+                document.body.appendChild(toast);
+                setTimeout(function() {
+                    toast.remove();
+                }, 5000);
+            }
+        }
+    </script>
 </head>
 <?php
 if (MENU) {

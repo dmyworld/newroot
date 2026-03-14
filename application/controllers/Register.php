@@ -26,7 +26,7 @@ class Register Extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 

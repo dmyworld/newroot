@@ -30,14 +30,10 @@ class Reports_model extends CI_Model
         } else {
             $where = "acid='$pay_acc' AND (DATE(date) BETWEEN '$sdate' AND '$edate') AND type='$trans_type'";
         }
-        if ($this->aauth->get_user()->loc) {
-            $where .= " AND loc='" . $this->aauth->get_user()->loc . "'";
-        } elseif (!BDATA) {
-            $where .= " AND type='$trans_type AND loc='0'";
-        }
         $this->db->select('*');
         $this->db->from('geopos_transactions');
         $this->db->where($where);
+        $this->_apply_loc_filter();
         $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
         $result = $query->result_array();
@@ -53,15 +49,10 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         } else {
             $where = "acid='$pay_acc' AND (DATE(date) BETWEEN '$sdate' AND '$edate') AND type='$trans_type'";
         }
-        if ($this->aauth->get_user()->loc) {
-            $where .= " AND loc='" . $this->aauth->get_user()->loc . "'";
-        } elseif (!BDATA) {
-            $where .= " AND loc='0'";
-        }
         $this->db->select('*');
         $this->db->from('geopos_transactions');
         $this->db->where($where);
-
+        $this->_apply_loc_filter();
 
         //  $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
@@ -86,10 +77,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
     {
         $this->db->select_sum('lastbal');
         $this->db->from('geopos_accounts');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
 
         $query = $this->db->get();
@@ -99,11 +92,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
 
         $this->db->select_sum('credit');
         $this->db->from('geopos_transactions');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
-        }
+        $this->_apply_loc_filter();
         $this->db->where('type', 'Income');
         $month = date('Y-m');
         $today = date('Y-m-d');
@@ -127,10 +116,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         if ($acid > 0) {
             $this->db->where('acid', $acid);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $this->db->where('type', 'Income');
         $this->db->where('DATE(date) >=', $sdate);
@@ -151,20 +142,24 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
 
         $this->db->select_sum('debit');
         $this->db->from('geopos_transactions');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $this->db->where('type', 'Expense');
         $month = date('Y-m');
         $today = date('Y-m-d');
         $this->db->where('DATE(date) >=', "$month-01");
         $this->db->where('DATE(date) <=', $today);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         $result = $query->row_array();
@@ -183,10 +178,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         if ($acid > 0) {
             $this->db->where('acid', $acid);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $this->db->where('type', 'Expense');
         $this->db->where('DATE(date) >=', $sdate);
@@ -201,6 +198,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
     {
         $this->db->from('geopos_reports');
         // if($limit) $this->db->limit(12);
+        $this->_apply_loc_filter();
         $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
         $result = $query->result_array();
@@ -218,10 +216,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->select('*');
         $this->db->from('geopos_transactions');
         $this->db->where($where);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         //  $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
@@ -241,10 +241,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->select('*');
         $this->db->from('geopos_transactions');
         $this->db->where($where);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         //  $this->db->order_by('id', 'DESC');
         $query = $this->db->get();
@@ -274,16 +276,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->where('DATE(geopos_metadata.d_date) <=', $edate);
         $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_metadata.rid', 'left');
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', $lid);
-        } else {
-            $this->db->group_start();
-            $this->db->where('geopos_invoices.loc', $lid);
-            $this->db->or_where('geopos_invoices.loc', 0);
-            $this->db->group_end();
-        }
+        $this->_apply_loc_filter($lid, 'geopos_invoices.loc');
 
         $query = $this->db->get();
         $result = $query->row_array();
@@ -302,6 +295,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->select_sum('total');
         $this->db->from('geopos_invoices');
         $this->db->where('eid', $lid);
+        $this->_apply_loc_filter();
         $this->db->where('status !=', 'canceled');
         $this->db->where('DATE(geopos_invoices.invoicedate) >=', $sdate);
         $this->db->where('DATE(geopos_invoices.invoiceduedate) <=', $edate);
@@ -330,16 +324,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->from('geopos_invoices');
         $this->db->where('DATE(invoicedate) >=', $sdate);
         $this->db->where('DATE(invoicedate) <=', $edate);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', $lid);
-        } else {
-            $this->db->group_start();
-            $this->db->where('geopos_invoices.loc', $lid);
-            $this->db->or_where('geopos_invoices.loc', 0);
-            $this->db->group_end();
-        }
+        $this->_apply_loc_filter($lid, 'geopos_invoices.loc');
 
         $query = $this->db->get();
         $result = $query->row_array();
@@ -367,10 +352,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $today = date('Y-m-d');
         $this->db->where('DATE(geopos_invoices.invoicedate) >=', "$month-01");
         $this->db->where('DATE(geopos_invoices.invoicedate) <=', $today);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
         }
         $query = $this->db->get();
         $result = $query->row_array();
@@ -388,16 +375,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid', 'left');
         $this->db->where('DATE(geopos_invoices.invoicedate) >=', $sdate);
         $this->db->where('DATE(geopos_invoices.invoicedate) <=', $edate);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', $lid);
-        } else {
-            $this->db->group_start();
-            $this->db->where('geopos_invoices.loc', $lid);
-            $this->db->or_where('geopos_invoices.loc', 0);
-            $this->db->group_end();
-        }
+        $this->_apply_loc_filter($lid, 'geopos_invoices.loc');
 
         $query = $this->db->get();
         $result = $query->row_array();
@@ -418,6 +396,7 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         if ($lid > 0) {
             $this->db->where('geopos_products.pid', $lid);
         }
+        $this->_apply_loc_filter();
         $query = $this->db->get();
         $result = $query->row_array();
         return $result;
@@ -433,10 +412,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
                 $this->db->select_sum('geopos_invoice_items.subtotal');
                 $this->db->from('geopos_invoice_items');
                 $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid', 'left');
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $query = $this->db->get();
                 $result = $query->row_array();
@@ -446,10 +427,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
                 $this->db->select_sum('geopos_invoice_items.subtotal');
                 $this->db->from('geopos_invoice_items');
                 $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_invoice_items.tid', 'left');
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $month = date('Y-m');
                 $today = date('Y-m-d');
@@ -464,20 +447,24 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
             case 'sales' :
                 $this->db->select_sum('total');
                 $this->db->from('geopos_invoices');
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $query = $this->db->get();
                 $result = $query->row_array();
                 $lastbal = $result['total'];
                 $this->db->select_sum('total');
                 $this->db->from('geopos_invoices');
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $month = date('Y-m');
                 $today = date('Y-m-d');
@@ -496,10 +483,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
                 $this->db->from('geopos_metadata');
                 $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_metadata.rid', 'left');
                 $this->db->where('geopos_metadata.type', 9);
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $query = $this->db->get();
                 $result = $query->row_array();
@@ -508,10 +497,12 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
                 $this->db->from('geopos_metadata');
                 $this->db->where('geopos_metadata.type', 9);
                 $this->db->join('geopos_invoices', 'geopos_invoices.id = geopos_metadata.rid', 'left');
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_invoices.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_invoices.loc', 0);
+                    }
                 }
                 $month = date('Y-m');
                 $today = date('Y-m-d');
@@ -534,7 +525,17 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->select('cat, SUM(credit) as total');
         $this->db->from('geopos_transactions');
         $this->db->where('type', 'Income');
-        if($loc > 0) $this->db->where('loc', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($loc > 0) {
+                $this->db->where('loc', $loc);
+            } elseif ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        } elseif ($loc > 0) {
+            $this->db->where('loc', $loc);
+        }
         if($s_date) $this->db->where('DATE(date) >=', $s_date);
         if($e_date) $this->db->where('DATE(date) <=', $e_date);
         $this->db->group_by('cat');
@@ -544,7 +545,17 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
         $this->db->select('cat, SUM(debit) as total');
         $this->db->from('geopos_transactions');
         $this->db->where('type', 'Expense');
-        if($loc > 0) $this->db->where('loc', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($loc > 0) {
+                $this->db->where('loc', $loc);
+            } elseif ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        } elseif ($loc > 0) {
+            $this->db->where('loc', $loc);
+        }
         if($s_date) $this->db->where('DATE(date) >=', $s_date);
         if($e_date) $this->db->where('DATE(date) <=', $e_date);
         $this->db->group_by('cat');
@@ -579,16 +590,46 @@ public function get_statements($pay_acc, $trans_type, $sdate, $edate)
             $this->db->select('holder, lastbal');
             $this->db->from('geopos_accounts');
             $this->db->where('account_type', $type);
-            if($loc > 0) {
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($loc > 0) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $loc);
+                    $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
+            } elseif ($loc > 0) {
                 $this->db->group_start();
                 $this->db->where('loc', $loc);
-                $this->db->or_where('loc', 0); // Include common accounts
+                $this->db->or_where('loc', 0);
                 $this->db->group_end();
             }
             $report[strtolower($type)] = $this->db->get()->result_array();
         }
 
         return $report;
+    }
+    private function _apply_loc_filter($loc = 0, $field = 'loc')
+    {
+        if ($this->aauth->get_user()->roleid == 1) {
+            if ($loc > 0) {
+                $this->db->where($field, $loc);
+            }
+        } else {
+            if ($loc > 0) {
+                $this->db->where($field, $loc);
+            } elseif ($this->aauth->get_user()->loc) {
+                $this->db->where($field, $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where($field, 0);
+            }
+        }
     }
 }
 

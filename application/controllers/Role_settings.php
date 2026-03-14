@@ -11,7 +11,7 @@ class Role_settings extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         
         // Super Admin access only initially for managing settings

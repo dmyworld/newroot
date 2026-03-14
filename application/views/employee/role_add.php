@@ -17,6 +17,19 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="parent_id">Master Role</label>
+                        <div class="col-sm-6">
+                            <select name="parent_id" class="form-control" required>
+                                <option value="" disabled selected>-- Select a Master Role --</option>
+                                <?php foreach ($master_roles as $role): ?>
+                                    <option value="<?php echo $role['id']; ?>"><?php echo $role['name']; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small class="form-text text-muted">This sub-role will inherit the functional tree of this Master Role.</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
                         <label class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-4">
                             <input type="submit" id="submit-data" class="btn btn-success margin-bottom"

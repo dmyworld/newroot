@@ -27,7 +27,7 @@ class Search_products extends CI_Controller
         $this->load->library("Aauth");
         $this->load->model('search_model');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(1) && !$this->aauth->premission(2)) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');

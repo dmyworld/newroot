@@ -69,4 +69,36 @@ class WhatsApp_model extends CI_Model
         $message = $this->parser->parse_string($template['other'], $template_data, TRUE);
         return $this->send_message($to, $message);
     }
+
+    /**
+     * Send a media message (e.g., PDF Invoice).
+     */
+    public function send_media_invoice($to, $pdf_url, $message = '')
+    {
+        $whatsapp_service = $this->plugins->universal_api(10);
+        if (!$whatsapp_service['active']) return false;
+
+        $api_url = $whatsapp_service['url'];
+        $api_key = $whatsapp_service['key1'];
+
+        $data = array(
+            'token' => $api_key,
+            'to' => $to,
+            'filename' => 'Invoice.pdf',
+            'document' => $pdf_url,
+            'caption' => $message
+        );
+
+        // Generic endpoint for document upload (UltraMsg etc use /messages/document)
+        $endpoint = rtrim($api_url, '/') . '/document';
+        
+        $ch = curl_init($endpoint);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true);
+    }
 }

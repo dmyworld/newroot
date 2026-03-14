@@ -26,7 +26,7 @@ class Promo Extends CI_Controller
         $this->load->model('promo_model', 'promo');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(5)) {
 

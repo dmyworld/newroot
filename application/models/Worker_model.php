@@ -11,11 +11,60 @@ class Worker_model extends CI_Model
 
     private function _check_fields()
     {
+        $this->load->dbforge();
         if (!$this->db->field_exists('pay_type', 'geopos_worker_profiles')) {
-            $this->load->dbforge();
             $this->dbforge->add_column('geopos_worker_profiles', array(
                 'pay_type' => array('type' => 'ENUM("hourly", "daily", "monthly", "project")', 'default' => 'hourly'),
                 'pay_rate' => array('type' => 'DECIMAL', 'constraint' => '10,2', 'default' => '0.00')
+            ));
+        }
+        if (!$this->db->field_exists('provider_type', 'geopos_worker_profiles')) {
+            $this->dbforge->add_column('geopos_worker_profiles', array(
+                'provider_type' => array('type' => 'ENUM("independent", "company")', 'default' => 'independent'),
+                'owner_id' => array('type' => 'INT', 'constraint' => 11, 'default' => 0)
+            ));
+        }
+        if (!$this->db->field_exists('portfolio', 'geopos_worker_profiles')) {
+            $this->dbforge->add_column('geopos_worker_profiles', array(
+                'portfolio' => array('type' => 'TEXT', 'default' => NULL)
+            ));
+        }
+        if (!$this->db->field_exists('availability', 'geopos_worker_profiles')) {
+            $this->dbforge->add_column('geopos_worker_profiles', array(
+                'availability' => array('type' => 'ENUM("available", "busy", "unavailable")', 'default' => 'available')
+            ));
+        }
+        if (!$this->db->field_exists('category_icon', 'geopos_hrm')) {
+            $this->dbforge->add_column('geopos_hrm', array(
+                'category_icon' => array('type' => 'VARCHAR', 'constraint' => '100', 'default' => 'fa-tools')
+            ));
+        }
+        if (!$this->db->field_exists('portfolio', 'geopos_worker_profiles')) {
+            $this->dbforge->add_column('geopos_worker_profiles', array(
+                'portfolio' => array('type' => 'TEXT', 'null' => TRUE)
+            ));
+        }
+        if (!$this->db->field_exists('commission_rate', 'geopos_hrm')) {
+            $this->dbforge->add_column('geopos_hrm', array(
+                'commission_rate' => array('type' => 'DECIMAL', 'constraint' => '5,2', 'default' => '0.00')
+            ));
+        }
+        if (!$this->db->field_exists('clock_in_lat', 'geopos_attendance')) {
+            $this->dbforge->add_column('geopos_attendance', array(
+                'clock_in_lat' => array('type' => 'DECIMAL', 'constraint' => '10,8', 'null' => TRUE),
+                'clock_in_lng' => array('type' => 'DECIMAL', 'constraint' => '11,8', 'null' => TRUE),
+                'clock_out_lat' => array('type' => 'DECIMAL', 'constraint' => '10,8', 'null' => TRUE),
+                'clock_out_lng' => array('type' => 'DECIMAL', 'constraint' => '11,8', 'null' => TRUE)
+            ));
+        }
+        if (!$this->db->field_exists('loc', 'geopos_employees')) {
+            $this->dbforge->add_column('geopos_employees', array(
+                'loc' => array('type' => 'INT', 'constraint' => 11, 'default' => 0)
+            ));
+        }
+        if (!$this->db->field_exists('salary', 'geopos_employees')) {
+            $this->dbforge->add_column('geopos_employees', array(
+                'salary' => array('type' => 'DECIMAL', 'constraint' => '10,2', 'default' => '0.00')
             ));
         }
     }
@@ -33,8 +82,8 @@ class Worker_model extends CI_Model
             return array('status' => 'Error', 'message' => 'Worker profile already exists. Please edit instead.');
         }
 
-        $pay_type = $data['pay_type'] ?? 'hourly';
-        $pay_rate = (float)($data['pay_rate'] ?? 0);
+        $pay_type = isset($data['pay_type']) ? $data['pay_type'] : 'hourly';
+        $pay_rate = (float)(isset($data['pay_rate']) ? $data['pay_rate'] : 0);
         
         // Calculate hourly_rate for internal use/sorting
         $hourly_rate = $pay_rate;
@@ -45,14 +94,17 @@ class Worker_model extends CI_Model
             'user_id' => $user_id,
             'display_name' => $data['display_name'],
             'category_id' => $data['category_id'],
-            'experience_years' => $data['experience_years'] ?? 0,
-            'skills' => json_encode($data['skills'] ?? []),
+            'provider_type' => isset($data['provider_type']) ? $data['provider_type'] : 'independent',
+            'owner_id' => isset($data['owner_id']) ? $data['owner_id'] : 0,
+            'experience_years' => isset($data['experience_years']) ? $data['experience_years'] : 0,
+            'skills' => json_encode(isset($data['skills']) ? $data['skills'] : []),
+            'portfolio' => json_encode(isset($data['portfolio']) ? $data['portfolio'] : []),
             'hourly_rate' => $hourly_rate,
             'pay_type' => $pay_type,
             'pay_rate' => $pay_rate,
-            'bio' => $data['bio'] ?? '',
-            'phone' => $data['phone'] ?? '',
-            'location' => $data['location'] ?? '',
+            'bio' => isset($data['bio']) ? $data['bio'] : '',
+            'phone' => isset($data['phone']) ? $data['phone'] : '',
+            'location' => isset($data['location']) ? $data['location'] : '',
             'availability' => 'available',
             'status' => 'active'
         );
@@ -76,25 +128,28 @@ class Worker_model extends CI_Model
             return array('status' => 'Error', 'message' => 'Worker profile does not exist.');
         }
 
-        $pay_type = $data['pay_type'] ?? ($existing['pay_type'] ?? 'hourly');
-        $pay_rate = (float)($data['pay_rate'] ?? ($existing['pay_rate'] ?? 0));
+        $pay_type = isset($data['pay_type']) ? $data['pay_type'] : (isset($existing['pay_type']) ? $existing['pay_type'] : 'hourly');
+        $pay_rate = (float)(isset($data['pay_rate']) ? $data['pay_rate'] : (isset($existing['pay_rate']) ? $existing['pay_rate'] : 0));
         
         // Calculate hourly_rate for internal use/sorting
         $hourly_rate = $pay_rate;
         if($pay_type === 'daily') $hourly_rate = $pay_rate / 8;
         if($pay_type === 'monthly') $hourly_rate = $pay_rate / 160;
-
+ 
         $update = array(
             'display_name' => $data['display_name'],
             'category_id' => $data['category_id'],
-            'experience_years' => $data['experience_years'] ?? 0,
-            'skills' => json_encode($data['skills'] ?? []),
+            'provider_type' => isset($data['provider_type']) ? $data['provider_type'] : (isset($existing['provider_type']) ? $existing['provider_type'] : 'independent'),
+            'owner_id' => isset($data['owner_id']) ? $data['owner_id'] : (isset($existing['owner_id']) ? $existing['owner_id'] : 0),
+            'experience_years' => isset($data['experience_years']) ? $data['experience_years'] : 0,
+            'skills' => json_encode(isset($data['skills']) ? $data['skills'] : []),
+            'portfolio' => json_encode(isset($data['portfolio']) ? $data['portfolio'] : []),
             'hourly_rate' => $hourly_rate,
             'pay_type' => $pay_type,
             'pay_rate' => $pay_rate,
-            'bio' => $data['bio'] ?? '',
-            'phone' => $data['phone'] ?? '',
-            'location' => $data['location'] ?? ''
+            'bio' => isset($data['bio']) ? $data['bio'] : '',
+            'phone' => isset($data['phone']) ? $data['phone'] : '',
+            'location' => isset($data['location']) ? $data['location'] : ''
         );
 
         $this->db->where('user_id', $user_id);
@@ -108,9 +163,9 @@ class Worker_model extends CI_Model
     /**
      * Get active workers (optionally filtered by category)
      */
-    public function get_active_workers($category = null, $location = null)
+    public function get_active_workers($category = null, $location = null, $provider_type = null, $owner_id = null)
     {
-        $this->db->select('w.*, u.username, h.val1 as category_name');
+        $this->db->select('w.*, u.username, h.val1 as category_name, h.category_icon');
         $this->db->from('geopos_worker_profiles w');
         $this->db->join('geopos_users u', 'w.user_id = u.id');
         $this->db->join('geopos_hrm h', 'w.category_id = h.id', 'left');
@@ -123,6 +178,14 @@ class Worker_model extends CI_Model
 
         if ($location) {
             $this->db->like('w.location', $location);
+        }
+
+        if ($provider_type) {
+            $this->db->where('w.provider_type', $provider_type);
+        }
+
+        if ($owner_id !== null) {
+            $this->db->where('w.owner_id', $owner_id);
         }
 
         $this->db->order_by('w.created_at', 'DESC');
@@ -304,7 +367,15 @@ class Worker_model extends CI_Model
 
     public function get_job_requests($loc = 0)
     {
-        if ($loc > 0) $this->db->where('loc', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        } elseif ($loc > 0) {
+            $this->db->where('loc', $loc);
+        }
         $this->db->order_by('id', 'DESC');
         return $this->db->get('geopos_job_requests')->result_array();
     }
@@ -314,7 +385,15 @@ class Worker_model extends CI_Model
         $this->db->select('p.*, u.username, u.email');
         $this->db->from('geopos_worker_profiles p');
         $this->db->join('geopos_users u', 'u.id = p.user_id', 'left');
-        if ($loc > 0) $this->db->where('u.loc', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('u.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('u.loc', 0);
+            }
+        } elseif ($loc > 0) {
+            $this->db->where('u.loc', $loc);
+        }
         $this->db->order_by('p.id', 'DESC');
         return $this->db->get()->result_array();
     }
@@ -326,12 +405,20 @@ class Worker_model extends CI_Model
         $this->db->from('geopos_employees e');
         $this->db->join('geopos_users p', 'p.id = e.id', 'left');
         $this->db->join('geopos_attendance a', "a.emp = e.id AND a.adate = '$today'", 'left');
-        if ($loc > 0) $this->db->where('e.loc', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('e.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('e.loc', 0);
+            }
+        } elseif ($loc > 0) {
+            $this->db->where('e.loc', $loc);
+        }
         $this->db->order_by('a.tfrom', 'DESC');
         return $this->db->get()->result_array();
     }
 
-    public function log_attendance($user_id, $action, $note = '')
+    public function log_attendance($user_id, $action, $note = '', $lat = null, $lng = null)
     {
         $today = date('Y-m-d');
         $now = date('H:i:s');
@@ -343,11 +430,17 @@ class Worker_model extends CI_Model
                 'tfrom' => $now,
                 'tto' => '',
                 'note' => $note,
+                'clock_in_lat' => $lat,
+                'clock_in_lng' => $lng,
                 'created' => date('Y-m-d H:i:s')
             );
             return $this->db->insert('geopos_attendance', $data);
         } else if ($action == 'clock_out') {
             $this->db->set('tto', $now);
+            if ($lat !== null && $lng !== null) {
+                $this->db->set('clock_out_lat', $lat);
+                $this->db->set('clock_out_lng', $lng);
+            }
             $this->db->where('emp', $user_id);
             $this->db->where('adate', $today);
             $this->db->where('tto', ''); 
@@ -409,6 +502,47 @@ class Worker_model extends CI_Model
             'hourly_rate' => $rate,
             'total_earnings' => round($total_hours * $rate, 2),
             'logs_count' => count($logs)
+        );
+    }
+
+    public function get_worker_earnings($user_id)
+    {
+        $today = date('Y-m-d');
+        $this_month_start = date('Y-m-01');
+        
+        $today_earnings = $this->calculate_earnings($user_id, $today, $today);
+        $month_earnings = $this->calculate_earnings($user_id, $this_month_start, $today);
+        
+        return array(
+            'today' => $today_earnings['total_earnings'],
+            'this_month' => $month_earnings['total_earnings'],
+            'total_hours_month' => $month_earnings['total_hours']
+        );
+    }
+
+    public function get_on_demand_earnings($provider_id)
+    {
+        $this->db->select('SUM(agreed_price) as total_gross, COUNT(*) as jobs_done');
+        $this->db->from('tp_service_requests');
+        $this->db->where('provider_id', $provider_id);
+        $this->db->where('status', 4); // Completed
+        $res = $this->db->get()->row_array();
+
+        // Also get withdrawals
+        $this->db->select('SUM(amount) as total_withdrawn');
+        $this->db->from('tp_withdrawal_requests');
+        $this->db->where('provider_id', $provider_id);
+        $this->db->where('status', 1); // Approved/Paid
+        $wd = $this->db->get()->row_array();
+
+        $gross = (float)($res['total_gross'] ?? 0);
+        $withdrawn = (float)($wd['total_withdrawn'] ?? 0);
+
+        return array(
+            'gross_earnings' => $gross,
+            'withdrawn' => $withdrawn,
+            'balance' => $gross - $withdrawn,
+            'jobs_done' => $res['jobs_done'] ?? 0
         );
     }
 }

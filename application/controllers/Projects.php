@@ -28,9 +28,9 @@ class Projects Extends CI_Controller
         $this->load->model('tools_model', 'tools');
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(4)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->li_a = 'project';
@@ -64,8 +64,12 @@ class Projects Extends CI_Controller
         $data['p_files'] = $this->projects->p_files($id);
         $data['comments_list'] = $this->projects->comments_thread($id);
         $data['emp'] = $this->projects->list_project_employee($id);
-         $data['emp_time'] = $this->projects->list_project_time($id);
+        $data['emp_time'] = $this->projects->list_project_time($id);
 
+        // TimberPro - Fetch Project Financial Ledger & P&L
+        $data['ledger'] = $this->projects->project_ledger($id);
+        $data['pnl'] = $this->projects->project_pnl($id);
+        $data['project_expenses'] = $data['pnl']['expense'];
 
         $data['project'] = $explore['project'];
         $data['clock'] = $explore['clock'];
@@ -80,7 +84,7 @@ class Projects Extends CI_Controller
 
     public function addproject()
     {
-        if (!$this->aauth->premission(4, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -128,7 +132,7 @@ class Projects Extends CI_Controller
 
     public function edit()
     {
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -180,7 +184,7 @@ class Projects Extends CI_Controller
 
     public function addtask()
     {
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->model('employee_model', 'employee');
@@ -199,7 +203,7 @@ class Projects Extends CI_Controller
 
     public function addmilestone()
     {
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -305,7 +309,7 @@ class Projects Extends CI_Controller
 
     public function save_addtask()
     {
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $name = $this->input->post('name');
@@ -363,7 +367,7 @@ class Projects Extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(4, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('deleteid');

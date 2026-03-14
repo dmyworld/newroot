@@ -458,13 +458,18 @@
                         <div class="col-sm-9">
 
 
-                            <div class="position-relative has-icon-left">
+                            <div class="position-relative has-icon-left input-group">
                                 <input type="text" class="form-control text-center round mousetrap"
                                        name="product_barcode"
                                        placeholder="Enter Product name, code or scan barcode" id="v2_search_bar"
                                        autocomplete="off" autofocus="autofocus">
                                 <div class="form-control-position">
                                     <i class="icon-barcode2"></i>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary round" type="button" onclick="startScanner('v2_search_bar')">
+                                        <i class="fa fa-qrcode"></i> Scan
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1274,3 +1279,4 @@
         });
     });
 </script>
+<?php $this->load->view('fixed/scanner_modal'); ?>

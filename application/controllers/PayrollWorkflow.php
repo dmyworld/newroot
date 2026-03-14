@@ -10,7 +10,7 @@ class PayrollWorkflow extends CI_Controller
         $this->load->model('payroll_report_model', 'reports');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

@@ -233,5 +233,30 @@ class Promo_model extends CI_Model
         return $this->db->update('geopos_promo');
     }
 
+    /**
+     * Automatically generate a 5% discount coupon for the next order.
+     */
+    public function generate_next_order_coupon($customer_id)
+    {
+        $code = 'NEXT' . strtoupper(substr(md5($customer_id . time()), 0, 5));
+        
+        $data = array(
+            'code' => $code,
+            'amount' => 5, // 5% Discount
+            'valid' => date('Y-m-d', strtotime('+30 days')),
+            'active' => 0,
+            'note' => 'Loyalty Reward: Next Order 5% OFF',
+            'reflect' => 0,
+            'qty' => 1,
+            'available' => 1,
+            'location' => isset($this->aauth->get_user()->loc) ? $this->aauth->get_user()->loc : 0
+        );
+
+        if ($this->db->insert('geopos_promo', $data)) {
+            return $code;
+        }
+        return false;
+    }
+
 
 }

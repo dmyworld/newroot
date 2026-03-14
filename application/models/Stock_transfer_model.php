@@ -10,6 +10,14 @@ class Stock_transfer_model extends CI_Model
     public function get_warehouses()
     {
         $this->db->select('id, title, extra as description');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         $this->db->where('id !=', 0);
         $this->db->order_by('title', 'asc');
         $query = $this->db->get('geopos_warehouse');
@@ -24,6 +32,13 @@ class Stock_transfer_model extends CI_Model
         $this->db->join('geopos_warehouse w', 'w.id = p.warehouse', 'left');
         $this->db->where('p.warehouse', $warehouse_id);
         $this->db->where('p.product_code', $product_code);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('w.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('w.loc', 0);
+            }
+        }
         $this->db->limit(1);
         
         $query = $this->db->get();
@@ -37,9 +52,19 @@ class Stock_transfer_model extends CI_Model
     
     public function get_product_by_id($product_id, $warehouse_id)
     {
-        $this->db->where('pid', $product_id);
-        $this->db->where('warehouse', $warehouse_id);
-        $query = $this->db->get('geopos_products');
+        $this->db->select('geopos_products.*');
+        $this->db->from('geopos_products');
+        $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse', 'left');
+        $this->db->where('geopos_products.pid', $product_id);
+        $this->db->where('geopos_products.warehouse', $warehouse_id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_warehouse.loc', 0);
+            }
+        }
+        $query = $this->db->get();
         
         return $query->row_array();
     }
@@ -108,8 +133,9 @@ public function process_stock_transfer($transfer_data)
             'refer' => 'admin',
             'total' => 0.00,
             'status' => 'completed',
-            'eid' => 8,
-            'notes' => $transfer_data['notes']
+            'eid' => $this->aauth->get_user()->id,
+            'notes' => $transfer_data['notes'],
+            'loc' => $this->aauth->get_user()->loc
         ];
         
         error_log("Inserting transfer record: " . print_r($transfer_record, true));
@@ -324,6 +350,13 @@ public function process_stock_transfer($transfer_data)
     public function get_recent_transfers($limit = 5)
     {
         $this->db->select('*');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         $this->db->order_by('id', 'DESC');
         $this->db->limit($limit);
         $query = $this->db->get('geopos_stock_transfer');

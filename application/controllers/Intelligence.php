@@ -8,7 +8,7 @@ class Intelligence extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         
         // Ensure only authorized roles access this

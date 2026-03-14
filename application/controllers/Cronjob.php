@@ -35,7 +35,7 @@ class Cronjob extends CI_Controller
     public function index()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if ($this->aauth->get_user()->roleid < 5) {
 
@@ -55,7 +55,7 @@ class Cronjob extends CI_Controller
     public function generate()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
             if ($this->aauth->get_user()->roleid < 5) {
 
                 exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
@@ -607,6 +607,30 @@ class Cronjob extends CI_Controller
         }
 
         echo "--- Done. Sent: {$sent} | Errors: {$errors} ---\n";
+    }
+
+    /**
+     * Action Module: process expired rings and auto-forward to next provider.
+     * URL: /cronjob/action_timeouts?token=YOUR_TOKEN
+     */
+    public function action_timeouts()
+    {
+        $corn   = $this->cronjob->config();
+        $cornkey= $corn['cornkey'];
+
+        echo "---------------Cron job for Action Request Timeouts-------\n";
+
+        if ($cornkey != $this->input->get('token')) {
+            echo "---------------Error! Invalid Token! -------------------------\n";
+            return;
+        }
+
+        echo "---------------Process Started -------------------------\n";
+
+        $this->load->model('Action_request_model', 'actions');
+        $this->actions->process_timeouts();
+
+        echo "---------------Success! Process Done! -------------------------\n";
     }
 
     /**

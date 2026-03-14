@@ -1,5 +1,14 @@
 <div class="content-body">
-    <div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="max-w-4xl mx-auto py-12 px-4 relative">
+        
+        <!-- SOS Button -->
+        <div class="absolute top-4 right-4 text-center z-50">
+            <button onclick="triggerSOS()" class="btn btn-danger rounded-circle shadow-lg" style="width: 70px; height: 70px; font-size: 28px; animation: pulse-ring 1.5s infinite;">
+                <i class="fa fa-exclamation-triangle"></i>
+            </button>
+            <div class="text-xs font-black text-danger mt-2 uppercase tracking-widest">SOS Panic</div>
+        </div>
+
         <!-- Digital Clock & Hero -->
         <div class="text-center mb-16" data-aos="zoom-in">
             <div class="inline-flex items-center px-4 py-2 bg-primary bg-opacity-10 text-primary rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-primary border-opacity-20">
@@ -23,8 +32,10 @@
                     <h3 class="text-2xl font-black text-slate-800 mb-2">Shift Start</h3>
                     <p class="text-slate-500 font-medium mb-10">Mark your arrival and begin your tracked professional session.</p>
                     
-                    <form method="post" action="<?= base_url('worker/clock') ?>">
+                    <form method="post" action="<?= base_url('worker/clock') ?>" onsubmit="return attachGPS(this, event)">
                         <input type="hidden" name="action" value="clock_in">
+                        <input type="hidden" name="lat" class="lat-input" value="">
+                        <input type="hidden" name="lng" class="lng-input" value="">
                         <button type="submit" 
                                 <?= $is_clocked_in ? 'disabled' : '' ?>
                                 class="w-full py-5 <?= $is_clocked_in ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-success text-white shadow-lg shadow-green-200 hover:bg-green-600' ?> rounded-2xl font-black text-lg transition-all active:scale-95">
@@ -48,8 +59,10 @@
                     <h3 class="text-2xl font-black text-slate-800 mb-2">Shift End</h3>
                     <p class="text-slate-500 font-medium mb-10">Complete your session to finalize hours and calculate earnings.</p>
                     
-                    <form method="post" action="<?= base_url('worker/clock') ?>">
+                    <form method="post" action="<?= base_url('worker/clock') ?>" onsubmit="return attachGPS(this, event)">
                         <input type="hidden" name="action" value="clock_out">
+                        <input type="hidden" name="lat" class="lat-input" value="">
+                        <input type="hidden" name="lng" class="lng-input" value="">
                         <button type="submit" 
                                 <?= !$is_clocked_in ? 'disabled' : '' ?>
                                 class="w-full py-5 <?= !$is_clocked_in ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-danger text-white shadow-lg shadow-red-200 hover:bg-red-600' ?> rounded-2xl font-black text-lg transition-all active:scale-95">
@@ -115,4 +128,77 @@
     
     setInterval(updateClock, 1000);
     updateClock();
+
+    function attachGPS(form, event) {
+        if (!navigator.geolocation) {
+            console.warn('Geolocation not supported');
+            return true;
+        }
+        
+        event.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        const origText = btn.innerText;
+        btn.innerText = 'Locating...';
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            form.querySelector('.lat-input').value = pos.coords.latitude;
+            form.querySelector('.lng-input').value = pos.coords.longitude;
+            form.submit();
+        }, function(err) {
+            console.warn('GPS Error: ' + err.message);
+            form.submit();
+        }, { enableHighAccuracy: true, timeout: 10000 });
+        
+        return false;
+    }
+
+    function triggerSOS() {
+        Swal.fire({
+            title: 'EMERGENCY SOS',
+            text: "This will immediately alert administrators with your precise location. Are you sure?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff3b3b',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'SEND SOS NOW'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (!navigator.geolocation) {
+                    Swal.fire('Error', 'Browser does not support GPS tracking.', 'error');
+                    return;
+                }
+                
+                Swal.fire({
+                    title: 'Retrieving Location...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                navigator.geolocation.getCurrentPosition(function(pos) {
+                    $.post('<?= base_url('sos/trigger') ?>', {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    }, function(res) {
+                        const data = JSON.parse(res);
+                        if(data.status === 'Success') {
+                            Swal.fire('SOS Sent!', 'Administrators have been alerted of your location.', 'success');
+                        } else {
+                            Swal.fire('Error', data.message, 'error');
+                        }
+                    });
+                }, function(err) {
+                    Swal.fire('GPS Error', 'Ensure location services are enabled to send SOS.', 'error');
+                }, { enableHighAccuracy: true, timeout: 10000 });
+            }
+        });
+    }
 </script>
+
+<style>
+    @keyframes pulse-ring {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+</style>

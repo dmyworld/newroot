@@ -26,9 +26,9 @@ class Tickets Extends CI_Controller
         $this->load->model('ticket_model', 'ticket');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!$this->aauth->premission(8)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 

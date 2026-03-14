@@ -27,7 +27,7 @@ class Manager Extends CI_Controller
         //$this->load->model('projects_model', 'projects');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->li_a = 'manager';
     }
@@ -44,7 +44,7 @@ class Manager Extends CI_Controller
 
     public function set_task()
     {
-        if (!$this->aauth->premission(7, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('tid');
@@ -252,7 +252,7 @@ class Manager Extends CI_Controller
 
     public function addtask()
     {
-        if (!$this->aauth->premission(7, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         /*
@@ -273,7 +273,7 @@ class Manager Extends CI_Controller
 
     public function addmilestone()
     {
-        if (!$this->aauth->premission(7, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -310,7 +310,7 @@ class Manager Extends CI_Controller
 
     public function b_save_addtask()
     {
-        if (!$this->aauth->premission(7, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $name = $this->input->post('name', true);
@@ -340,7 +340,7 @@ class Manager Extends CI_Controller
 
     public function addactivity()
     {
-        if (!$this->aauth->premission(7, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -386,7 +386,7 @@ class Manager Extends CI_Controller
 
     public function delete_file()
     {
-        if (!$this->aauth->premission(7, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $fileid = $this->input->post('object_id');
@@ -401,7 +401,7 @@ class Manager Extends CI_Controller
 
         public function clock_in()
     {
-        if (!$this->aauth->premission(7, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->model('projects_model', 'projects');
@@ -413,7 +413,7 @@ class Manager Extends CI_Controller
 
     public function clock_out()
     {
-        if (!$this->aauth->premission(7, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->model('projects_model', 'projects');

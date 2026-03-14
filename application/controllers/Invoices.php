@@ -31,9 +31,9 @@ class Invoices extends CI_Controller
         $this->load->library("Aauth");
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -44,6 +44,7 @@ class Invoices extends CI_Controller
         }
         $this->load->library("Custom");
         $this->load->model('locations_model', 'locations');
+        $this->load->model('Commission_model', 'commission');
         $this->li_a = 'sales';
 
     }
@@ -120,7 +121,7 @@ class Invoices extends CI_Controller
     //action
     public function action()
     {
-        if (!$this->aauth->premission(1, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $currency = $this->input->post('mcurrency');
@@ -173,6 +174,11 @@ class Invoices extends CI_Controller
         $invocieno2 = $invocieno;
         if ($this->db->insert('geopos_invoices', $data)) {
             $invocieno = $this->db->insert_id();
+            
+            // === Subscription Commission Logic ===
+            $this->load->model('Subscription_model', 'sub_model');
+            $this->sub_model->calculate_commission($invocieno, $this->aauth->get_user()->id, $total);
+
             //products
             $pid = $this->input->post('pid');
             $productlist = array();
@@ -244,8 +250,36 @@ class Invoices extends CI_Controller
                 $transok = false;
             }
             if ($transok) {
+                // === Auto Commission Split ===
+                try {
+                    $user       = $this->aauth->get_user();
+                    $biz_id     = $user->business_id ?? 0;
+                    $this->commission->record_commission(
+                        $invocieno,
+                        $total,
+                        $user->id,
+                        $user->loc,
+                        $biz_id
+                    );
+                } catch (Exception $e) { /* Non-critical — invoice already saved */ }
+
                 $validtoken = hash_hmac('ripemd160', $invocieno, $this->config->item('encryption_key'));
                 $link = base_url('billing/view?id=' . $invocieno . '&token=' . $validtoken);
+
+                // === Phase 7: Loyalty & Retention Hooks ===
+                try {
+                    // 1. Credit Loyalty Points
+                    $this->load->model('Loyalty_model', 'loyalty');
+                    $this->loyalty->add_points($customer_id, $total, 'invoice', $invocieno);
+
+                    // 2. Generate Next-Order Coupon
+                    $this->load->model('Promo_model', 'promo');
+                    $coupon_code = $this->promo->generate_next_order_coupon($customer_id);
+                    if ($coupon_code) {
+                        $this->db->where('id', $invocieno)->update('geopos_invoices', ['next_order_coupon' => $coupon_code]);
+                    }
+                } catch (Exception $e) { /* Non-critical */ }
+
                 echo json_encode(array('status' => 'Success', 'message' =>
                     $this->lang->line('Invoice Success') . " <a href='view?id=$invocieno' class='btn btn-primary btn-lg'><span class='fa fa-eye' aria-hidden='true'></span> " . $this->lang->line('View') . "  </a> &nbsp; &nbsp;<a href='printinvoice?id=$invocieno' class='btn btn-blue btn-lg' target='_blank'><span class='fa fa-print' aria-hidden='true'></span> " . $this->lang->line('Print') . "  </a> &nbsp; &nbsp; <a href='$link' class='btn btn-purple btn-lg'><span class='fa fa-globe' aria-hidden='true'></span> " . $this->lang->line('Public View') . " </a> &nbsp; &nbsp; <a href='create' class='btn btn-warning btn-lg'><span class='fa fa-plus-circle' aria-hidden='true'></span></a>"));
             }
@@ -307,7 +341,7 @@ class Invoices extends CI_Controller
                     )
                 );
             }
-            // === WhatsApp Auto Notification ===
+            // === WhatsApp Auto Notification (Phase 7.2) ===
             if ($auto['other'] == 1) {
                 try {
                     $this->load->model('WhatsApp_model', 'whatsapp');
@@ -317,13 +351,17 @@ class Invoices extends CI_Controller
                     $query = $this->db->get();
                     $wa_customer = $query->row_array();
                     if (!empty($wa_customer['phone'])) {
-                        $template_data = [
-                            'BillNumber' => $invocieno2,
-                            'Amount'     => amountExchange($total, $currency),
-                            'DueDate'    => dateformat($bill_due_date),
-                            'Name'       => $wa_customer['name'],
-                        ];
-                        $this->whatsapp->send_template($wa_customer['phone'], 40, $template_data);
+                        $token = hash_hmac('ripemd160', $invocieno, $this->config->item('encryption_key'));
+                        $pdf_url = base_url('billing/printinvoice?id=' . $invocieno . '&token=' . $token . '&d=1');
+                        
+                        $message = "Hello " . $wa_customer['name'] . ", your invoice #" . $invocieno2 . " for " . amountExchange($total, $currency) . " is ready. View it here: " . base_url('billing/view?id=' . $invocieno . '&token=' . $token);
+                        
+                        if (isset($coupon_code)) {
+                            $message .= "\n\nHere is a gift for your next order: Use code *$coupon_code* to get 5% OFF!";
+                        }
+
+                        // Send rich media if possible, otherwise fallback to template/text
+                        $this->whatsapp->send_media_invoice($wa_customer['phone'], $pdf_url, $message);
                     }
                 } catch (Exception $e) { /* Non-critical — invoice save already succeeded */ }
             }
@@ -358,6 +396,7 @@ class Invoices extends CI_Controller
         foreach ($list as $invoices) {
             $no++;
             $row = array();
+            if ($invoices->delete_status > 0) $row['DT_RowClass'] = 'pending-delete-row';
             $row[] = $no;
 
             $row[] = '<a href="' . base_url("invoices/view?id=$invoices->id") . '">&nbsp; ' . $invoices->tid . '</a>';
@@ -444,26 +483,47 @@ class Invoices extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(1, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1, 'delete'))) {
             echo json_encode(array('status' => 'Error', 'message' =>
                 $this->lang->line('ERROR')));
             exit;
         }
         $id = $this->input->post('deleteid');
 
-        if ($this->invocies->invoice_delete($id, $this->limited)) {
-            echo json_encode(array('status' => 'Success', 'message' =>
-                $this->lang->line('DELETED')));
+        if ($id) {
+            $user_role = $this->aauth->get_user()->roleid;
+            
+            if ($user_role > 2) {
+                // Staff - Request Delete
+                $this->db->set('delete_status', 1);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_invoices');
+                echo json_encode(array('status' => 'Success', 'message' => 'Delete Requested Successfully'));
+            } elseif ($user_role == 2) {
+                // Owner - Approve Delete
+                $this->db->set('delete_status', 2);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_invoices');
+                echo json_encode(array('status' => 'Success', 'message' => 'Moved to Pending Review by Super Admin'));
+            } elseif ($user_role == 1) {
+                // Super Admin - Hard Delete
+                if ($this->invocies->invoice_delete($id, $this->limited)) {
+                    echo json_encode(array('status' => 'Success', 'message' =>
+                        $this->lang->line('DELETED')));
+                } else {
+                    echo json_encode(array('status' => 'Error', 'message' =>
+                        $this->lang->line('ERROR')));
+                }
+            }
         } else {
             echo json_encode(array('status' => 'Error', 'message' =>
                 $this->lang->line('ERROR')));
         }
-
     }
 
     public function editaction()
     {
-        if (!$this->aauth->premission(1, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $customer_id = $this->input->post('customer_id');

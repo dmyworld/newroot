@@ -55,29 +55,48 @@
 
             <!-- Progress Map -->
             <?php if ($order['status'] !== 'cancelled'): ?>
-            <div class="p-10 border-b border-slate-50">
-               <div class="relative">
-                   <!-- Progress Line -->
-                   <div class="absolute top-4 left-10 right-10 h-1 bg-slate-100 rounded-full">
-                       <div class="h-full bg-blue-600 rounded-full transition-all duration-1000" 
-                            style="width: <?= ($current_idx / (count($statuses)-1)) * 100 ?>%"></div>
-                   </div>
-                   
-                   <!-- Steps -->
-                   <div class="relative flex justify-between">
-                       <?php foreach($statuses as $idx => $st): ?>
-                       <div class="flex flex-col items-center">
-                           <div class="w-9 h-9 rounded-full mb-3 flex items-center justify-center text-xs transition-all duration-500
-                                <?= $idx <= $current_idx ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'bg-white text-slate-300 border-2 border-slate-100' ?>">
-                               <?php if($idx < $current_idx): ?><i class="fa fa-check"></i><?php else: ?><?= $idx + 1 ?><?php endif; ?>
-                           </div>
-                           <span class="text-[10px] font-bold uppercase tracking-widest <?= $idx <= $current_idx ? 'text-slate-900' : 'text-slate-300' ?>">
-                               <?= $st ?>
-                           </span>
-                       </div>
-                       <?php endforeach; ?>
-                   </div>
-               </div>
+            <!-- Live Tracker (Phase 6.4) -->
+            <div class="p-10 border-b border-slate-50 bg-slate-50/30">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest">Live Delivery Map</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span class="text-[10px] font-bold text-green-600 uppercase">Live - Signal Strong</span>
+                    </div>
+                </div>
+                
+                <div id="tracking-map" class="w-full h-80 bg-slate-200 rounded-[2rem] overflow-hidden mb-8 border-4 border-white shadow-inner relative">
+                    <!-- Placeholder for Google Maps -->
+                    <div class="absolute inset-0 flex items-center justify-center bg-slate-100 italic text-slate-400 text-sm">
+                        <div class="text-center">
+                            <i class="fa fa-map-marked-alt text-4xl mb-3 block opacity-20"></i>
+                            Waiting for vehicle GPS signal...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <!-- Progress Line -->
+                    <div class="absolute top-4 left-10 right-10 h-1 bg-slate-100 rounded-full">
+                        <div class="h-full bg-blue-600 rounded-full transition-all duration-1000" 
+                             style="width: <?= ($current_idx / (count($statuses)-1)) * 100 ?>%"></div>
+                    </div>
+                    
+                    <!-- Steps -->
+                    <div class="relative flex justify-between">
+                        <?php foreach($statuses as $idx => $st): ?>
+                        <div class="flex flex-col items-center">
+                            <div class="w-9 h-9 rounded-full mb-3 flex items-center justify-center text-xs transition-all duration-500
+                                 <?= $idx <= $current_idx ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'bg-white text-slate-300 border-2 border-slate-100' ?>">
+                                <?php if($idx < $current_idx): ?><i class="fa fa-check"></i><?php else: ?><?= $idx + 1 ?><?php endif; ?>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest <?= $idx <= $current_idx ? 'text-slate-900' : 'text-slate-300' ?>">
+                                <?= $st ?>
+                            </span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
 

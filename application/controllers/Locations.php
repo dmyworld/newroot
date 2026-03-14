@@ -25,9 +25,9 @@ class Locations Extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if ($this->aauth->get_user()->roleid < 5) {
+        if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -130,14 +130,30 @@ class Locations Extends CI_Controller
     {
         $id = $this->input->post('deleteid');
         if ($id) {
-            // Delete linked warehouses first
-            $this->db->delete('geopos_warehouse', array('loc' => $id));
+            $user_role = $this->aauth->get_user()->roleid;
             
-            // Delete the location
-            $this->db->delete('geopos_locations', array('id' => $id));
-
-
-            echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('DELETED')));
+            if ($user_role > 2) {
+                // Staff - Request Delete
+                $this->db->set('delete_status', 1);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_locations');
+                echo json_encode(array('status' => 'Success', 'message' => 'Delete Requested Successfully'));
+            } elseif ($user_role == 2) {
+                // Owner - Approve Delete
+                $this->db->set('delete_status', 2);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_locations');
+                echo json_encode(array('status' => 'Success', 'message' => 'Moved to Pending Review by Super Admin'));
+            } elseif ($user_role == 1 || $user_role == 5) {
+                // Super Admin / Legacy Admin - Hard Delete
+                // Delete linked warehouses first
+                $this->db->delete('geopos_warehouse', array('loc' => $id));
+                // Delete the location
+                $this->db->delete('geopos_locations', array('id' => $id));
+                echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('DELETED')));
+            } else {
+                echo json_encode(array('status' => 'Error', 'message' => 'Insufficient permissions'));
+            }
         } else {
             echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
         }

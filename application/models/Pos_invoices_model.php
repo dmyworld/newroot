@@ -104,9 +104,13 @@ class Pos_invoices_model extends CI_Model
         if ($eid) {
             $this->db->where('geopos_invoices.eid', $eid);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_invoices.loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
+        }
         $this->db->join('geopos_customers', 'geopos_invoices.csd = geopos_customers.id', 'left');
         $this->db->join('geopos_terms', 'geopos_terms.id = geopos_invoices.term', 'left');
         $query = $this->db->get();
@@ -120,11 +124,13 @@ class Pos_invoices_model extends CI_Model
         $this->db->select('geopos_purchase.*,geopos_purchase.id AS iid,SUM(geopos_purchase.shipping + geopos_purchase.ship_tax) AS shipping,geopos_supplier.*,geopos_supplier.id AS cid,geopos_terms.id AS termid,geopos_terms.title AS termtit,geopos_terms.terms AS terms');
         $this->db->from($this->table2);
         $this->db->where('geopos_purchase.id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('geopos_purchase.loc', 0);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_purchase.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('geopos_purchase.loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_purchase.loc', 0);
+            }
         }
         $this->db->join('geopos_supplier', 'geopos_purchase.csd = geopos_supplier.id', 'left');
         $this->db->join('geopos_terms', 'geopos_terms.id = geopos_purchase.term', 'left');
@@ -180,10 +186,14 @@ class Pos_invoices_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('geopos_warehouse');
-       if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-          if(BDATA)  $this->db->or_where('loc', 0);
-        }  elseif(!BDATA) { $this->db->where('loc', 0); }
+       if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
 
         $query = $this->db->get();
 
@@ -226,38 +236,33 @@ class Pos_invoices_model extends CI_Model
         $query = $this->db->get();
         $result = $query->row_array();
 
-          if ($this->aauth->get_user()->loc) {
-            if ($eid) {
-
-                $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => $this->aauth->get_user()->loc));
-
-
+          if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                if ($eid) {
+                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => $this->aauth->get_user()->loc));
+                } else {
+                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
+                }
             } else {
-                $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
+                if (!BDATA) {
+                    if ($eid) {
+                        $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => 0));
+                    } else {
+                        $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => 0));
+                    }
+                } else {
+                    if ($eid) {
+                        $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid));
+                    } else {
+                        $res = $this->db->delete('geopos_invoices', array('id' => $id));
+                    }
+                }
             }
-        }
-
-        else {
-            if (BDATA) {
-                if ($eid) {
-
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid));
-
-
-                } else {
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id));
-                }
+        } else {
+            if ($eid) {
+                $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid));
             } else {
-
-
-                if ($eid) {
-
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => 0));
-
-
-                } else {
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => 0));
-                }
+                $res = $this->db->delete('geopos_invoices', array('id' => $id));
             }
         }
         $affect = $this->db->affected_rows();
@@ -314,10 +319,10 @@ class Pos_invoices_model extends CI_Model
             $this->db->where('geopos_invoices.eid', $opt);
         }
 
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) {
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
                 $this->db->where('geopos_invoices.loc', $loc);
             }
         } else {
@@ -393,10 +398,10 @@ class Pos_invoices_model extends CI_Model
             $this->db->where('geopos_invoices.eid', $opt);
         }
 
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) {
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
                 $this->db->where('geopos_invoices.loc', $loc);
             }
         } else {
@@ -488,10 +493,12 @@ class Pos_invoices_model extends CI_Model
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 1);
 
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) $this->db->where('geopos_invoices.loc', $loc);
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
+                $this->db->where('geopos_invoices.loc', $loc);
+            }
         } else {
             if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
@@ -518,10 +525,12 @@ class Pos_invoices_model extends CI_Model
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 2);
 
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) $this->db->where('geopos_invoices.loc', $loc);
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
+                $this->db->where('geopos_invoices.loc', $loc);
+            }
         } else {
             if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
@@ -612,7 +621,13 @@ class Pos_invoices_model extends CI_Model
 
         $this->db->select('geopos_draft.id,geopos_draft.tid,geopos_draft.invoicedate');
         $this->db->from('geopos_draft');
-       $this->db->where('geopos_draft.loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_draft.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_draft.loc', 0);
+            }
+        }
         $this->db->order_by('id', 'DESC');
         $this->db->limit(12);
         $query = $this->db->get();
@@ -652,11 +667,13 @@ class Pos_invoices_model extends CI_Model
         $this->db->select('*');
         $this->db->from('geopos_accounts');
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-           if(BDATA) $this->db->or_where('loc', 0);
-        }else{
-             if(!BDATA) $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } else {
+                if (!BDATA) $this->db->where('loc', 0);
+            }
         }
 
         $query = $this->db->get();

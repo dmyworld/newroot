@@ -41,6 +41,26 @@
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <label>Portfolio / Past Work</label>
+                            <div class="custom-file mb-3">
+                                <input type="file" class="custom-file-input" id="portfolioUpload" accept="image/*" multiple>
+                                <label class="custom-file-label" for="portfolioUpload">Choose photos of your past work...</label>
+                            </div>
+                            <div id="portfolioPreviewArea" class="d-flex flex-wrap gap-2 mt-2">
+                                <?php 
+                                    $portfolio = json_decode($profile['portfolio'] ?? '[]', true);
+                                    if(is_array($portfolio)) {
+                                        foreach($portfolio as $img): 
+                                ?>
+                                    <img src="<?= base_url($img) ?>" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                                <?php 
+                                        endforeach;
+                                    } 
+                                ?>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -141,6 +161,33 @@ $(document).ready(function() {
                 $('#photoPreview').html('<img src="' + e.target.result + '" alt="Preview">');
             };
             reader.readAsDataURL(file);
+        }
+    });
+
+    // Portfolio upload API
+    $('#portfolioUpload').on('change', function(e) {
+        const files = e.target.files;
+        if(files.length === 0) return;
+
+        for(let i = 0; i < files.length; i++) {
+            const formData = new FormData();
+            formData.append('file', files[i]);
+
+            $.ajax({
+                url: '<?= base_url('worker/portfolio_upload') ?>',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    const res = JSON.parse(response);
+                    if(res.status === 'Success') {
+                        $('#portfolioPreviewArea').append('<img src="'+res.file+'" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">');
+                    } else {
+                        Swal.fire('Error!', res.message, 'error');
+                    }
+                }
+            });
         }
     });
 

@@ -25,7 +25,7 @@ class Setup_chart_of_accounts extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if ($this->aauth->get_user()->roleid < 5) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');

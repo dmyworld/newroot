@@ -26,7 +26,7 @@ class Stockreturn extends CI_Controller
         $this->load->model('Stockreturn_model', 'stockreturn');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->li_a = 'stock';
     }
@@ -34,7 +34,7 @@ class Stockreturn extends CI_Controller
     //create invoice
     public function create()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -57,7 +57,7 @@ class Stockreturn extends CI_Controller
 
     public function create_client()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -80,7 +80,7 @@ class Stockreturn extends CI_Controller
 
     public function create_note()
     {
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -104,7 +104,7 @@ class Stockreturn extends CI_Controller
     //edit invoice
     public function edit()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $tid = intval($this->input->get('id'));
@@ -126,7 +126,7 @@ class Stockreturn extends CI_Controller
 
     public function edit_c()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $tid = intval($this->input->get('id'));
@@ -149,7 +149,7 @@ class Stockreturn extends CI_Controller
 
     public function edit_note()
     {
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $tid = intval($this->input->get('id'));
@@ -173,7 +173,7 @@ class Stockreturn extends CI_Controller
     //invoices list
     public function index()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['title'] = "Manage Stock Return Orders";
@@ -185,7 +185,7 @@ class Stockreturn extends CI_Controller
 
     public function customer()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['title'] = "Manage Stockreturn Orders";
@@ -197,7 +197,7 @@ class Stockreturn extends CI_Controller
 
     public function creditnotes()
     {
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['title'] = "Manage Credit Notes";
@@ -217,13 +217,13 @@ class Stockreturn extends CI_Controller
         $new_u = 'create';
         if ($person_type) {
             $new_u = 'create_client';
-            if (!$this->aauth->premission(2)) {
+            if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
                 exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
             }
         }
         if ($person_type == 2) {
             $new_u = 'create_note';
-            if (!$this->aauth->premission(1)) {
+            if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
                 exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
             }
         }
@@ -386,7 +386,7 @@ class Stockreturn extends CI_Controller
         $data['employee'] = $this->stockreturn->employee($data['invoice']['eid']);
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = "Stock return Order " . $data['invoice']['iid'];
-        if (($data['invoice']['i_class'] != 2 && $this->aauth->premission(2)) OR ($data['invoice']['i_class'] == 2 && $this->aauth->premission(1))) {
+        if ($this->aauth->get_user()->roleid == 1 || ($data['invoice']['i_class'] != 2 && $this->aauth->premission(2)) OR ($data['invoice']['i_class'] == 2 && $this->aauth->premission(1))) {
             $this->load->view('fixed/header', $head);
             if ($data['invoice']['tid']) $this->load->view('stockreturn/view', $data);
             $this->load->view('fixed/footer');
@@ -404,7 +404,7 @@ class Stockreturn extends CI_Controller
         $data['invoice'] = $this->stockreturn->purchase_details($tid);
         $data['products'] = $this->stockreturn->purchase_products($tid);
         $data['employee'] = $this->stockreturn->employee($data['invoice']['eid']);
-        if (($data['invoice']['i_class'] != 2 && $this->aauth->premission(2)) OR ($data['invoice']['i_class'] == 2 && $this->aauth->premission(1))) {
+        if ($this->aauth->get_user()->roleid == 1 || ($data['invoice']['i_class'] != 2 && $this->aauth->premission(2)) OR ($data['invoice']['i_class'] == 2 && $this->aauth->premission(1))) {
             if ($ty < 2) {
                 $data['general'] = array('title' => $this->lang->line('Stock Return'), 'person' => $this->lang->line('Supplier'), 'prefix' => prefix(4), 't_type' => 0);
             } else {
@@ -454,12 +454,12 @@ class Stockreturn extends CI_Controller
         $customer_id = $this->input->post('customer_id');
         $person_type = $this->input->post('person_type');
         if ($person_type) {
-            if (!$this->aauth->premission(2)) {
+            if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
                 exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
             }
         }
         if ($person_type == 2) {
-            if (!$this->aauth->premission(1)) {
+            if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
                 exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
             }
         }
@@ -593,7 +593,7 @@ class Stockreturn extends CI_Controller
         $this->db->where('id', $tid);
         $query = $this->db->get();
         $stock = $query->row_array();
-        if (($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
+        if ($this->aauth->get_user()->roleid == 1 || ($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
             $this->db->set('status', $status);
             $this->db->where('id', $tid);
             $this->db->update('geopos_stock_r');
@@ -630,23 +630,21 @@ class Stockreturn extends CI_Controller
         $this->db->where('id', $tid);
         $query = $this->db->get();
         $stock = $query->row_array();
-        if (($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
+        if ($this->aauth->get_user()->roleid == 1 || ($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
             $this->db->set('pamnt', "0.00", FALSE);
             $this->db->set('status', 'canceled');
             $this->db->where('id', $tid);
             $this->db->update('geopos_stock_r');
             //reverse
-            $this->db->select('credit,acid');
+            $this->db->select('id,credit,acid');
             $this->db->from('geopos_transactions');
             $this->db->where('tid', $tid);
             $this->db->where('ext', 6);
             $query = $this->db->get();
             $revresult = $query->result_array();
+            $this->load->model('transactions_model');
             foreach ($revresult as $trans) {
-                $amt = $trans['credit'];
-                $this->db->set('lastbal', "lastbal-$amt", FALSE);
-                $this->db->where('id', $trans['acid']);
-                $this->db->update('geopos_accounts');
+                $this->transactions_model->reverse_transaction($trans['id'], 'Stock Return Cancelled');
             }
             $this->db->select('pid,qty');
             $this->db->from('geopos_stock_r_items');
@@ -659,7 +657,7 @@ class Stockreturn extends CI_Controller
                 $this->db->where('pid', $prd['pid']);
                 $this->db->update('geopos_products');
             }
-            $this->db->delete('geopos_transactions', array('tid' => $tid, 'ext' => 6));
+            // $this->db->delete('geopos_transactions', array('tid' => $tid, 'ext' => 6)); // Immutable Ledger Rule
             echo json_encode(array('status' => 'Success', 'message' =>
                 $this->lang->line('Return canceled')));
 
@@ -676,7 +674,7 @@ class Stockreturn extends CI_Controller
         $this->db->where('id', $tid);
         $query = $this->db->get();
         $stock = $query->row_array();
-        if (($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
+        if ($this->aauth->get_user()->roleid == 1 || ($stock['i_class'] != 2 && $this->aauth->premission(2)) OR ($stock['i_class'] == 2 && $this->aauth->premission(1))) {
 
             $amount = rev_amountExchange_s($this->input->post('amount', true), 0, $this->aauth->get_user()->loc);
             $paydate = $this->input->post('paydate');

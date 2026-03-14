@@ -1,4 +1,5 @@
 <?php $this->load->view('shop/hero_premium'); ?>
+<?php $this->load->view('fixed/scanner_modal'); ?>
 
 <!-- SMART FILTER LAYOUT -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -19,6 +20,14 @@
                 <!-- Active Filters Badges -->
                 <div class="px-6 py-3 bg-slate-50 border-b border-slate-100 hidden" id="activeFilterSection">
                     <div class="flex flex-wrap gap-2" id="activeFilterBadges"></div>
+                </div>
+
+                <!-- Barcode Scanner Trigger -->
+                <div class="px-6 py-5 border-b border-slate-100">
+                    <button onclick="openScanner()" class="w-full flex items-center justify-center space-x-2 bg-blue-50 text-blue-600 font-bold py-3 rounded-xl hover:bg-blue-100 transition-colors border border-blue-200/50">
+                        <i class="fa fa-qrcode text-lg"></i>
+                        <span class="text-xs uppercase tracking-wider">Scan to Search</span>
+                    </button>
                 </div>
 
                 <div class="p-6 space-y-8 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
@@ -99,6 +108,20 @@
         <!-- ===== MAIN CONTENT AREA ===== -->
         <main class="flex-1 min-w-0">
             
+            <!-- MACRO CATEGORY TABS -->
+            <div class="flex justify-center mb-10">
+                <div class="inline-flex p-1 bg-slate-100 rounded-2xl shadow-inner border border-slate-200">
+                    <button onclick="switchMacroTab('products')" id="macro-products-btn" 
+                            class="macro-tab-btn px-8 py-3.5 rounded-xl font-black text-sm uppercase tracking-widest transition-all duration-300 <?= ($macro == 'products' || !$macro) ? 'active' : '' ?>">
+                        <i class="fa fa-shopping-cart mr-2"></i> Products
+                    </button>
+                    <button onclick="switchMacroTab('services')" id="macro-services-btn" 
+                            class="macro-tab-btn px-8 py-3.5 rounded-xl font-black text-sm uppercase tracking-widest transition-all duration-300 <?= ($macro == 'services') ? 'active' : '' ?>">
+                        <i class="fa fa-briefcase mr-2"></i> Services
+                    </button>
+                </div>
+            </div>
+            
             <!-- Context Bar -->
             <div class="flex items-center justify-between mb-8">
                 <div>
@@ -123,13 +146,13 @@
                     <?php foreach($lots as $lot): ?>
                     <div class="group bg-white rounded-3xl border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 lot-card"
                          data-field="timber"
-                         data-type="<?= htmlspecialchars(strtolower($lot['lot_type'] ?? '')) ?>"
-                         data-district="<?= htmlspecialchars(strtolower($lot['district'] ?? '')) ?>"
-                         data-province="<?= htmlspecialchars(strtolower($lot['province'] ?? '')) ?>"
-                         data-maincat="<?= $lot['pcid'] ?? '' ?>"
-                         data-subcat="<?= $lot['p_id'] ?? '' ?>"
-                         data-price="<?= $lot['price'] ?? 0 ?>"
-                         data-name="<?= htmlspecialchars(strtolower($lot['name'] ?? '')) ?>">
+                         data-type="<?= htmlspecialchars(strtolower(isset($lot['lot_type']) ? $lot['lot_type'] : '')) ?>"
+                         data-district="<?= htmlspecialchars(strtolower(isset($lot['district']) ? $lot['district'] : '')) ?>"
+                         data-province="<?= htmlspecialchars(strtolower(isset($lot['province']) ? $lot['province'] : '')) ?>"
+                         data-maincat="<?= isset($lot['pcid']) ? $lot['pcid'] : '' ?>"
+                         data-subcat="<?= isset($lot['p_id']) ? $lot['p_id'] : '' ?>"
+                         data-price="<?= isset($lot['price']) ? $lot['price'] : 0 ?>"
+                         data-name="<?= htmlspecialchars(strtolower(isset($lot['name']) ? $lot['name'] : '')) ?>">
                         
                         <!-- Card Media -->
                         <div class="relative h-56 overflow-hidden">
@@ -145,6 +168,14 @@
                                     <i class="fa fa-check-circle mr-1.5"></i> Verified
                                 </span>
                                 <?php endif; ?>
+                                <?php 
+                                    $tags = ['Trending', 'Eco-Friendly', 'New Arrival', 'Best Value'];
+                                    $randomTag = $tags[array_rand($tags)];
+                                    $bgClass = $randomTag == 'Trending' ? 'bg-orange-500/90' : ($randomTag == 'Eco-Friendly' ? 'bg-emerald-500/90' : 'bg-blue-500/90');
+                                ?>
+                                <span class="<?= $bgClass ?> backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+                                    <?= $randomTag ?>
+                                </span>
                             </div>
                         </div>
 
@@ -165,8 +196,9 @@
 
                             <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Price</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Starting from</span>
                                     <span class="text-xl font-black text-slate-900">Rs. <?= number_format($lot['price'] ?? 0) ?></span>
+                                    <span class="text-[9px] font-bold text-blue-500 mt-1 uppercase tracking-tight italic">Or Rs. <?= number_format(($lot['price'] ?? 0)/12) ?> x 12 mo.</span>
                                 </div>
                                 <button onclick="window.location.href='<?= base_url('shop/view/'.($lot['type']??'logs').'/'.$lot['id']) ?>'" 
                                         class="p-4 bg-slate-50 text-slate-900 hover:bg-blue-600 hover:text-white rounded-2xl transition-all duration-300 transform group-hover:scale-110 shadow-sm border border-slate-100">
@@ -211,8 +243,9 @@
                             </h3>
                             <div class="flex items-center justify-between mt-6 pt-4 border-t border-slate-50">
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Price</span>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Starting from</span>
                                     <span class="text-xl font-black text-slate-900">Rs. <?= number_format($p['sell_price']) ?></span>
+                                    <span class="text-[9px] font-bold text-blue-500 mt-1 uppercase tracking-tight italic">Or Rs. <?= number_format($p['sell_price']/6) ?> x 6 mo.</span>
                                 </div>
                                 <button class="p-4 bg-slate-900 text-white hover:bg-blue-600 rounded-2xl transition-all duration-300 transform group-hover:rotate-12 shadow-lg shadow-slate-100">
                                     <i class="fa fa-shopping-cart"></i>
@@ -228,26 +261,42 @@
             <div id="services-tab" class="tab-content hidden transition-all duration-300">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="servicesGrid">
                     <?php foreach($workers as $w): ?>
-                    <div class="group bg-white rounded-3xl border border-slate-100 p-8 flex flex-col items-center text-center hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 lot-card" data-field="services" data-price="<?= $w['pay_rate'] ?>">
+                    <div class="group bg-white rounded-3xl border border-slate-100 p-8 flex flex-col items-center text-center hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500 lot-card" 
+                         data-field="services" 
+                         data-price="<?= $w['pay_rate'] ?>"
+                         onclick="window.location.href='<?= base_url('worker/view/'.$w['id']) ?>'"
+                         style="cursor: pointer;">
+                        
                         <div class="relative mb-6">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-1 shadow-xl transform group-hover:rotate-6 transition-transform">
-                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=<?= urlencode($w['display_name']) ?>" class="w-full h-full rounded-[22px] bg-white object-cover">
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-1 shadow-xl transform group-hover:rotate-6 transition-transform overflow-hidden">
+                                <?php if(!empty($w['photo'])): ?>
+                                    <img src="<?= base_url($w['photo']) ?>" class="w-full h-full rounded-[22px] bg-white object-cover">
+                                <?php else: ?>
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=<?= urlencode($w['display_name']) ?>" class="w-full h-full rounded-[22px] bg-white object-cover">
+                                <?php endif; ?>
                             </div>
-                            <div class="absolute -bottom-2 -right-2 bg-emerald-500 text-white w-8 h-8 rounded-full border-4 border-white flex items-center justify-center text-xs">
-                                <i class="fa fa-check"></i>
+                            <!-- Status Indicator -->
+                            <div class="absolute -bottom-2 -right-2 bg-emerald-500 text-white w-8 h-8 rounded-full border-4 border-white flex items-center justify-center text-xs shadow-lg">
+                                <i class="fa <?= $w['category_icon'] ?? 'fa-check' ?>"></i>
                             </div>
                         </div>
                         
                         <h3 class="text-xl font-black text-slate-900 mb-1"><?= htmlspecialchars($w['display_name']) ?></h3>
-                        <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-6">Verified <?= htmlspecialchars($w['category_name'] ?? 'Expert') ?></span>
-                        
-                        <div class="w-full bg-slate-50 rounded-2xl p-4 mb-6 group-hover:bg-blue-50 transition-colors">
-                            <span class="block text-[10px] text-slate-400 font-bold uppercase mb-1">Expertise Fee</span>
-                            <span class="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors">Rs. <?= number_format($w['pay_rate']) ?> <small class="text-xs text-slate-400">/ <?= $w['pay_type'] ?></small></span>
+                        <div class="flex items-center justify-center space-x-2 mb-6">
+                            <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest"><?= htmlspecialchars($w['category_name'] ?? 'Expert') ?></span>
+                            <span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest"><?= $w['experience_years'] ?> Exp.</span>
                         </div>
                         
-                        <button class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl shadow-slate-100 hover:bg-blue-600 transition-all duration-300 transform hover:-translate-y-1">
-                            BOOK NOW
+                        <div class="w-full bg-slate-50 rounded-2xl p-4 mb-6 group-hover:bg-blue-50 transition-colors border border-slate-100">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase mb-1">Standard Rate</span>
+                            <span class="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors uppercase">
+                                Rs. <?= number_format($w['pay_rate']) ?> <small class="text-[10px] font-bold text-slate-400">/ <?= $w['pay_type'] ?></small>
+                            </span>
+                        </div>
+                        
+                        <button class="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-xl shadow-slate-100 hover:bg-blue-600 transition-all duration-300 transform group-hover:shadow-blue-200">
+                            VIEW PROFILE
                         </button>
                     </div>
                     <?php endforeach; ?>
@@ -284,25 +333,68 @@
 
             <!-- QUOTATIONS GRID -->
             <div id="quotes-tab" class="tab-content hidden transition-all duration-300">
+
+                <!-- CTA Banner -->
+                <div class="mb-6 rounded-3xl overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 p-6 flex flex-col md:flex-row items-center justify-between gap-4 text-white">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-emerald-200 mb-1">Procurement Hub</p>
+                        <h3 class="text-xl font-black">Need a specific material or service?</h3>
+                        <p class="text-sm text-emerald-100 mt-0.5">Post your requirements and nearby suppliers will bid.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <a href="<?= base_url('quote_requests') ?>" class="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-black text-xs px-5 py-3 rounded-xl transition-all border border-white/20">
+                            <i class="fa fa-list"></i> All Requests
+                        </a>
+                        <?php if($is_logged_in): ?>
+                        <a href="<?= base_url('quote_requests/dashboard') ?>" class="flex items-center gap-2 bg-white text-emerald-700 font-black text-xs px-5 py-3 rounded-xl transition-all hover:shadow-lg">
+                            <i class="fa fa-th-large"></i> My Kanban Board
+                        </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 gap-6" id="quotesGrid">
                     <?php foreach($quote_requests as $q): ?>
-                    <div class="group bg-white rounded-3xl border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 hover:shadow-2xl transition-all duration-500 lot-card" data-field="quotes">
-                        <div class="w-20 h-20 bg-emerald-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-emerald-600 text-3xl">
+                    <div class="group bg-white rounded-3xl border border-slate-100 p-8 flex flex-col md:flex-row items-center gap-8 hover:shadow-2xl transition-all duration-500 lot-card" 
+                         data-field="quotes"
+                         onclick="window.location.href='<?= base_url('quote_requests') ?>'"
+                         style="cursor:pointer;">
+                        <div class="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center flex-shrink-0 text-white text-3xl shadow-lg shadow-emerald-100">
                             <i class="fa fa-file-invoice-dollar"></i>
                         </div>
                         <div class="flex-1 text-center md:text-left">
-                            <h3 class="text-xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">Request for <?= htmlspecialchars($q['product_name']) ?></h3>
-                            <p class="text-sm text-slate-500 mt-2 font-medium">Quantity Required: <span class="text-slate-900 font-bold"><?= $q['quantity'] ?> units</span></p>
-                            <div class="mt-4 flex items-center justify-center md:justify-start gap-4">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-full border border-slate-100">Reference: #REQ<?= $q['id'] ?></span>
-                                <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 italic">OPEN FOR BIDS</span>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+                                <span class="text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">OPEN FOR BIDS</span>
+                                <?php if($q['district'] ?? null): ?>
+                                <span class="text-[10px] font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                                    <i class="fa fa-map-marker-alt mr-1 text-red-400"></i><?= htmlspecialchars($q['district']) ?>
+                                </span>
+                                <?php endif; ?>
                             </div>
+                            <h3 class="text-xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">Request for <?= htmlspecialchars($q['product_name']) ?></h3>
+                            <p class="text-sm text-slate-500 mt-1"><?= htmlspecialchars(substr($q['description'] ?? '', 0, 100)) ?></p>
+                            <p class="text-sm font-bold text-slate-700 mt-1">Qty: <span class="text-slate-900"><?= htmlspecialchars($q['quantity'] ?? 'N/A') ?></span></p>
                         </div>
-                        <button class="bg-emerald-600 text-white font-black px-10 py-4 rounded-2xl hover:bg-emerald-700 transition-all transform hover:-translate-y-1 shadow-xl shadow-emerald-100">
-                            SUBMIT QUOTE
+                        <?php if(($q['budget_max'] ?? 0) > 0): ?>
+                        <div class="px-8 text-center hidden lg:block">
+                            <span class="block text-[10px] text-slate-400 font-bold uppercase mb-1">Budget</span>
+                            <span class="text-lg font-black text-slate-900">Rs. <?= number_format($q['budget_min'] ?? 0) ?> – <?= number_format($q['budget_max']) ?></span>
+                        </div>
+                        <?php endif; ?>
+                        <button onclick="event.stopPropagation(); window.location.href='<?= base_url('quote_requests') ?>'" class="border-2 border-emerald-600 text-emerald-600 font-black px-10 py-4 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all transform hover:-translate-y-1">
+                            BID NOW
                         </button>
                     </div>
                     <?php endforeach; ?>
+
+                    <?php if(empty($quote_requests)): ?>
+                    <div class="text-center py-16">
+                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa fa-clipboard-list text-3xl text-slate-300"></i></div>
+                        <h4 class="font-black text-slate-600 text-lg mb-2">No open requests yet</h4>
+                        <p class="text-slate-400 text-sm mb-4">Post a request and let suppliers come to you.</p>
+                        <a href="<?= base_url('quote_requests') ?>" class="bg-emerald-600 text-white font-black px-6 py-3 rounded-2xl hover:bg-emerald-700 transition-all">Browse & Post Requests</a>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -330,6 +422,13 @@
     
     .tab-content.active { display: block; }
     .tab-content:not(.active) { display: none; }
+    
+    .macro-tab-btn {
+        @apply text-slate-400 hover:text-slate-600;
+    }
+    .macro-tab-btn.active {
+        @apply bg-white text-blue-600 shadow-sm border border-slate-200;
+    }
     
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(20px); }
@@ -418,6 +517,30 @@
         document.getElementById('marketTitle').textContent = titles[tabName] || 'Active Listings';
     }
 
+    // ===== MACRO TAB ENGINE =====
+    let currentMacro = '<?= $macro ?: 'products' ?>';
+
+    function switchMacroTab(macro) {
+        currentMacro = macro;
+        document.querySelectorAll('.macro-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`macro-${macro}-btn`).classList.add('active');
+        
+        // Auto-switch primary sub-tab
+        if (macro === 'products') {
+            switchTab('timber');
+        } else {
+            switchTab('services');
+        }
+        
+        // Filter Sidebar Updates
+        const sidebar = document.getElementById('filterSidebar');
+        if (macro === 'services') {
+            // Can add service-specific filter logic here if needed
+        }
+        
+        applyFilters();
+    }
+
     // ===== FILTER ENGINE =====
     function setFieldFilter(btn, val) {
         document.querySelectorAll('[data-filter="field"]').forEach(b => b.classList.remove('active'));
@@ -440,7 +563,10 @@
         const dist = document.getElementById('districtFilter').value.toLowerCase();
         const mainCat = document.getElementById('mainCatFilter').value;
         const subCat = document.getElementById('subCatFilter').value;
-        const sector = document.querySelector('[data-filter="field"].active').dataset.val;
+        
+        // Get active sector from sidebar pills
+        const activePill = document.querySelector('[data-filter="field"].active');
+        const sector = activePill ? activePill.dataset.val : 'all';
 
         let visibleCount = 0;
         document.querySelectorAll('.lot-card').forEach(card => {
@@ -451,22 +577,48 @@
             const cardSubCat = card.dataset.subcat;
             const cardSector = card.dataset.field;
             
+            // Macro Filter Integration
+            const cardMacro = (cardSector === 'timber' || cardSector === 'hardware') ? 'products' : 'services';
+            
             let show = true;
-            if(sector !== 'all' && cardSector !== sector) show = false;
-            if(price < minP || price > maxP) show = false;
-            if(prov && cardProv !== prov) show = false;
-            if(dist && cardDist !== dist) show = false;
-            if(mainCat && cardMainCat !== mainCat) show = false;
-            if(subCat && cardSubCat !== subCat) show = false;
+            if (cardMacro !== currentMacro) show = false;
+            if (sector !== 'all' && cardSector !== sector) show = false;
+            
+            if (price < minP || price > maxP) show = false;
+            if (prov && cardProv !== prov) show = false;
+            if (dist && cardDist !== dist) show = false;
+            if (mainCat && cardMainCat !== mainCat) show = false;
+            if (subCat && cardSubCat !== subCat) show = false;
             
             card.style.display = show ? 'block' : 'none';
-            if(show) visibleCount++;
+            if (show) visibleCount++;
         });
 
         document.getElementById('visibleCount').textContent = visibleCount;
         document.getElementById('noResultsCard').classList.toggle('hidden', visibleCount > 0);
     }
-    
+
+    // ===== SCANNER INTEGRATION =====
+    function openScanner() {
+        $('#scannerModal').modal('show');
+        startUniversalScanner((code) => {
+            document.getElementById('marketTitle').textContent = "Scanning results...";
+            // Search logic here - can set a query param or filter manually
+            const cards = document.querySelectorAll('.lot-card');
+            let found = false;
+            cards.forEach(card => {
+                const name = card.dataset.name || '';
+                if (name.includes(code.toLowerCase())) {
+                    card.style.display = 'block';
+                    found = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            $('#scannerModal').modal('hide');
+        });
+    }
+
     // Initial sort
     function sortResults(criteria) {
         const grid = document.getElementById('timberGrid');
@@ -482,4 +634,9 @@
         
         cards.forEach(card => grid.appendChild(card));
     }
+
+    // Call initial macro states
+    document.addEventListener('DOMContentLoaded', () => {
+        switchMacroTab(currentMacro);
+    });
 </script>

@@ -10,7 +10,7 @@ class PayrollProcessing extends CI_Controller
         $this->load->model('employee_model', 'employee');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

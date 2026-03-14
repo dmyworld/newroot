@@ -32,7 +32,7 @@ class Jobs extends CI_Controller
     public function post()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         if ($this->aauth->get_user()->roleid < 3) {

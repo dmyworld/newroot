@@ -320,7 +320,7 @@ private function _manage_transfer_get_datatables_query2($opt = '')
         $this->db->where('geopos_stock_transfer.eid', $opt);
     }
     
-    if ($this->aauth->get_user()->loc) {
+    if ($this->aauth->get_user()->roleid != 1 AND $this->aauth->get_user()->loc) {
         $this->db->where('geopos_stock_transfer.loc', $this->aauth->get_user()->loc);
     } elseif(!BDATA) { 
         $this->db->where('geopos_stock_transfer.loc', 0); 
@@ -389,7 +389,13 @@ public function manage_transfer_count_all2($opt = '')
         $this->db->where('eid', $opt);
     }
     
-    if ($this->aauth->get_user()->loc) {
+    if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->roleid != 1 AND $this->aauth->get_user()->loc) {
         $this->db->where('loc', $this->aauth->get_user()->loc);
     } elseif(!BDATA) { 
         $this->db->where('loc', 0); 
@@ -466,10 +472,12 @@ public function get_transfers_for_export($start_date = null, $end_date = null)
         $this->db->where('DATE(t.invoicedate) <=', date('Y-m-d', strtotime($end_date)));
     }
     
-    if ($this->aauth->get_user()->loc) {
-        $this->db->where('t.loc', $this->aauth->get_user()->loc);
-    } elseif(!BDATA) { 
-        $this->db->where('t.loc', 0); 
+    if ($this->aauth->get_user()->roleid != 1) {
+        if ($this->aauth->get_user()->loc) {
+            $this->db->where('t.loc', $this->aauth->get_user()->loc);
+        } elseif (!BDATA) {
+            $this->db->where('t.loc', 0);
+        }
     }
     
     $this->db->order_by('t.id', 'desc');
@@ -534,10 +542,12 @@ private function _manage_transfer_get_datatables_query($opt = '')
         $this->db->where('geopos_stock_transfer.eid', $opt);
     }
     
-    if ($this->aauth->get_user()->loc) {
-        $this->db->where('geopos_stock_transfer.loc', $this->aauth->get_user()->loc);
-    } elseif(!BDATA) { 
-        $this->db->where('geopos_stock_transfer.loc', 0); 
+    if ($this->aauth->get_user()->roleid != 1) {
+        if ($this->aauth->get_user()->loc) {
+            $this->db->where('geopos_stock_transfer.loc', $this->aauth->get_user()->loc);
+        } elseif (!BDATA) {
+            $this->db->where('geopos_stock_transfer.loc', 0);
+        }
     }
     
     if ($this->input->post('start_date') && $this->input->post('end_date')) {
@@ -598,10 +608,18 @@ public function manage_transfer_count_all($opt = '')
         $this->db->where('eid', $opt);
     }
     
-    if ($this->aauth->get_user()->loc) {
-        $this->db->where('loc', $this->aauth->get_user()->loc);
-    } elseif(!BDATA) { 
-        $this->db->where('loc', 0); 
+    if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+    if ($this->aauth->get_user()->roleid != 1) {
+        if ($this->aauth->get_user()->loc) {
+            $this->db->where('loc', $this->aauth->get_user()->loc);
+        } elseif (!BDATA) {
+            $this->db->where('loc', 0);
+        }
     }
     
     return $this->db->count_all_results();
@@ -620,10 +638,18 @@ public function manage_transfer_details($id, $eid = '')
         $this->db->where('eid', $eid);
     }
     
-    if ($this->aauth->get_user()->loc) {
-        $this->db->where('loc', $this->aauth->get_user()->loc);
-    } elseif (!BDATA) {
-        $this->db->where('loc', 0);
+    if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
+        }
+    if ($this->aauth->get_user()->roleid != 1) {
+        if ($this->aauth->get_user()->loc) {
+            $this->db->where('loc', $this->aauth->get_user()->loc);
+        } elseif (!BDATA) {
+            $this->db->where('loc', 0);
+        }
     }
     
     $query = $this->db->get();
@@ -863,8 +889,10 @@ public function manage_transfer_details($id, $eid = '')
             }
         }
         
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('w.loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('w.loc', $this->aauth->get_user()->loc);
+            }
         }
         
         $this->db->group_by('w.id, w.title');
@@ -930,8 +958,10 @@ public function manage_transfer_details($id, $eid = '')
         }
         
         // Apply location filter
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('w.loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('w.loc', $this->aauth->get_user()->loc);
+            }
         }
     }
 
@@ -969,13 +999,20 @@ public function manage_transfer_details($id, $eid = '')
         if ($sub) {
             $this->db->join('geopos_product_cat', 'geopos_product_cat.id = geopos_products.sub_id');
             $this->db->where('geopos_products.merge', 0);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('geopos_warehouse.loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('geopos_warehouse.loc', 0);
+                }
+            }
+
+            // Business Isolation
+            if (isset($this->aauth->get_user()->business_id) && $this->aauth->get_user()->business_id > 0) {
+                $this->db->where('geopos_products.business_id', $this->aauth->get_user()->business_id);
             }
 
             $this->db->where("geopos_products.sub_id=$id");
@@ -998,26 +1035,30 @@ public function manage_transfer_details($id, $eid = '')
                      $this->db->where('geopos_products.sub_id', 0);
                 }
 
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->group_start();
-                    $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->group_start();
+                        $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
 
-                    if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
-                    $this->db->group_end();
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_warehouse.loc', 0);
+                        if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
+                        $this->db->group_end();
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_warehouse.loc', 0);
+                    }
                 }
 
             } else {
 
                 $this->db->where('geopos_products.merge', 0);
-                if ($this->aauth->get_user()->loc) {
-                    $this->db->group_start();
-                    $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
-                    if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
-                    $this->db->group_end();
-                } elseif (!BDATA) {
-                    $this->db->where('geopos_warehouse.loc', 0);
+                if ($this->aauth->get_user()->roleid != 1) {
+                    if ($this->aauth->get_user()->loc) {
+                        $this->db->group_start();
+                        $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+                        if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
+                        $this->db->group_end();
+                    } elseif (!BDATA) {
+                        $this->db->where('geopos_warehouse.loc', 0);
+                    }
                 }
                 if ($id > 0) {
                     $this->db->where("geopos_product_cat.id = $id");
@@ -1092,17 +1133,19 @@ public function manage_transfer_details($id, $eid = '')
             $this->db->where('geopos_warehouse.id', $w);
         }
 
-        if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
 
-            $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_warehouse.loc', 0);
+                $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('geopos_warehouse.loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_warehouse.loc', 0);
+            }
         }
         return $this->db->count_all_results();
     }
 
-    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '',$product_width, $product_thickness, $product_quick, $product_quick_code,$new_fproduct_cost, $is_sale = 1, $is_rent = 0, $is_installment = 0, $master_pid = 0, $special_category = '')
+    public function addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type = '', $w_stock = '', $w_alert = '', $sub_cat = '', $b_id = '',$product_width, $product_thickness, $product_quick, $product_quick_code,$new_fproduct_cost, $is_sale = 1, $is_rent = 0, $is_installment = 0, $master_pid = 0, $special_category = '', $product_rent = 0, $product_installment = 0)
     {
         $ware_valid = $this->valid_warehouse($warehouse);
         if(!$sub_cat) $sub_cat=0;
@@ -1116,7 +1159,7 @@ public function manage_transfer_details($id, $eid = '')
             $wdate = null;
         }
 
-        if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1 AND $this->aauth->get_user()->loc) {
             if ($ware_valid['loc'] == $this->aauth->get_user()->loc OR $ware_valid['loc'] == '0' OR $warehouse == 0) {
                 if (strlen($barcode) > 5 AND is_numeric($barcode)) {
                     $data = array(
@@ -1272,7 +1315,8 @@ public function manage_transfer_details($id, $eid = '')
                     'is_rent' => $is_rent,
                     'is_installment' => $is_installment,
                     'master_pid' => $master_pid,
-                    'special_category' => $special_category
+                    'special_category' => $special_category,
+                    'business_id' => (isset($this->aauth->get_user()->business_id) ? $this->aauth->get_user()->business_id : 0)
                 );
             } else {
                 $barcode = rand(100, 999) . rand(0, 9) . rand(1000000, 9999999) . rand(0, 9);
@@ -1305,7 +1349,9 @@ public function manage_transfer_details($id, $eid = '')
                     'is_rent' => $is_rent,
                     'is_installment' => $is_installment,
                     'master_pid' => $master_pid,
-                    'special_category' => $special_category
+                    'special_category' => $special_category,
+                    'product_rent' => $product_rent,
+                    'product_installment' => $product_installment
                 );
             }
             $this->db->trans_start();
@@ -1365,7 +1411,7 @@ public function manage_transfer_details($id, $eid = '')
         }
     }
 
-    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '',$product_width,   $product_thickness,   $product_quick,   $product_quick_code, $new_fproduct_cost, $local_imported = '', $is_sale = 1, $is_rent = 0, $is_installment = 0)
+    public function edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat = '', $b_id = '',$product_width,   $product_thickness,   $product_quick,   $product_quick_code, $new_fproduct_cost, $local_imported = '', $is_sale = 1, $is_rent = 0, $is_installment = 0, $product_rent = 0, $product_installment = 0)
     {
         $this->db->select('qty,qty2');
         $this->db->from('geopos_products');
@@ -1381,7 +1427,7 @@ public function manage_transfer_details($id, $eid = '')
 
 
 
-        if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1 AND $this->aauth->get_user()->loc) {
             if ($ware_valid['loc'] == $this->aauth->get_user()->loc OR $ware_valid['loc'] == '0' OR $warehouse == 0) {
                 $data = array(
                     //'pcat' => $catid,
@@ -1411,7 +1457,9 @@ public function manage_transfer_details($id, $eid = '')
                       'local_imported' => $local_imported,
                     'is_sale' => $is_sale,
                     'is_rent' => $is_rent,
-                    'is_installment' => $is_installment
+                    'is_installment' => $is_installment,
+                    'product_rent' => $product_rent,
+                    'product_installment' => $product_installment
                 );
 
 $this->db->where('pid', $pid);
@@ -1479,7 +1527,9 @@ if ($this->db->update('geopos_products', $data)) {
                 'local_imported' => $local_imported,
                 'is_sale' => $is_sale,
                 'is_rent' => $is_rent,
-                'is_installment' => $is_installment
+                'is_installment' => $is_installment,
+                'product_rent' => $product_rent,
+                'product_installment' => $product_installment
             );
 
 $this->db->where('pid', $pid);
@@ -1517,11 +1567,13 @@ if ($this->db->update('geopos_products', $data)) {
     {
 
         $whr = '';
-        if ($this->aauth->get_user()->loc) {
-            $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=' . $this->aauth->get_user()->loc;
-            if (BDATA) $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=0 OR geopos_warehouse.loc=' . $this->aauth->get_user()->loc;
-        } elseif (!BDATA) {
-            $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=0';
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=' . $this->aauth->get_user()->loc;
+                if (BDATA) $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=0 OR geopos_warehouse.loc=' . $this->aauth->get_user()->loc;
+            } elseif (!BDATA) {
+                $whr = ' LEFT JOIN  geopos_warehouse on geopos_warehouse.id = geopos_products.warehouse WHERE geopos_warehouse.loc=0';
+            }
         }
         $query = $this->db->query("SELECT
 COUNT(IF( geopos_products.qty > 0, geopos_products.qty, NULL)) AS instock,
@@ -1536,12 +1588,14 @@ FROM geopos_products $whr");
         $this->db->select('geopos_products.*');
         $this->db->from('geopos_products');
         $this->db->where('geopos_products.warehouse', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse');
-            $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse');
-            $this->db->where('geopos_warehouse.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse');
+                $this->db->where('geopos_warehouse.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->join('geopos_warehouse', 'geopos_warehouse.id = geopos_products.warehouse');
+                $this->db->where('geopos_warehouse.loc', 0);
+            }
         }
         if ($term) {
             $this->db->where("geopos_products.product_name LIKE '%$term%'");
@@ -2260,10 +2314,8 @@ public function movers($type = 0, $rid1 = 0, $rid2 = 0, $rid3 = 0, $note = '')
 
     public function get_master_products()
     {
-        $this->db->select('p.*, w.title as warehouse_name');
-        $this->db->from('geopos_products p');
-        $this->db->join('geopos_warehouse w', 'p.warehouse = w.id', 'left');
-        $this->db->where('w.loc', 0); // Master location
+        $this->db->select('*');
+        $this->db->from('geopos_master_products');
         $query = $this->db->get();
         return $query->result_array();
     }
@@ -2271,16 +2323,19 @@ public function movers($type = 0, $rid1 = 0, $rid2 = 0, $rid3 = 0, $note = '')
     public function clone_to_warehouse($pid, $target_warehouse, $qty = 0)
     {
         $this->db->select('*');
-        $this->db->from('geopos_products');
-        $this->db->where('pid', $pid);
+        $this->db->from('geopos_master_products');
+        $this->db->where('id', $pid);
         $query = $this->db->get();
         $product = $query->row_array();
 
         if ($product) {
-            unset($product['pid']);
+            unset($product['id']);
+            unset($product['created_at']);
+            unset($product['updated_at']);
             $product['warehouse'] = $target_warehouse;
             $product['qty'] = $qty;
             $product['master_pid'] = $pid;
+            $product['is_sale'] = 1; // Default to sale
             return $this->db->insert('geopos_products', $product);
         }
         return false;

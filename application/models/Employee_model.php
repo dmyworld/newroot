@@ -31,9 +31,11 @@ class Employee_model extends CI_Model
         $user = $this->aauth->get_user();
         if ($loc > 0) {
             $this->db->where('geopos_users.loc', $loc);
-        } elseif ($user->roleid == 2) { // Business Owner
+        } elseif ($user->roleid == 1) {
+            // Role 1 (Super Admin) - No branch restriction by default
+        } elseif (in_array($user->roleid, array(2, 5, 12))) { // Owner roles
             $this->db->where('geopos_users.loc', $user->loc);
-        } elseif ($user->roleid > 2 && $user->roleid != 1) { // Other staff (not Super Admin)
+        } elseif ($user->roleid > 2) { // Other staff
              $this->db->where('geopos_users.loc', $user->loc);
         }
 
@@ -62,7 +64,17 @@ class Employee_model extends CI_Model
         $this->db->where('geopos_employees.id', $id);
         $this->db->join('geopos_users', 'geopos_employees.id = geopos_users.id', 'left');
         $query = $this->db->get();
-        return $query->row_array();
+        $user = $query->row_array();
+
+        if ($user) {
+            $this->db->select('location_id');
+            $this->db->from('geopos_user_locations');
+            $this->db->where('user_id', $id);
+            $loc_query = $this->db->get();
+            $locs = $loc_query->result_array();
+            $user['locations'] = array_column($locs, 'location_id');
+        }
+        return $user;
     }
 
     public function salary_history($id)
@@ -75,7 +87,7 @@ class Employee_model extends CI_Model
         return $query->result_array();
     }
 
-    public function update_employee($id, $name, $phone, $phonealt, $address, $city, $region, $country, $postbox, $location, $salary = 0, $department = -1,$commission=0,$roleid=false)
+    public function update_employee($id, $name, $phone, $phonealt, $address, $city, $region, $country, $postbox, $location, $salary = 0, $department = -1,$commission=0,$roleid=false, $locations = array())
     {
         $this->db->select('salary');
         $this->db->from('geopos_employees');
@@ -137,7 +149,22 @@ class Employee_model extends CI_Model
                  $this->db->set('roleid', $roleid);
                 $this->db->where('id', $id);
                $this->db->update('geopos_users');
+            } else {
+                // Always update location if changed!
+                $this->db->set('loc', $location);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_users');
             }
+
+            if (is_array($locations)) {
+                $this->db->delete('geopos_user_locations', array('user_id' => $id));
+                foreach ($locations as $loc_id) {
+                    if ($loc_id > 0) {
+                        $this->db->insert('geopos_user_locations', array('user_id' => $id, 'location_id' => $loc_id));
+                    }
+                }
+            }
+
             if (($salary != $sal['salary']) AND ($salary > 0.00)) {
                 $data1 = array(
                     'typ' => 1,
@@ -233,6 +260,15 @@ class Employee_model extends CI_Model
         $this->db->from('geopos_invoices');
         $this->db->where('geopos_invoices.eid', $id);
         $this->db->join('geopos_customers', 'geopos_invoices.csd=geopos_customers.id', 'left');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_invoices.loc', $this->input->post('location'));
+        }
 
         $i = 0;
 
@@ -366,8 +402,20 @@ class Employee_model extends CI_Model
     }
 
 
-    public function add_employee($id, $username, $name, $roleid, $phone, $address, $city, $region, $country, $postbox, $location,$salary = 0,$commission = 0,$department=0)
+    public function add_employee($id, $username, $name, $roleid, $phone, $address, $city, $region, $country, $postbox, $location,$salary = 0,$commission = 0,$department=0, $locations = array())
     {
+        // Enforce location based on creator's role
+        $creator_role = $this->aauth->get_user()->roleid;
+        $creator_loc = $this->aauth->get_user()->loc;
+        
+        // If not a Super Admin (Role 1), restrict to the creator's current location or their selected mapped location
+        if ($creator_role > 1) {
+            // For now, tie strictly to creator's active location if they don't have super admin rights
+            // (Wait: If multi-location mapping exists, this should validate against allowed locations)
+            // Just force it to ensure they can't assign staff outside their scope
+            $location = $creator_loc;
+        }
+
         $data = array(
             'id' => $id,
             'username' => $username,
@@ -401,6 +449,15 @@ class Employee_model extends CI_Model
             $this->db->where('id', $id);
 
             $this->db->update('geopos_users');
+
+            if (is_array($locations)) {
+                foreach ($locations as $loc_id) {
+                    if ($loc_id > 0) {
+                        $this->db->insert('geopos_user_locations', array('user_id' => $id, 'location_id' => $loc_id));
+                    }
+                }
+            }
+
             echo json_encode(array('status' => 'Success', 'message' =>
                 $this->lang->line('ADDED')));
         } else {
@@ -499,8 +556,10 @@ class Employee_model extends CI_Model
 
         $this->db->from('geopos_hrm');
         $this->db->where('typ', 2);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $this->aauth->get_user()->loc);
+            }
         }
         $i = 0;
 
@@ -551,8 +610,10 @@ class Employee_model extends CI_Model
         $this->db->from('geopos_hrm');
         $this->db->where('id', $id);
         $this->db->where('typ', 2);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $loc);
+            }
         }
 
         $query = $this->db->get();
@@ -567,8 +628,10 @@ class Employee_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $loc);
+            }
         }
 
 
@@ -582,8 +645,10 @@ class Employee_model extends CI_Model
         $this->db->select('*');
         $this->db->from('geopos_hrm');
         $this->db->where('typ', 3);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $id);
+            }
         }
         $query = $this->db->get();
         return $query->result_array();
@@ -606,18 +671,18 @@ class Employee_model extends CI_Model
         $this->db->from('geopos_hrm');
         $this->db->where('id', $id);
         $this->db->where('typ', 3);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $loc);
+            }
         }
-
-
         $query = $this->db->get();
         return $query->row_array();
     }
 
-    function adddepartment($loc, $name)
+    function adddepartment($loc, $name, $icon = 'fa-tools', $commission_rate = 0)
     {
-        $data = array('typ' => 3, 'rid' => $loc, 'val1' => $name);
+        $data = array('typ' => 3, 'rid' => $loc, 'val1' => $name, 'category_icon' => $icon, 'commission_rate' => $commission_rate);
         return $this->db->insert('geopos_hrm', $data);
 
     }
@@ -635,18 +700,22 @@ class Employee_model extends CI_Model
 
     }
 
-    public function editdepartment($id, $loc, $name)
+    public function editdepartment($id, $loc, $name, $icon = 'fa-tools', $commission_rate = 0)
     {
 
         $data = array(
-            'val1' => $name
+            'val1' => $name,
+            'category_icon' => $icon,
+            'commission_rate' => $commission_rate
         );
 
 
         $this->db->set($data);
         $this->db->where('id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('rid', $loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('rid', $loc);
+            }
         }
 
 
@@ -661,8 +730,10 @@ class Employee_model extends CI_Model
     {
 
         $this->db->from('geopos_transactions');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
         }
         $this->db->where('ext', 4);
         if ($eid) {
@@ -713,6 +784,11 @@ class Employee_model extends CI_Model
     function pay_count_filtered($eid)
     {
         $this->db->from('geopos_transactions');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
+        }
         $this->db->where('ext', 4);
         if ($eid) {
             $this->db->where('payerid', $eid);
@@ -724,6 +800,11 @@ class Employee_model extends CI_Model
     public function pay_count_all($eid)
     {
         $this->db->from('geopos_transactions');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
+        }
         $this->db->where('ext', 4);
         if ($eid) {
             $this->db->where('payerid', $eid);
@@ -780,10 +861,11 @@ class Employee_model extends CI_Model
         $this->db->select('geopos_attendance.*,geopos_employees.name');
         $this->db->from('geopos_attendance');
         $this->db->join('geopos_employees', 'geopos_employees.id=geopos_attendance.emp', 'left');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->join('geopos_users', 'geopos_users.id=geopos_attendance.emp', 'left');
-            $this->db->where('geopos_users.loc', $this->aauth->get_user()->loc);
-
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->join('geopos_users', 'geopos_users.id=geopos_attendance.emp', 'left');
+                $this->db->where('geopos_users.loc', $this->aauth->get_user()->loc);
+            }
         }
         if ($cid) $this->db->where('geopos_attendance.emp', $cid);
         $i = 0;
@@ -839,8 +921,15 @@ class Employee_model extends CI_Model
 
     public function getHolidays($loc, $start, $end)
     {
+        $user = $this->aauth->get_user();
+        $where_loc = "";
+        if ($user->roleid != 1) {
+            if ($user->loc) {
+                $where_loc = " AND (rid='$user->loc') ";
+            }
+        }
 
-        $sql = "SELECT  CONCAT(DATE(val1), ' - ', DATE(val2),' - ',val3) AS title,DATE(val1) as start ,DATE(val2) as end FROM geopos_hrm WHERE  (typ='2') AND  (rid='$loc') AND (DATE(val1) BETWEEN ? AND ? ) ORDER BY DATE(val1) ASC";
+        $sql = "SELECT CONCAT(DATE(val1), ' - ', DATE(val2),' - ',val3) AS title,DATE(val1) as start ,DATE(val2) as end FROM geopos_hrm WHERE (typ='2') $where_loc AND (DATE(val1) BETWEEN ? AND ? ) ORDER BY DATE(val1) ASC";
         return $this->db->query($sql, array($start, $end))->result();
 
     }
@@ -849,6 +938,11 @@ class Employee_model extends CI_Model
     public function salary_view($eid)
     {
         $this->db->from('geopos_transactions');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
+        }
         $this->db->where('ext', 4);
         $this->db->where('payerid', $eid);
         $query = $this->db->get();
@@ -862,6 +956,16 @@ class Employee_model extends CI_Model
 
         $this->db->update('univarsal_api');
         return true;
+    }
+
+
+    public function get_roles()
+    {
+        $this->db->select('*');
+        $this->db->from('geopos_roles');
+        $this->db->order_by('id', 'ASC');
+        $query = $this->db->get();
+        return $query->result_array();
     }
 
 

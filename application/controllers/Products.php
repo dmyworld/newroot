@@ -25,12 +25,10 @@ class Products extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(2)) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
 
         // Timber Pro Hub: Buyer Restrictions
@@ -427,10 +425,19 @@ class Products extends CI_Controller
         foreach ($list as $prd) {
             $no++;
             $row = array();
+            if ($prd->delete_status > 0) $row['DT_RowClass'] = 'pending-delete-row';
             $row[] = $no;
             $pid = $prd->pid;
             $row[] = '<a href="#" data-object-id="' . $pid . '" class="view-object"><span class="avatar-lg align-baseline"><img src="' . base_url() . 'userfiles/product/thumbnail/' . $prd->image . '" ></span>&nbsp;' . $prd->product_name . '</a>';
-            $row[] = +$prd->qty;
+            $qty = +$prd->qty;
+            $alert = +$prd->alert;
+            $color = 'success';
+            if ($qty <= $alert) {
+                $color = 'danger';
+            } elseif ($qty <= $alert * 2) {
+                $color = 'warning';
+            }
+            $row[] = '<span class="badge badge-' . $color . ' px-2" style="font-size:1rem; border-radius:12px;">' . $qty . '</span>';
             $row[] = +$prd->qty2;
             $row[] = $prd->product_code;
             $row[] = $prd->c_title;
@@ -501,6 +508,8 @@ class Products extends CI_Controller
         $is_rent = $this->input->post('is_rent') ? 1 : 0;
         $is_installment = $this->input->post('is_installment') ? 1 : 0;
         $master_pid = $this->input->post('master_pid') ?: 0;
+        $product_rent = numberClean($this->input->post('product_rent'));
+        $product_installment = numberClean($this->input->post('product_installment'));
 
               // Convert inches to feet
             $widthfeet = $product_width / 12;
@@ -510,7 +519,7 @@ class Products extends CI_Controller
             $product_quick = $product_desc * $widthfeet * $heightfeet;
 
         if ($catid) {
-        $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $is_sale, $is_rent, $is_installment, $master_pid, $special_category);
+        $this->products->addnew($catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty, $product_qty_alert, $product_desc, $image, $unit, $barcode, $v_type, $v_stock, $v_alert, $wdate, $code_type, $w_type, $w_stock, $w_alert, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $is_sale, $is_rent, $is_installment, $master_pid, $special_category, $product_rent, $product_installment);
     }    }
 
     public function delete_i()
@@ -522,13 +531,30 @@ class Products extends CI_Controller
         }
         $id = $this->input->post('deleteid');
         if ($id) {
-            $this->db->delete('geopos_products', array('pid' => $id));
-            $this->db->delete('geopos_products', array('sub' => $id, 'merge' => 1));
-            $this->db->delete('geopos_movers', array('d_type' => 1, 'rid1' => $id));
-            $this->db->set('merge', 0);
-            $this->db->where('sub', $id);
-            $this->db->update('geopos_products');
-            echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('DELETED')));
+            $user_role = $this->aauth->get_user()->roleid;
+            
+            if ($user_role > 2) {
+                // Staff - Request Delete
+                $this->db->set('delete_status', 1);
+                $this->db->where('pid', $id);
+                $this->db->update('geopos_products');
+                echo json_encode(array('status' => 'Success', 'message' => 'Delete Requested Successfully'));
+            } elseif ($user_role == 2) {
+                // Owner - Approve Delete
+                $this->db->set('delete_status', 2);
+                $this->db->where('pid', $id);
+                $this->db->update('geopos_products');
+                echo json_encode(array('status' => 'Success', 'message' => 'Moved to Pending Review by Super Admin'));
+            } elseif ($user_role == 1) {
+                // Super Admin - Hard Delete
+                $this->db->delete('geopos_products', array('pid' => $id));
+                $this->db->delete('geopos_products', array('sub' => $id, 'merge' => 1));
+                $this->db->delete('geopos_movers', array('d_type' => 1, 'rid1' => $id));
+                $this->db->set('merge', 0);
+                $this->db->where('sub', $id);
+                $this->db->update('geopos_products');
+                echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('DELETED')));
+            }
         } else {
             echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
         }
@@ -594,7 +620,9 @@ class Products extends CI_Controller
 
         $is_sale = $this->input->post('is_sale') ? 1 : 0;
         $is_rent = $this->input->post('is_rent') ? 1 : 0;
-        $is_installment = $this->input->post('is_installment') ? 1 : 0;
+            $is_installment = $this->input->post('is_installment') ? 1 : 0;
+        $product_rent = numberClean($this->input->post('product_rent'));
+        $product_installment = numberClean($this->input->post('product_installment'));
         
               // Convert inches to feet
             $widthfeet = $product_width / 12;
@@ -606,7 +634,7 @@ class Products extends CI_Controller
          //$product_quick = 12*12*12;
         
         if ($pid) {
-            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty,$product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $local_imported, $is_sale, $is_rent, $is_installment);
+            $this->products->edit($pid, $catid, $warehouse, $product_name, $product_code, $product_price, $factoryprice, $taxrate, $disrate, $product_qty,$product_qty2, $product_qty_alert, $product_desc, $image, $unit, $barcode, $code_type, $sub_cat, $brand,$product_width,$product_thickness,$product_quick,$product_quick_code,$new_fproduct_cost, $local_imported, $is_sale, $is_rent, $is_installment, $product_rent, $product_installment);
         }
     }
     public function warehouseproduct_list()
@@ -621,7 +649,15 @@ class Products extends CI_Controller
             $row[] = $no;
             $pid = $prd->pid;
             $row[] = $prd->product_name;
-            $row[] = +$prd->qty;
+            $qty = +$prd->qty;
+            $alert = +$prd->alert;
+            $color = 'success';
+            if ($qty <= $alert) {
+                $color = 'danger';
+            } elseif ($qty <= $alert * 2) {
+                $color = 'warning';
+            }
+            $row[] = '<span class="badge badge-' . $color . ' px-2" style="font-size:1rem; border-radius:12px;">' . $qty . '</span>';
             $row[] = $prd->product_code;
             $row[] = $prd->c_title;
             $row[] = amountExchange($prd->product_price, 0, $this->aauth->get_user()->loc);

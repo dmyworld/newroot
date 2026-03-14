@@ -4,176 +4,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><?= $lot['lot_name'] ?> - Lot Details</h4>
-                    <span class="badge badge-warning text-dark">ID: #<?= $lot['id'] ?></span>
-                </div>
-                <div class="card-body">
-                    <div class="row text-center mb-4">
-                        <div class="col-sm-4 border-right">
-                            <h2 class="text-primary mb-0"><?= number_format($lot['total_cubic_feet'], 2) ?></h2>
-                            <small class="text-muted uppercase">Total ft³</small>
-                        </div>
-                        <div class="col-sm-4 border-right">
-                            <h2 class="text-success mb-0">
-                                <?= ($lot['direct_price'] > 0) ? amountExchange($lot['direct_price'], 0, $this->aauth->get_user()->loc) : 'Negotiable' ?>
-                            </h2>
-                            <small class="text-muted uppercase">Listed Price</small>
-                        </div>
-                        <div class="col-sm-4">
-                            <h2 class="text-info mb-0"><?= isset($lot['items']) ? count($lot['items']) : 'N/A' ?></h2>
-                            <small class="text-muted uppercase">Total Pieces</small>
-                        </div>
-                    </div>
-
-                    <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab">Specifications</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content border-left border-right border-bottom p-3" id="myTabContent">
-                        <div class="tab-pane fade show active" id="details" role="tabpanel">
-                            <table class="table table-sm pb-0">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <!-- Checkbox removed for now as partial buy is complex -->
-                                        <th>#</th>
-                                        <th>Length (ft)</th>
-                                        <th>Girth (in)</th>
-                                        <th class="text-right">Volume (ft³)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if(isset($lot['items'])) { 
-                                        foreach($lot['items'] as $index => $item) { ?>
-                                        <tr>
-                                            <td><?= $index + 1 ?></td>
-                                            <td><?= $item['length'] ?></td>
-                                            <td><?= $item['girth'] ?></td>
-                                            <td class="text-right"><?= number_format($item['cubic_feet'], 4) ?></td>
-                                        </tr>
-                                    <?php } } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sidebar Tools -->
-        <div class="col-md-4">
-            <!-- Buy Request Panel -->
-            <div class="card shadow-sm border-0 mb-3 bg-white">
-                <div class="card-body">
-                    <h5 class="font-weight-bold text-success"><i class="fa fa-shopping-cart"></i> Purchase Request</h5>
-                    <p class="text-muted small">Interested in this lot? Send a request to the seller to reveal contact details and arrange an inspection.</p>
-                    
-                    <div class="form-group">
-                        <label class="small font-weight-bold">Your Offer / Remarks</label>
-                        <textarea id="buy-remarks" class="form-control" rows="3" placeholder="E.g. I am interested in this lot. Can I inspect it tomorrow?"></textarea>
-                    </div>
-
-                    <!-- Hidden price input if we want to support counter-offers -->
-                    <div class="input-group mb-3">
-                         <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="number" id="offer-price" class="form-control" placeholder="Offer Amount (Optional)" value="<?= ($lot['direct_price'] > 0) ? $lot['direct_price'] : '' ?>">
-                    </div>
-
-                    <button class="btn btn-success btn-lg btn-block shadow-sm" onclick="sendBuyRequest()">
-                        <i class="fa fa-paper-plane mr-2"></i> SEND BUY REQUEST
-                    </button>
-                    
-                    <small class="text-center d-block mt-3 text-muted">
-                        <i class="fa fa-lock"></i> Secure Transaction. Contact details revealed upon seller approval.
-                    </small>
-                </div>
-            </div>
-
-            <!-- Logistics Calculator -->
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Logistics Estimator</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Target Latitude</label>
-                        <input type="text" id="target-lat" class="form-control form-control-sm" value="6.9271">
-                    </div>
-                    <div class="form-group">
-                        <label>Target Longitude</label>
-                        <input type="text" id="target-lng" class="form-control form-control-sm" value="79.8612">
-                    </div>
-                    <div class="bg-light p-2 rounded mb-2 text-center border">
-                        <small>ESTIMATED TRANSPORT COST</small>
-                        <h4 class="mb-0 text-primary" id="logistics-result">$0.00</h4>
-                        <small id="distance-result">0.00 km</small>
-                    </div>
-                    <button class="btn btn-outline-primary btn-sm btn-block" onclick="calculateLogistics()">
-                        <i class="fa fa-truck"></i> Refresh Estimate
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const lotId = '<?= $id ?>';
-    const lotType = '<?= $type ?>';
-
-    function sendBuyRequest() {
-        const remarks = $('#buy-remarks').val();
-        const price = $('#offer-price').val();
-        
-        if(!confirm('Send a purchase request to the seller?')) return;
-        
-        $.ajax({
-            url: baseurl + 'marketplace/request_buy',
-            type: 'POST',
-            data: { 
-                id: lotId, 
-                type: lotType, 
-                price: price, 
-                remarks: remarks,
-                '<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>' 
-            },
-            dataType: 'json',
-            success: function(data) {
-                if(data.status == 'Success') {
-                    alert(data.message);
-                    window.location.href = baseurl + 'marketplace/my_deals';
-                } else {
-                    alert(data.message);
-                    if(data.redirect) window.location.href = data.redirect;
-                }
-            }
-        });
-    }
-
-    function calculateLogistics() {
-        $.ajax({
-            url: baseurl + 'marketplace/calculate_logistics',
-            type: 'POST',
-            data: { 
-                lat1: '6.0535', 
-                lng1: '80.2210', 
-                lat2: $('#target-lat').val(),
-                lng2: $('#target-lng').val(),
-                rate: 15, // $15 per KM
-                '<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>' 
-            },
-            dataType: 'json',
-            success: function(data) {
-                $('#logistics-result').text('$' + data.cost);
-                $('#distance-result').text(data.distance + ' km');
-            }
-        });
-    }
-</script>
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><?= $lot['lot_name'] ?> - Lot Details</h4>
+                    <h4 class="mb-0 text-white"><?= $lot['lot_name'] ?> - Lot Details</h4>
                     <span class="badge badge-warning text-dark">ID: #<?= $lot['id'] ?></span>
                 </div>
                 <div class="card-body">
@@ -244,6 +75,34 @@
 
         <!-- Sidebar Tools -->
         <div class="col-md-4">
+            
+            <?php if(@$lot['seller_id'] == $this->aauth->get_user()->id || $this->aauth->get_user()->roleid == 9): ?>
+            <!-- Seller Marketing Panel -->
+            <div class="card shadow-sm border-0 mb-3" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white;">
+                <div class="card-body">
+                    <h5 class="font-weight-bold text-warning mb-3"><i class="fa fa-bolt"></i> AI Marketing Hub</h5>
+                    <p class="small opacity-75">Boost this listing with high-conversion video ads and professional posters.</p>
+                    
+                    <button class="btn btn-warning btn-block font-weight-bold mb-2 shadow-sm" style="color: #000;" onclick="generateAIVideo()">
+                        <i class="fa fa-film mr-1"></i> GENERATE AI VIDEO AD
+                    </button>
+                    
+                    <button class="btn btn-outline-light btn-block btn-sm" onclick="window.location.href='<?= base_url('Marketing/share_modal/'.$type.'/'.$id) ?>'">
+                        <i class="fa fa-share-alt mr-1"></i> BRANDEED POSTER
+                    </button>
+                    
+                    <?php if(!empty($lot['revid_video_url'])): ?>
+                    <div class="mt-3 p-2 bg-dark rounded border border-warning">
+                        <small class="text-warning d-block mb-1 font-weight-bold">LIVE VIDEO SHOWCASE:</small>
+                        <a href="<?= $lot['revid_video_url'] ?>" target="_blank" class="small text-white text-truncate d-block">
+                             <i class="fa fa-play-circle mr-1"></i> View Produced Ad
+                        </a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- Bid Input -->
             <div class="card shadow-sm border-0 mb-3 bg-light">
                 <div class="card-body">
@@ -285,7 +144,7 @@
             <!-- Yield recovery Calculator -->
             <div class="card shadow-sm border-0 mb-3">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Yield Recovery Simulator</h5>
+                    <h5 class="mb-0 text-white">Yield Recovery Simulator</h5>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
@@ -298,7 +157,7 @@
                     </div>
                     <div class="bg-dark text-white p-2 rounded text-center">
                         <small>ESTIMATED RECOVERABLE SAWN VOLUME</small>
-                        <h3 class="mb-0" id="yield-result">-- ft³</h3>
+                        <h3 class="mb-0 text-white" id="yield-result">-- ft³</h3>
                     </div>
                 </div>
             </div>
@@ -306,7 +165,7 @@
             <!-- Logistics Calculator -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Logistics Estimator</h5>
+                    <h5 class="mb-0 text-white">Logistics Estimator</h5>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
@@ -379,8 +238,8 @@
             url: baseurl + 'marketplace/calculate_logistics',
             type: 'POST',
             data: { 
-                lat1: '6.0535', // Origin Lat (from TRD example)
-                lng1: '80.2210', // Origin Lng
+                lat1: '6.0535', 
+                lng1: '80.2210', 
                 lat2: $('#target-lat').val(),
                 lng2: $('#target-lng').val(),
                 rate: 15, // $15 per KM
@@ -450,6 +309,33 @@
                 } else {
                     alert(data.message);
                 }
+            }
+        });
+    }
+
+    function generateAIVideo() {
+        if(!confirm('This will use Revid AI to generate a professional video ad for this lot. Proceed?')) return;
+        
+        const btn = $(event.target).closest('button');
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> GENERATING...');
+
+        $.ajax({
+            url: baseurl + 'Marketing/generate_ai_video',
+            type: 'POST',
+            data: { id: lotId, type: lotType, [crsf_token]: crsf_hash },
+            dataType: 'json',
+            success: function(data) {
+                if(data.status == 'Success') {
+                    alert('Video Generation Triggered! If immediately rendered: ' + data.video_url);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                    btn.prop('disabled', false).html('<i class="fa fa-film mr-1"></i> GENERATE AI VIDEO AD');
+                }
+            },
+            error: function() {
+                alert('Connection failure');
+                btn.prop('disabled', false).html('<i class="fa fa-film mr-1"></i> GENERATE AI VIDEO AD');
             }
         });
     }

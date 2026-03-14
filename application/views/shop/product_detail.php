@@ -109,7 +109,7 @@
     .badge-verified { background: rgba(16, 185, 129, 0.1); color: var(--premium-green); }
 
     .hero-title {
-        font-size: 3rem;
+        font-size: clamp(2rem, 5vw, 3rem);
         font-weight: 900;
         color: var(--text-main);
         margin-bottom: 8px;
@@ -126,19 +126,66 @@
     }
 
     /* Dual Pricing Component */
+    .anchoring-note {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--premium-green);
+        background: rgba(16, 185, 129, 0.1);
+        padding: 4px 12px;
+        border-radius: 100px;
+        display: inline-block;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+    }
+
     .pricing-engine {
         background: #f8fafc;
         padding: 30px;
         border-radius: 24px;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
         border: 1px solid rgba(0,0,0,0.03);
     }
 
-    .total-price-row {
+    /* Decoy Tabs */
+    .choice-tabs {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 15px;
+        gap: 10px;
+        margin-bottom: 25px;
+        background: #f1f5f9;
+        padding: 6px;
+        border-radius: 18px;
+    }
+
+    .choice-tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--text-sub);
+        cursor: pointer;
+        border-radius: 14px;
+        transition: all 0.3s;
+    }
+
+    .choice-tab.active {
+        background: white;
+        color: var(--premium-blue);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .choice-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .choice-content.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .price-label {
@@ -294,6 +341,27 @@
         font-weight: 800;
         color: var(--premium-blue);
     }
+
+    /* Installment Calculator */
+    .installment-card {
+        background: white;
+        border: 2px solid var(--premium-green);
+        border-radius: 24px;
+        padding: 25px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+    }
+    .calc-slider {
+        @apply w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-emerald-500 mb-4;
+    }
+    .monthly-badge {
+        background: var(--premium-green);
+        color: white;
+        padding: 15px;
+        border-radius: 16px;
+        text-align: center;
+        margin-top: 15px;
+    }
 </style>
 
 <div class="product-detail-container">
@@ -330,18 +398,122 @@
                     <i class="fa fa-map-pin"></i> <?= htmlspecialchars($lot['location'] ?? 'Location unavailable') ?> • Sri Lanka
                 </div>
 
+                <!-- Psychological Anchoring -->
+                <div class="anchoring-row">
+                    <span class="anchoring-note">
+                        <i class="fa fa-tag"></i> OR RENT FOR AS LOW AS LKR <?= number_format(($lot['product_rent'] > 0 ? $lot['product_rent'] : 500)) ?>/DAY
+                    </span>
+                </div>
+
                 <!-- Dual Pricing Display -->
                 <div class="pricing-engine">
-                    <div class="total-price-row">
-                        <span class="price-label">Total Lot Value</span>
+                    <div class="total-price-row flex justify-between items-end mb-4">
+                        <span class="price-label">Instant Buy Price</span>
                         <div class="price-value-main">LKR <?= number_format($lot['total_price'] ?? ($lot['price'] ?? 0)) ?></div>
                     </div>
-                    <?php if(!empty($lot['selling_price']) && $lot['selling_price'] > 0): ?>
-                    <div class="unit-price-row">
-                        <span class="price-label">Price per Unit</span>
-                        <div class="unit-price-val">LKR <?= number_format($lot['selling_price']) ?> / <?= $lot['unit_type'] ?? 'ft³' ?></div>
+                </div>
+
+                <!-- Choice Tabs (Decoy Effect) -->
+                <div class="choice-tabs">
+                    <div class="choice-tab active" onclick="switchChoice('buy')">BUY NOW</div>
+                    <div class="choice-tab" onclick="switchChoice('rent')">RENTAL</div>
+                    <div class="choice-tab" onclick="switchChoice('emi')">INSTALLMENTS</div>
+                </div>
+
+                <!-- BUY MODULE -->
+                <div id="buy-module" class="choice-content active">
+                    <div class="master-action-box">
+                        <?php if($is_logged_in): ?>
+                            <button class="btn-buy-now mb-4" onclick="buyNow()">
+                                <i class="fa fa-cart-shopping"></i> PROCEED TO SECURE BUY
+                            </button>
+                            <div class="secondary-actions">
+                                <button class="btn-outline-premium" onclick="openOfferModal()">
+                                    <i class="fa fa-hand-holding-dollar"></i> PLACE BID
+                                </button>
+                                <button class="btn-outline-premium" onclick="contactSeller()">
+                                    <i class="fa fa-message"></i> INQUIRE
+                                </button>
+                            </div>
+                        <?php else: ?>
+                            <button class="btn-buy-now" onclick="window.location.href='<?= base_url('user') ?>'">
+                                LOGIN TO TRANSACT
+                            </button>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
+                </div>
+
+                <!-- RENTAL MODULE -->
+                <div id="rent-module" class="choice-content">
+                    <div class="bg-white p-6 rounded-3xl border-2 border-slate-100 mb-6">
+                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
+                             <i class="fa fa-calendar-days text-premium-blue"></i> Select Rental Period
+                        </h4>
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block mb-1">START DATE</label>
+                                <input type="date" id="rent-start" class="w-full bg-slate-50 border-0 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-emerald-500 transition-all" value="<?= date('Y-m-d') ?>" onchange="updateRentQuote()">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 block mb-1">END DATE</label>
+                                <input type="date" id="rent-end" class="w-full bg-slate-50 border-0 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-emerald-500 transition-all" value="<?= date('Y-m-d', strtotime('+7 days')) ?>" onchange="updateRentQuote()">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl mb-4">
+                            <input type="checkbox" id="insurance-check" class="w-5 h-5 accent-emerald-500" onchange="updateRentQuote()">
+                            <div>
+                                <div class="text-[11px] font-black text-slate-900">DAMAGE PROTECTION (INSURANCE)</div>
+                                <div class="text-[9px] text-slate-500">Reduces security deposit by 50% for only LKR 500 extra.</div>
+                            </div>
+                        </div>
+
+                        <div id="rental-summary-area">
+                             <p class="text-[11px] text-slate-400 italic text-center">Select dates to view pricing breakdown.</p>
+                        </div>
+
+                        <button class="btn-buy-now mt-6 bg-emerald-600 shadow-emerald-200" onclick="bookRent()">
+                             <i class="fa fa-key"></i> CONFIRM BOOKING
+                        </button>
+                    </div>
+                </div>
+
+                <!-- EMI MODULE -->
+                <div id="emi-module" class="choice-content">
+                    <div class="bg-white p-6 rounded-3xl border-2 border-emerald-100 mb-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-emerald-100 text-emerald-600 text-[9px] font-black px-4 py-1 rounded-bl-xl">LOWEST INTEREST</div>
+                        <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                             <i class="fa fa-id-card-clip text-emerald-500"></i> EMI Eligibility Checker
+                        </h4>
+
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-[11px] font-bold text-slate-400 mb-2 uppercase">
+                                    <span>Down Payment</span>
+                                    <span class="text-emerald-500" id="emi-down-label">LKR 0</span>
+                                </div>
+                                <input type="range" id="emi-down-slider" min="0" max="<?= ($lot['total_price'] ?? 0) * 0.8 ?>" step="5000" value="0" class="calc-slider w-full" oninput="updateEmiCalc()">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-[11px] font-bold text-slate-400 mb-2 uppercase">
+                                    <span>Tenure (Months)</span>
+                                    <span class="text-emerald-500" id="emi-months-label">12 Months</span>
+                                </div>
+                                <input type="range" id="emi-months-slider" min="3" max="36" step="3" value="12" class="calc-slider w-full" oninput="updateEmiCalc()">
+                            </div>
+
+                            <div class="bg-emerald-50 p-4 rounded-2xl flex justify-between items-center">
+                                <div>
+                                    <div class="text-[10px] font-black text-emerald-600 uppercase">Monthly Installment</div>
+                                    <div class="text-xl font-black text-slate-900" id="emi-monthly-val">LKR 0</div>
+                                </div>
+                                <button class="bg-emerald-500 text-white text-[10px] font-black px-4 py-3 rounded-xl shadow-lg" onclick="checkEmiEligibility()">
+                                    CHECK ELIGIBILITY
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Stats Cards -->
@@ -367,29 +539,70 @@
                     </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="master-action-box">
-                    <?php if($is_logged_in): ?>
-                        <button class="btn-buy-now" onclick="buyNow()">
-                            <i class="fa fa-bolt"></i> INSTANT PURCHASE
-                        </button>
-                        <div class="secondary-actions">
-                            <button class="btn-outline-premium" onclick="openOfferModal()">
-                                <i class="fa fa-hand-holding-dollar"></i> PLACE BID
-                            </button>
-                            <button class="btn-outline-premium" onclick="contactSeller()">
-                                <i class="fa fa-message"></i> INQUIRE
-                            </button>
-                        </div>
-                    <?php else: ?>
-                        <button class="btn-buy-now" onclick="window.location.href='<?= base_url('user') ?>'">
-                            LOGIN TO TRANSACT
-                        </button>
-                    <?php endif; ?>
-                </div>
             </div>
         </div>
     </div>
+
+    <!-- AI BUNDLING SUGGESTIONS -->
+    <?php if(!empty($suggestions)): ?>
+    <div class="glass-panel-premium">
+        <div class="detail-section-header">
+            <i class="fa fa-wand-magic-sparkles text-purple-500"></i> AI Smart Bundling: Recommended Services
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <?php foreach($suggestions as $s): ?>
+            <div class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-3xl border border-purple-100 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="bg-purple-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter"><?= $s['category'] ?></span>
+                    <i class="fa fa-info-circle text-purple-300"></i>
+                </div>
+                <h3 class="text-sm font-bold text-slate-800 mb-2"><?= $s['reason'] ?></h3>
+                
+                <div class="space-y-4 mt-6">
+                    <?php foreach($s['providers'] as $p): ?>
+                    <div class="flex items-center justify-between p-3 bg-white rounded-2xl border border-slate-100 hover:border-purple-300 transition-all cursor-pointer">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
+                                <i class="fa fa-user text-slate-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-[11px] font-black text-slate-900"><?= $p['name'] ?></div>
+                                <div class="flex items-center text-[10px] text-yellow-500 font-bold">
+                                    <i class="fa fa-star mr-1"></i> <?= $p['rating'] ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <label class="flex items-center p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="checkbox" name="insurance" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 mr-4">
+                                <div class="flex-1">
+                                    <span class="block font-bold text-slate-900 text-sm">Damage Protection</span>
+                                    <span class="block text-[10px] text-slate-400 uppercase font-bold">Covers accidental damage during rental</span>
+                                </div>
+                                <span class="font-black text-slate-900 text-sm">Rs. 500</span>
+                            </label>
+
+                            <label class="flex items-center p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer hover:bg-blue-50 transition-colors">
+                                <input type="checkbox" name="bundle_unloading" id="bundle_unloading" class="w-5 h-5 rounded text-blue-600 focus:ring-blue-500 mr-4">
+                                <div class="flex-1">
+                                    <span class="block font-bold text-slate-900 text-sm">Add Unloading Assistance</span>
+                                    <span class="block text-[10px] text-slate-400 uppercase font-bold">2 Workers will arrive to unload your timber</span>
+                                </div>
+                                <span class="font-black text-blue-600 text-sm">Bundle Deal</span>
+                            </label>
+                        </div>
+                        <div class="text-[11px] font-bold text-slate-400">
+                            LKR <?= number_format($p['hourly_rate']) ?>/hr
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- piece detail table -->
     <div class="glass-panel-premium">
@@ -456,15 +669,100 @@
         thumb.classList.add('active');
     }
 
-    function buyNow() {
-        if(!confirm('Confirm instant purchase of this lot?')) return;
-        // Logic for buy now
+    function switchChoice(choice) {
+        document.querySelectorAll('.choice-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.choice-content').forEach(c => c.classList.remove('active'));
+        
+        event.currentTarget.classList.add('active');
+        document.getElementById(choice + '-module').classList.add('active');
     }
 
-    function openOfferModal() {
-        const amount = prompt("Enter your offer amount (LKR):");
-        if(amount) {
-            // Logic for bid
-        }
+    // --- RENTAL LOGIC ---
+    function updateRentQuote() {
+        const start = document.getElementById('rent-start').value;
+        const end = document.getElementById('rent-end').value;
+        const insurance = document.getElementById('insurance-check').checked;
+
+        if(!start || !end) return;
+
+        $.ajax({
+            url: '<?= base_url("shop/init_rent") ?>',
+            type: 'POST',
+            data: {
+                id: '<?= $lot['id'] ?>',
+                type: '<?= $type ?>',
+                start_date: start,
+                end_date: end,
+                insurance: insurance
+            },
+            dataType: 'json',
+            success: function(res) {
+                if(res.status === 'Success') {
+                    document.getElementById('rental-summary-area').innerHTML = res.summary_html;
+                } else {
+                    alert(res.message);
+                }
+            }
+        });
     }
+
+    function bookRent() {
+        alert('Proceeding to rental agreement and security deposit payment...');
+        // Final booking logic here
+    }
+
+    // --- EMI LOGIC ---
+    function updateEmiCalc() {
+        const totalVal = <?= $lot['total_price'] ?? ($lot['price'] ?? 0) ?>;
+        const down = parseFloat(document.getElementById('emi-down-slider').value) || 0;
+        const months = parseInt(document.getElementById('emi-months-slider').value);
+
+        document.getElementById('emi-down-label').textContent = 'LKR ' + down.toLocaleString();
+        document.getElementById('emi-months-label').textContent = months + ' Months';
+
+        const remaining = Math.max(0, totalVal - down);
+        const interest = 0.08;
+        const monthly = (remaining * (1 + interest)) / months;
+
+        document.getElementById('emi-monthly-val').textContent = 'LKR ' + Math.ceil(monthly).toLocaleString();
+    }
+
+    function checkEmiEligibility() {
+        const down = document.getElementById('emi-down-slider').value;
+        const months = document.getElementById('emi-months-slider').value;
+
+        $.ajax({
+            url: '<?= base_url("shop/init_emi") ?>',
+            type: 'POST',
+            data: {
+                id: '<?= $lot['id'] ?>',
+                type: '<?= $type ?>',
+                down_payment: down,
+                months: months
+            },
+            dataType: 'json',
+            success: function(res) {
+                if(res.status === 'Success') {
+                    alert('Congratulations! You are eligible. Monthly Payment: LKR ' + res.monthly);
+                } else {
+                    alert(res.message);
+                }
+            }
+        });
+    }
+
+    function buyNow() {
+        if(!confirm('Confirm instant purchase of this lot?')) return;
+        let url = '<?= base_url("shop/checkout/{$lot['id']}/{$type}") ?>';
+        <?php if(!empty($project_id)): ?>
+            url += '?project_id=<?= $project_id ?>';
+        <?php endif; ?>
+        window.location.href = url;
+    }
+
+    // Initial runs
+    document.addEventListener('DOMContentLoaded', () => {
+        updateRentQuote();
+        updateEmiCalc();
+    });
 </script>

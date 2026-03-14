@@ -8,7 +8,7 @@ class OwnerDashboard_backup extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         
         if ($this->aauth->get_user()->roleid < 5) {

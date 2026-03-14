@@ -25,6 +25,8 @@ class Shop extends CI_Controller
         $this->load->model('Worker_model', 'worker');
         $this->load->model('Audit_model', 'audit');
         $this->load->model('Categories_model', 'categories');
+        $this->load->model('Service_categories_model', 'service_categories');
+        $this->load->model('QuoteRequest_model', 'qr');
         $this->_ensure_tables();
     }
 
@@ -76,11 +78,13 @@ class Shop extends CI_Controller
      * ------------------------------------------------------------------ */
     public function index()
     {
+        $macro    = $this->input->get('macro') ?: 'products'; // 'products' or 'services'
         $type     = $this->input->get('type');
         $species  = $this->input->get('species');
         $district = $this->input->get('district');
         $grade    = $this->input->get('grade');
         $max_price= $this->input->get('max_price');
+        $project_id = (int)$this->input->get('project_id');
 
         // 1. Timber Listings
         $lots = $this->mp->get_all_active_lots();
@@ -109,6 +113,24 @@ class Shop extends CI_Controller
 
         // 3. Worker Services
         $workers = $this->worker->get_active_workers();
+        $user_loc = $this->session->userdata('user_location');
+        foreach ($workers as &$w) {
+            $w['is_verified'] = !empty($w['kyc_verified']);
+            $w['category_name'] = $w['category_name'] ?? 'General Pro';
+            
+            // Proximity Logic
+            $w['distance'] = null;
+            if (is_array($user_loc) && !empty($w['lat']) && !empty($w['lng'])) {
+                $w['distance'] = $this->haversine($user_loc['lat'], $user_loc['lng'], $w['lat'], $w['lng']);
+            }
+        }
+        
+        // Sort workers by distance if available
+        usort($workers, function($a, $b) {
+            if ($a['distance'] === null) return 1;
+            if ($b['distance'] === null) return -1;
+            return $a['distance'] <=> $b['distance'];
+        });
 
         // 4. Hardware Products
         $hardware = $this->mp->get_hardware_products(12);
@@ -116,8 +138,8 @@ class Shop extends CI_Controller
         // 5. Job Board (Workforce Requests)
         $jobs = $this->mp->get_open_job_requests(10);
 
-        // 6. Quotation Hub (Product Requests)
-        $quote_requests = $this->mp->get_active_requests(10);
+        // 6. Quotation Hub — now from QuoteRequest_model (peer-to-peer geo-fenced requests)
+        $quote_requests = $this->qr->get_active_requests(8);
 
         // 7. Market Prices for Strip
         $market_prices = [];
@@ -149,6 +171,7 @@ class Shop extends CI_Controller
         ];
 
         $data = [
+            'macro'         => $macro,
             'lots'          => $lots,
             'featured_lots' => $featured_lots,
             'workers'       => $workers,
@@ -157,15 +180,21 @@ class Shop extends CI_Controller
             'quote_requests'=> $quote_requests,
             'market_prices' => $market_prices,
             'categories'    => $main_categories,
+            'service_cats'  => $this->service_categories->get_main_categories(),
             'locations'     => $location_data,
-            'filters'       => compact('type', 'species', 'district', 'grade', 'max_price'),
+            'filters'       => compact('macro', 'type', 'species', 'district', 'grade', 'max_price'),
             'is_logged_in'  => $this->aauth->is_loggedin(),
             'usernm'        => $this->aauth->get_user()->username ?? '',
+            'project_id'    => $project_id,
             'title'         => "TimberPro Ecosystem - Market, Services & Logistics"
         ];
 
         $this->load->view('public/header', $data);
-        $this->load->view('shop/index', $data);
+        if ($macro === 'services') {
+            $this->load->view('shop/Services_portal', $data);
+        } else {
+            $this->load->view('shop/index', $data);
+        }
         $this->load->view('public/footer');
 
     }
@@ -223,6 +252,10 @@ class Shop extends CI_Controller
         $lot['is_verified'] = !empty($lot['permit_verified']);
         $lot['total_price'] = $lot['total_price'] ?? ($lot['price'] ?? 0);
         $lot['selling_price'] = $lot['selling_price'] ?? 0;
+        $lot['product_installment'] = $lot['product_installment'] ?? 0;
+        $lot['product_rent'] = $lot['product_rent'] ?? 0;
+        $lot['is_installment'] = !empty($lot['is_installment']);
+        $lot['is_rent'] = !empty($lot['is_rent']);
         $lot['location'] = $lot['location'] ?? 'Sri Lanka';
         $lot['name'] = htmlspecialchars($lot['lot_name'] ?? ($lot['species'] ?? 'Timber') . ' ' . ucfirst($type));
         $lot['type'] = $type;
@@ -235,16 +268,87 @@ class Shop extends CI_Controller
             'og_image'       => !empty($lot['photos']) ? base_url($lot['photos'][0]) : base_url('assets/images/og-default.jpg'),
             'og_url'         => current_url(),
         ];
+        $this->load->model('Intelligence_model');
+        $suggestions = $this->Intelligence_model->get_bundle_suggestions([$id]);
+
         $data = [
             'lot'         => $lot,
             'type'        => $type,
             'similar'     => $similar,
+            'suggestions' => $suggestions,
             'is_logged_in'=> $this->aauth->is_loggedin(),
+            'project_id'  => (int)$this->input->get('project_id'),
         ];
 
         $this->load->view('public/header', $head);
         $this->load->view('shop/product_detail', $data);
         $this->load->view('public/footer');
+    }
+
+    public function init_rent() {
+        if (!$this->aauth->is_loggedin()) {
+            echo json_encode(['status' => 'Error', 'message' => 'Login required']);
+            return;
+        }
+
+        $id = $this->input->post('id');
+        $type = $this->input->post('type');
+        $start = $this->input->post('start_date');
+        $end = $this->input->post('end_date');
+        $has_insurance = $this->input->post('insurance') == 'true';
+
+        $lot = $this->mp->get_lot_details($id, $type);
+        if (!$lot) {
+            echo json_encode(['status' => 'Error', 'message' => 'Product not found']);
+            return;
+        }
+
+        $this->load->library('tp_rental_engine');
+        $quote = $this->tp_rental_engine->calculate_rental_quote($lot['product_rent'] ?? 500, $start, $end);
+        $deposit = $this->tp_rental_engine->calculate_deposit($lot['total_price'] ?? ($lot['price'] ?? 0), $has_insurance);
+
+        $resp = [
+            'status' => 'Success',
+            'quote' => $quote,
+            'deposit' => $deposit,
+            'summary_html' => $this->load->view('shop/rental_summary_partial', array_merge($quote, ['deposit' => $deposit, 'insurance' => $has_insurance]), true)
+        ];
+        echo json_encode($resp);
+    }
+
+    public function init_emi() {
+        if (!$this->aauth->is_loggedin()) {
+             echo json_encode(['status' => 'Error', 'message' => 'Login required']);
+             return;
+        }
+
+        $id = $this->input->post('id');
+        $type = $this->input->post('type');
+        $down = (float)$this->input->post('down_payment');
+        $months = (int)$this->input->post('months');
+
+        $lot = $this->mp->get_lot_details($id, $type);
+        $total = $lot['total_price'] ?? ($lot['price'] ?? 0);
+
+        $this->load->library('tp_rental_engine');
+        $eligible = $this->tp_rental_engine->check_emi_eligibility($this->aauth->get_user()->id);
+
+        if (!$eligible) {
+             echo json_encode(['status' => 'Error', 'message' => 'You are not eligible for EMI based on your purchase history.']);
+             return;
+        }
+
+        // Calculation logic (simplified)
+        $remaining = max(0, $total - $down);
+        $interest = 0.08; // 8% fixed for demo
+        $monthly = ($remaining * (1 + $interest)) / $months;
+
+        echo json_encode([
+            'status' => 'Success',
+            'monthly' => round($monthly, 2),
+            'total_repayment' => round($remaining * (1 + $interest), 2),
+            'interest_amount' => round($remaining * $interest, 2)
+        ]);
     }
 
     /* ------------------------------------------------------------------
@@ -267,6 +371,7 @@ class Shop extends CI_Controller
     public function request_quote()
     {
         $data['title'] = "Request a Quote";
+        $data['project_id']  = (int)$this->input->get('project_id');
         $this->load->view('public/header', $data);
         $this->load->view('shop/request_quote');
         $this->load->view('public/footer');
@@ -299,6 +404,18 @@ class Shop extends CI_Controller
         // Generate order number
         $order_number = 'TPS-' . date('Ym') . '-' . strtoupper(substr(uniqid(), -4));
 
+        $project_id = (int)$this->input->post('project_id');
+        
+        // Determine approval status
+        $approval_status = 'not_required';
+        if ($project_id > 0 && $this->aauth->is_loggedin()) {
+            // Check if current user is the owner of the project or just staff
+            // For simplicity in this logic, we assume roleid < 4 means staff/employee
+            if ($this->aauth->get_user()->roleid < 4) {
+                $approval_status = 'pending_owner';
+            }
+        }
+
         $order_data = [
             'order_number'     => $order_number,
             'customer_id'      => $this->aauth->is_loggedin() ? $this->aauth->get_user()->id : 0,
@@ -321,10 +438,45 @@ class Shop extends CI_Controller
             'delivery_address' => $this->input->post('delivery_address'),
             'customer_note'    => $this->input->post('customer_note'),
             'status'           => 'quote',
+            'project_id'       => $project_id,
+            'project_id'       => $project_id,
+            'approval_status'  => $approval_status,
         ];
 
         $this->db->insert('consumer_orders', $order_data);
         $inserted_id = $this->db->insert_id();
+
+        // Phase 6.4: Handle Bundling (Unloading Assistance)
+        if ($this->input->post('bundle_unloading')) {
+            $this->load->model('Dispatch_model');
+            // Create a linked service request for 2 workers (service_id for Unloading is 5)
+            $service_request = [
+                'customer_id' => $order_data['customer_id'],
+                'service_id' => 5, // Unloading
+                'pickup_lat' => $this->session->userdata('user_location')['lat'] ?? 6.9271,
+                'pickup_lng' => $this->session->userdata('user_location')['lng'] ?? 79.8612,
+                'pickup_address' => $order_data['delivery_address'] ?: 'Customer Location',
+                'linked_order_id' => $inserted_id,
+                'status' => 0
+            ];
+            $this->Dispatch_model->create_request($service_request);
+        }
+
+        // Phase 6.4: Auto-search for Delivery Partner
+        if ($order_data['delivery_required']) {
+            $this->load->model('Dispatch_model');
+            $delivery_request = [
+                'customer_id' => $order_data['customer_id'],
+                'service_id' => 3, // Transport/Delivery
+                'pickup_lat' => 6.9271, // Store location (simulated)
+                'pickup_lng' => 79.8612,
+                'pickup_address' => 'Central Warehouse',
+                'linked_order_id' => $inserted_id,
+                'request_type' => 'delivery',
+                'status' => 0
+            ];
+            $this->Dispatch_model->create_request($delivery_request);
+        }
 
         // Audit log
         $this->audit->log([
@@ -353,8 +505,10 @@ class Shop extends CI_Controller
         $lot = $this->mp->get_lot_details($lot_id, $lot_type);
         if (!$lot) { show_404(); return; }
 
+        $project_id = (int)$this->input->get('project_id');
+
         $head = ['title' => 'Checkout | TimberPro Shop', 'is_shop' => true];
-        $data = ['lot' => $lot, 'lot_type' => $lot_type];
+        $data = ['lot' => $lot, 'lot_type' => $lot_type, 'project_id' => $project_id];
 
         $this->load->view('public/header', $head);
         $this->load->view('shop/checkout', $data);
@@ -388,7 +542,7 @@ class Shop extends CI_Controller
     public function my_orders()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $uid = $this->aauth->get_user()->id;
@@ -449,6 +603,32 @@ class Shop extends CI_Controller
             'seller_note' => $note,
         ]);
 
+        // If order is confirmed and associated with a project, run ledger math
+        if ($new_status === 'confirmed') {
+            $this->db->where('id', $order_id);
+            $order = $this->db->get('consumer_orders')->row_array();
+            
+            if ($order && $order['project_id'] > 0) {
+                // Determine order total
+                $amount = $order['final_price'] ?: ($order['quoted_price'] ?: ($order['volume_cuft'] ? 0 : 0)); 
+                // Since this might not be set directly here, let's look at the lot for default price if needed
+                if (!$amount) {
+                    $lot = $this->mp->get_lot_details($order['lot_id'], $order['lot_type']);
+                    $amount = $lot ? ($lot['total_price'] ?? $lot['price'] ?? 0) : 0;
+                }
+
+                if ($amount > 0) {
+                    $this->load->model('Transactions_model', 'transactions');
+                    $this->transactions->record_project_shop_expense(
+                        $order['id'], 
+                        $amount, 
+                        $order['project_id'], 
+                        "Shop Order Confirmed: " . $order['order_number']
+                    );
+                }
+            }
+        }
+
         $this->audit->log([
             'user_id'   => $this->aauth->get_user()->id,
             'action'    => 'ORDER_STATUS_UPDATE',
@@ -459,6 +639,76 @@ class Shop extends CI_Controller
         ]);
 
         echo json_encode(['status' => 'Success', 'message' => 'Order status updated to ' . $new_status]);
+    }
+
+    /**
+     * Approves a project procurement request (Shop Order)
+     * Used when a staff member (role < 4) places an order for a project and it needs Owner (role >= 4) approval.
+     */
+    public function approve_project_procurement()
+    {
+        if (!$this->aauth->is_loggedin()) {
+            echo json_encode(['status' => 'Error', 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $order_id = (int)$this->input->post('order_id');
+        
+        $this->db->where('id', $order_id);
+        $order = $this->db->get('consumer_orders')->row_array();
+
+        if (!$order) {
+            echo json_encode(['status' => 'Error', 'message' => 'Order not found']);
+            return;
+        }
+
+        // Check if user has permission to approve (Owner / Admin)
+        if ($this->aauth->get_user()->roleid < 4) {
+            echo json_encode(['status' => 'Error', 'message' => 'Insufficient permissions to approve project expenses.']);
+            return;
+        }
+
+        if ($order['approval_status'] !== 'pending_owner') {
+            echo json_encode(['status' => 'Error', 'message' => 'Order does not require approval or is already approved.']);
+            return;
+        }
+
+        // Update approval status and overall status
+        $this->db->where('id', $order_id);
+        $this->db->update('consumer_orders', [
+            'approval_status' => 'approved',
+            'status'          => 'confirmed' // Move to confirmed upon approval
+        ]);
+
+        // Trigger Ledger Math for confirmed project order
+        if ($order['project_id'] > 0) {
+            $amount = $order['final_price'] ?: ($order['quoted_price'] ?: ($order['volume_cuft'] ? 0 : 0)); 
+            if (!$amount) {
+                $lot = $this->mp->get_lot_details($order['lot_id'], $order['lot_type']);
+                $amount = $lot ? ($lot['total_price'] ?? $lot['price'] ?? 0) : 0;
+            }
+
+            if ($amount > 0) {
+                $this->load->model('Transactions_model', 'transactions');
+                $this->transactions->record_project_shop_expense(
+                    $order['id'], 
+                    $amount, 
+                    $order['project_id'], 
+                    "Project Procurement Approved & Confirmed: " . $order['order_number']
+                );
+            }
+        }
+
+        $this->audit->log([
+            'user_id'   => $this->aauth->get_user()->id,
+            'action'    => 'PROJECT_PROCUREMENT_APPROVED',
+            'entity'    => 'consumer_orders',
+            'entity_id' => $order_id,
+            'details'   => json_encode(['project_id' => $order['project_id']]),
+            'ip_address'=> $this->input->ip_address(),
+        ]);
+
+        echo json_encode(['status' => 'Success', 'message' => 'Procurement Request Approved & Logged.']);
     }
 
     /* ------------------------------------------------------------------
@@ -606,6 +856,70 @@ class Shop extends CI_Controller
         $this->load->view('fixed/header', $head);
         $this->load->view('shop/admin_orders_list', $data);
         $this->load->view('fixed/footer');
+    }
+
+    /* ------------------------------------------------------------------
+     * AJAX: Update User Location from GPS
+     * ------------------------------------------------------------------ */
+    public function update_location()
+    {
+        $lat = (float)$this->input->post('lat');
+        $lon = (float)$this->input->post('lon');
+
+        if (!$lat || !$lon) {
+            echo json_encode(['status' => 'Error', 'message' => 'Invalid coordinates']);
+            return;
+        }
+
+        // Snap to nearest major Sri Lankan city for display
+        $cities = [
+            'Colombo' => [6.9271, 79.8612],
+            'Kandy' => [7.2906, 80.6337],
+            'Galle' => [6.0535, 80.2210],
+            'Jaffna' => [9.6615, 80.0255],
+            'Kurunegala' => [7.4818, 80.3609],
+            'Anuradhapura' => [8.3122, 80.4131],
+            'Ratnapura' => [6.6828, 80.3992],
+            'Badulla' => [6.9934, 81.0550],
+            'Trincomalee' => [8.5711, 81.2335],
+            'Gampaha' => [7.0840, 80.0098],
+            'Kalutara' => [6.5854, 79.9607],
+            'Matara' => [5.9549, 80.5550],
+            'Hambantota' => [6.1246, 81.1185],
+            'Batticaloa' => [7.7102, 81.6924],
+            'Ampara' => [7.2912, 81.6724],
+            'Puttalam' => [8.0330, 79.8333],
+            'Polonnaruwa' => [7.9403, 81.0188],
+            'Moneragala' => [6.8667, 81.3500],
+            'Kegalle' => [7.2522, 80.3415]
+        ];
+
+        $nearest_city = 'Sri Lanka';
+        $min_dist = 999999;
+
+        foreach ($cities as $name => $coords) {
+            $dist = $this->haversine($lat, $lon, $coords[0], $coords[1]);
+            if ($dist < $min_dist) {
+                $min_dist = $dist;
+                $nearest_city = $name;
+            }
+        }
+
+        // Store in session
+        $location_data = [
+            'lat' => $lat,
+            'lon' => $lon,
+            'name' => $nearest_city,
+            'timestamp' => time()
+        ];
+        $this->session->set_userdata('user_location', $location_data);
+
+        echo json_encode([
+            'status' => 'Success',
+            'location_name' => $nearest_city,
+            'lat' => $lat,
+            'lon' => $lon
+        ]);
     }
 
     private function haversine($lat1, $lon1, $lat2, $lon2)

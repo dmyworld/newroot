@@ -29,7 +29,7 @@ class Sms Extends CI_Controller
 
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->library('parser');
 

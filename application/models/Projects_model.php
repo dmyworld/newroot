@@ -316,8 +316,53 @@ class Projects_model extends CI_Model
 
     public function deleteproject($id)
     {
-        $this->db->delete('geopos_todolist', array('related' => 1, 'rid' => $id));
+        $this->load->model('Audit_model', 'audit');
+        $user_id = $this->aauth->get_user()->id;
 
+        // --- AUDIT COMPLIANCE: PREVENT DELETION IF FINANCIAL RECORDS EXIST ---
+        if ($this->db->field_exists('project_id', 'geopos_transactions')) {
+            $this->db->where('project_id', $id);
+            $count = $this->db->count_all_results('geopos_transactions');
+            if ($count > 0) {
+                $this->audit->log([
+                    'user_id'   => $user_id,
+                    'action'    => 'UNAUTHORIZED_PROJECT_DELETE_ATTEMPT',
+                    'entity'    => 'geopos_projects',
+                    'entity_id' => $id,
+                    'details'   => json_encode(['reason' => 'Linked Transactions', 'count' => $count]),
+                    'ip_address'=> $this->input->ip_address(),
+                ]);
+                return false; // Cannot delete project with financial history
+            }
+        }
+
+        // Check for linked consumer orders (procurement requests)
+        if ($this->db->table_exists('consumer_orders')) {
+            $this->db->where('project_id', $id);
+            $count_orders = $this->db->count_all_results('consumer_orders');
+            if ($count_orders > 0) {
+                $this->audit->log([
+                    'user_id'   => $user_id,
+                    'action'    => 'UNAUTHORIZED_PROJECT_DELETE_ATTEMPT',
+                    'entity'    => 'geopos_projects',
+                    'entity_id' => $id,
+                    'details'   => json_encode(['reason' => 'Linked Shop Orders', 'count' => $count_orders]),
+                    'ip_address'=> $this->input->ip_address(),
+                ]);
+                return false;
+            }
+        }
+
+        $this->audit->log([
+            'user_id'   => $user_id,
+            'action'    => 'PROJECT_DELETE',
+            'entity'    => 'geopos_projects',
+            'entity_id' => $id,
+            'details'   => json_encode(['status' => 'success']),
+            'ip_address'=> $this->input->ip_address(),
+        ]);
+
+        $this->db->delete('geopos_todolist', array('related' => 1, 'rid' => $id));
         return $this->db->delete('geopos_projects', array('id' => $id));
     }
 
@@ -718,5 +763,37 @@ class Projects_model extends CI_Model
         return true;
     }
 
+    /**
+     * TimberPro - Get Project Ledger
+     * Returns all transactions linked to this project
+     */
+    public function project_ledger($project_id)
+    {
+        $this->db->select('*');
+        $this->db->from('geopos_transactions');
+        $this->db->where('project_id', $project_id);
+        $this->db->order_by('date', 'DESC');
+        return $this->db->get()->result_array();
+    }
 
+    /**
+     * TimberPro - Get Project P&L Summary
+     */
+    public function project_pnl($project_id)
+    {
+        $this->db->select_sum('debit', 'expense');
+        $this->db->select_sum('credit', 'income');
+        $this->db->from('geopos_transactions');
+        $this->db->where('project_id', $project_id);
+        $query = $this->db->get()->row_array();
+        
+        $income = $query['income'] ?: 0;
+        $expense = $query['expense'] ?: 0;
+        
+        return [
+            'income' => $income,
+            'expense' => $expense,
+            'profit' => $income - $expense
+        ];
+    }
 }

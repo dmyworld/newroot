@@ -27,7 +27,7 @@ class Clientgroup extends CI_Controller
         $this->load->model('customers_model', 'customers');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(3)) {
 

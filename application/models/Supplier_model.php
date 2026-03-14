@@ -36,11 +36,13 @@ class Supplier_model extends CI_Model
     {
 
         $this->db->from($this->table);
-          if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('loc', 0);
             }
+        }
         if ($id != '') {
             $this->db->where('gid', $id);
         }
@@ -81,8 +83,12 @@ class Supplier_model extends CI_Model
         $this->_get_datatables_query($id);
         if ($this->input->post('length') != -1)
             $this->db->limit($this->input->post('length'), $this->input->post('start'));
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->result();
@@ -91,11 +97,13 @@ class Supplier_model extends CI_Model
     function count_filtered($id = '')
     {
         $this->_get_datatables_query();
-             if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('loc', 0);
             }
+        }
         if ($id != '') {
             $this->db->where('gid', $id);
         }
@@ -107,11 +115,13 @@ class Supplier_model extends CI_Model
     public function count_all($id = '')
     {
         $this->_get_datatables_query();
-           if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('loc', 0);
             }
+        }
         $query = $this->db->get();
         if ($id != '') {
             $this->db->where('gid', $id);
@@ -125,10 +135,12 @@ class Supplier_model extends CI_Model
         $this->db->select('*');
         $this->db->from($this->table);
         $this->db->where('id', $custid);
-              if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->row_array();
@@ -161,8 +173,12 @@ class Supplier_model extends CI_Model
             'taxid' => $taxid
         );
 
-        if ($this->aauth->get_user()->loc) {
-            $data['loc'] = $this->aauth->get_user()->loc;
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $data['loc'] = $this->aauth->get_user()->loc;
+            } elseif (!BDATA) {
+                $data['loc'] = 0;
+            }
         }
 
 
@@ -197,10 +213,12 @@ class Supplier_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
             if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
 
         if ($this->db->update('geopos_supplier')) {
@@ -230,6 +248,13 @@ class Supplier_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         if ($this->db->update('geopos_supplier')) {
 
             unlink(FCPATH . 'userfiles/supplier/' . $result['picture']);
@@ -247,7 +272,13 @@ class Supplier_model extends CI_Model
 
     public function delete($id)
     {
-
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                return $this->db->delete('geopos_supplier', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
+            } elseif (!BDATA) {
+                return $this->db->delete('geopos_supplier', array('id' => $id, 'loc' => 0));
+            }
+        }
         return $this->db->delete('geopos_supplier', array('id' => $id));
     }
 
@@ -268,11 +299,13 @@ class Supplier_model extends CI_Model
     {
 
         $this->db->from('geopos_transactions');
-       if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('loc', 0);
             }
+        }
 
         $this->db->where('payerid', $id);
         $this->db->where('ext', 1);
@@ -316,11 +349,13 @@ class Supplier_model extends CI_Model
         if ($id != '') {
             $this->db->where('payerid', $id);
         }
-               if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('loc', 0);
             }
+        }
         return $query->num_rows($id = '');
     }
 
@@ -341,11 +376,13 @@ class Supplier_model extends CI_Model
         $this->db->from('geopos_purchase');
         $this->db->where('geopos_purchase.csd', $id);
         $this->db->join('geopos_supplier', 'geopos_purchase.csd=geopos_supplier.id', 'left');
-       if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('geopos_purchase.loc', 0);
             }
+        }
         $i = 0;
 
         foreach ($this->inv_column_search as $item) // loop column
@@ -388,11 +425,13 @@ class Supplier_model extends CI_Model
     function inv_count_filtered($id)
     {
         $this->_inv_datatables_query($id);
-             if ($this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
             } elseif (!BDATA) {
                 $this->db->where('geopos_purchase.loc', 0);
             }
+        }
         $query = $this->db->get();
         return $query->num_rows();
     }

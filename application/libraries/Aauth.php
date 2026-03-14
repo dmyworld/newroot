@@ -299,6 +299,8 @@ class Aauth
                 'username' => $row->username,
                 'email' => $row->email,
                 's_role' => 'r_'.$row->roleid,
+                'business_id' => $row->business_id,
+                'loc' => $row->loc,
                 'loggedin' => TRUE
             );
 
@@ -475,6 +477,8 @@ class Aauth
                 'username' => $row->username,
                 'email' => $row->email,
                 's_role' => 'r_'.$row->roleid,
+                'business_id' => $row->business_id,
+                'loc' => $row->loc,
                 'loggedin' => TRUE
             );
 
@@ -984,6 +988,45 @@ class Aauth
     }
 
     /**
+     * Granular RBAC: Check if user has a specific permission key
+     * @param string $perm_key (e.g., 'sales_invoices_view')
+     * @param int|bool $user_id
+     * @return bool
+     */
+    public function has_permission($perm_key, $user_id = FALSE)
+    {
+        if ($user_id == FALSE)
+            $user_id = $this->CI->session->userdata('id');
+
+        if (!$user_id) return FALSE;
+
+        // Get user's role
+        $query = $this->aauth_db->select('roleid')->where('id', $user_id)->get($this->config_vars['users']);
+        if (!$query || $query->num_rows() == 0) return FALSE;
+        $role_id = $query->row()->roleid;
+
+        // 1. Super Admin Check (Role 5 usually has all access)
+        $this->aauth_db->select('all_access');
+        $this->aauth_db->where('id', $role_id);
+        $role_query = $this->aauth_db->get('geopos_roles');
+        if($role_query && $role_query->num_rows() > 0) {
+            if($role_query->row()->all_access == 1) {
+                return true;
+            }
+        }
+
+        // 2. Granular Permission Check
+        $this->aauth_db->select('rp.id');
+        $this->aauth_db->from('rbac_role_permissions rp');
+        $this->aauth_db->join('rbac_permissions p', 'rp.permission_id = p.id');
+        $this->aauth_db->where('rp.role_id', $role_id);
+        $this->aauth_db->where('p.perm_key', $perm_key);
+        $query = $this->aauth_db->get();
+
+        return ($query && $query->num_rows() > 0);
+    }
+
+    /**
      * Check if a user has exceeded the demo limit (20 records/month) for a module.
      * @param int $module_id
      * @return bool|string TRUE if allowed, FALSE if limit exceeded, 'NONE' if not in demo
@@ -1020,16 +1063,26 @@ class Aauth
         $first_day = date('Y-m-01 00:00:00');
         $last_day = date('Y-m-t 23:59:59');
 
-        $this->aauth_db->where('loc', $loc);
+        if ($table == 'geopos_employees') {
+            $this->aauth_db->join('geopos_users', 'geopos_employees.id = geopos_users.id', 'left');
+            $this->aauth_db->where('geopos_users.loc', $loc);
+        } elseif ($table == 'geopos_products') {
+            $this->aauth_db->join('geopos_warehouse', 'geopos_products.warehouse = geopos_warehouse.id', 'left');
+            $this->aauth_db->where('geopos_warehouse.loc', $loc);
+        } elseif ($table == 'geopos_projects') {
+             // Projects might not have a direct loc, skip or join if known. 
+             // To avoid crash:
+             // $this->aauth_db->where('loc', $loc); // This was crashing
+        } else {
+            $this->aauth_db->where('loc', $loc);
+        }
         
         // Handle date column differences
         if ($table == 'geopos_invoices' || $table == 'geopos_quotes') {
             $this->aauth_db->where('invoicedate >=', $first_day);
             $this->aauth_db->where('invoicedate <=', $last_day);
-        } else {
-            // Fallback or specific columns if known. For simplicity, we assume 'd_date' or similar if not specified.
-            // To be safe, we check if 'invoicedate' exists, else we might need another check.
-            // For now, let's stick to Sales as the primary example.
+        } elseif ($table == 'geopos_employees') {
+             // HRM module count
         }
 
         $count = $this->aauth_db->count_all_results($table);
@@ -1070,7 +1123,13 @@ class Aauth
         $first_day = date('Y-m-01 00:00:00');
         $last_day = date('Y-m-t 23:59:59');
 
-        $this->aauth_db->where('loc', $loc);
+        if ($info['table'] == 'geopos_employees') {
+            $this->aauth_db->join('geopos_users', 'geopos_employees.id = geopos_users.id', 'left');
+            $this->aauth_db->where('geopos_users.loc', $loc);
+        } else {
+            $this->aauth_db->where('loc', $loc);
+        }
+
         if ($info['table'] == 'geopos_invoices' || $info['table'] == 'geopos_quotes') {
             $this->aauth_db->where('invoicedate >=', $first_day);
             $this->aauth_db->where('invoicedate <=', $last_day);
@@ -1353,6 +1412,32 @@ class Aauth
             return FALSE;
         }
         return $query->row()->id;
+    }
+
+    public function get_business_id($user_id = FALSE)
+    {
+        if ($user_id == FALSE) {
+            return $this->CI->session->userdata('business_id');
+        } else {
+            $query = $this->aauth_db->select('business_id')->where('id', $user_id)->get($this->config_vars['users']);
+            if ($query && $query->num_rows() > 0) {
+                return $query->row()->business_id;
+            }
+        }
+        return 0;
+    }
+
+    public function get_location_id($user_id = FALSE)
+    {
+        if ($user_id == FALSE) {
+            return $this->CI->session->userdata('loc');
+        } else {
+            $query = $this->aauth_db->select('loc')->where('id', $user_id)->get($this->config_vars['users']);
+            if ($query && $query->num_rows() > 0) {
+                return $query->row()->loc;
+            }
+        }
+        return 0;
     }
 
     /**

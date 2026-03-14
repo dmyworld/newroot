@@ -26,9 +26,9 @@ class Reports extends CI_Controller
         $this->load->model('reports_model', 'reports');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(6)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(6))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -619,5 +619,68 @@ class Reports extends CI_Controller
 
     }
 
+
+    public function pending_deletions()
+    {
+        if (!$this->aauth->is_loggedin()) {
+            redirect('/hub/login', 'refresh');
+        }
+        
+        $roleid = $this->aauth->get_user()->roleid;
+        if ($roleid < 4) {
+            exit('<h3>Access Denied</h3>');
+        }
+
+        $head['title'] = "Pending Deletions Review";
+        $head['usernm'] = $this->aauth->get_user()->username;
+        
+        // Items to review: 
+        // Owners (4) see '1' (Requested)
+        // SuperAdmins (5) see '2' (Approved/Pending Final Review)
+        $status_to_see = ($roleid == 1 || $roleid == 5) ? 2 : 1;
+        $user_loc = $this->aauth->get_user()->loc;
+        
+        // Invoices
+        $this->db->where('delete_status', $status_to_see);
+        if ($roleid == 4 && $user_loc > 0) $this->db->where('loc', $user_loc);
+        $data['invoices'] = $this->db->get('geopos_invoices')->result_array();
+
+        // Products
+        $this->db->where('delete_status', $status_to_see);
+        if ($roleid == 4 && $user_loc > 0) $this->db->where('loc', $user_loc);
+        $data['products'] = $this->db->get('geopos_products')->result_array();
+
+        // Customers (Global)
+        $data['customers'] = $this->db->where('delete_status', $status_to_see)->get('geopos_customers')->result_array();
+        
+        $this->load->view('fixed/header', $head);
+        $this->load->view('reports/pending_deletions', $data);
+        $this->load->view('fixed/footer');
+    }
+
+    public function approve_deletion()
+    {
+        $id = intval($this->input->get('id'));
+        $type = $this->input->get('type');
+        $roleid = $this->aauth->get_user()->roleid;
+
+        if ($roleid == 4) {
+            // Owner Approves -> Set to 2
+            $this->db->set('delete_status', 2)->where('id', $id)->update('geopos_'.$type);
+        } elseif ($roleid == 1 || $roleid == 5) {
+            // Super Admin Final Delete -> Hard Delete
+            $this->db->where('id', $id)->delete('geopos_'.$type);
+        }
+        redirect('reports/pending_deletions');
+    }
+
+    public function reject_deletion()
+    {
+        $id = intval($this->input->get('id'));
+        $type = $this->input->get('type');
+        // Restore to 0
+        $this->db->set('delete_status', 0)->where('id', $id)->update('geopos_'.$type);
+        redirect('reports/pending_deletions');
+    }
 
 }

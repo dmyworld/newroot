@@ -30,47 +30,52 @@ class User extends CI_Controller
         $this->load->library("Aauth");
         $this->load->library("Captcha_u");
         $this->load->library("form_validation");
-        $this->captcha = $this->captcha_u->public_key()->captcha;
+        $captchaHeader = $this->captcha_u->public_key();
+        $this->captcha = isset($captchaHeader->captcha) ? $captchaHeader->captcha : false;
+    }
 
+    public function login()
+    {
+        redirect('/hub/login', 'refresh');
     }
 
     public function index()
     {
-
-
-        if ($this->aauth->is_loggedin()) {
-            redirect('/dashboard/', 'refresh');
-        }
-        
-        // Phase 14: Load Marketing Landing Page to drive sales
-        $this->load->view('landing_page/index');
-
-
+        // Landing Page (Phase 1: Psychological UI/UX)
+        // This is the first touchpoint for new visitors at /
+        $data['title'] = "TimberPro - Sri Lanka's Leading Timber Ecosystem";
+        $this->load->view('public/header', $data);
+        $this->load->view('hub/landing', $data);
+        $this->load->view('public/footer', $data);
     }
 
     public function checklogin()
     {
-        $user = $this->input->post('username');
+        $user = $this->input->post('username'); // This is the field in the form
         $password = $this->input->post('password');
         $remember_me = $this->input->post('remember_me');
-        $rem = false;
-        if ($remember_me == 'on') {
-            $rem = true;
+        $rem = ($remember_me == 'on');
+
+        // Smart Login: Resolve email to username if necessary
+        if (filter_var($user, FILTER_VALIDATE_EMAIL)) {
+            $query = $this->db->get_where('geopos_users', ['email' => $user]);
+            if ($row = $query->row()) {
+                $user = $row->username;
+            }
         }
+
         if ($this->aauth->login($user, $password, $rem, $this->captcha)) {
             $this->aauth->applog("[Logged In] $user");
             redirect('/dashboard/', 'refresh');
         } else {
-
-            redirect('/user/?e=eyxde', 'refresh');
+            redirect('/hub/login?e=eyxde', 'refresh');
         }
-
     }
 
     public function profile()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -90,7 +95,7 @@ class User extends CI_Controller
     public function attendance()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -108,7 +113,7 @@ class User extends CI_Controller
     public function holidays()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = $head['usernm'] . ' attendance ';
@@ -122,7 +127,7 @@ class User extends CI_Controller
     public function getAttendance()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->model('employee_model', 'employee');
         $id = $this->aauth->get_user()->id;
@@ -136,7 +141,7 @@ class User extends CI_Controller
     public function getHolidays()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->model('employee_model', 'employee');
         $id = $this->aauth->get_user()->loc;
@@ -150,7 +155,7 @@ class User extends CI_Controller
     public function update()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -186,7 +191,7 @@ class User extends CI_Controller
     {
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $this->load->model('employee_model', 'employee');
@@ -205,7 +210,7 @@ class User extends CI_Controller
     public function user_sign()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -227,7 +232,7 @@ class User extends CI_Controller
     {
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $id = $this->aauth->get_user()->id;
@@ -365,15 +370,13 @@ class User extends CI_Controller
     {
         $this->aauth->applog('[Logged Out] ' . $this->aauth->get_user()->username);
         $this->aauth->logout();
-
-        redirect('/user/', 'refresh');
-
+        redirect('/hub/login', 'refresh');
     }
 
     public function salary()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $id = $this->aauth->get_user()->id;
         $head['usernm'] = $this->aauth->get_user()->username;

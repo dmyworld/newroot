@@ -28,11 +28,11 @@ class Export extends CI_Controller
         $this->load->library("Aauth");
         $this->load->model('export_model', 'export');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
             exit;
         }
 
-        if ($this->aauth->get_user()->roleid < 5) {
+        if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
 
             exit('Not Allowed!');
         }

@@ -38,8 +38,15 @@ class Transactions_model extends CI_Model
                 $this->db->where('type', 'Expense');
                 break;
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_transactions.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_transactions.loc', $this->aauth->get_user()->loc);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_transactions.loc', $this->input->post('location'));
         }
 
         $i = 0;
@@ -93,8 +100,15 @@ class Transactions_model extends CI_Model
                 $this->db->where('type', 'Expense');
                 break;
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_transactions.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_transactions.loc', $this->aauth->get_user()->loc);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_transactions.loc', $this->input->post('location'));
         }
         $query = $this->db->get();
         return $query->num_rows();
@@ -111,8 +125,15 @@ class Transactions_model extends CI_Model
                 $this->db->where('type', 'Expense');
                 break;
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->business_id) {
+            $this->db->where('geopos_transactions.business_id', $this->aauth->get_user()->business_id);
+        }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_transactions.loc', $this->aauth->get_user()->loc);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_transactions.loc', $this->input->post('location'));
         }
 
         return $this->db->count_all_results();
@@ -130,13 +151,15 @@ class Transactions_model extends CI_Model
     {
         $this->db->select('id,acn,holder');
         $this->db->from('geopos_accounts');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('loc', 0);
-            $this->db->group_end();
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->group_start();
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+                $this->db->group_end();
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->result_array();
@@ -169,6 +192,69 @@ class Transactions_model extends CI_Model
     }
 
     /**
+     * Records a multi-level double-entry transaction for the Project Ecosystem
+     * 1. Project Ledger: Debit project expense (Virtual Account/Tracker)
+     * 2. Location Ledger: Debit/Credit branch cash flow
+     * 3. Owner Ledger: Track net balances
+     * 4. Admin Ledger (Commission): Split admin commission
+     * 
+     * @param int $order_id Shop Order ID
+     * @param float $amount Total amount of the order
+     * @param int $project_id Project ID
+     * @param string $note Transaction Note
+     * @param int $loc Location ID
+     */
+    public function record_project_shop_expense($order_id, $amount, $project_id, $note, $loc = 0)
+    {
+        if (!$loc) $loc = $this->aauth->get_user()->loc;
+        $date = date('Y-m-d H:i:s');
+        $eid = $this->aauth->get_user()->id;
+
+        // 1. Determine accounts
+        $branch_cash_acc = $this->get_mapped_account('sales_income_acc') ?: 1; // Fallback to 1
+        $project_expense_acc = $this->get_mapped_account('pur_expense_acc') ?: 2; // Fallback to 2
+        $admin_commission_acc = $this->get_mapped_account('admin_commission_acc') ?: 3; // Fallback to 3
+
+        // 2. Calculate Admin Commission Logic dynamically using Commission_model
+        $this->load->model('Commission_model', 'commission');
+        // Let's assume the seller is the admin/owner of the location for now, or just get default rate
+        $commission_rate = $this->commission->get_rate(0); // Pass seller ID or 0 for default
+        $commission_amount = ($amount * $commission_rate) / 100;
+        $branch_net_amount = $amount - $commission_amount;
+
+        $payer_id = $project_id;
+        $payer_name = 'Project ID: ' . $project_id;
+        $paymethod = 'System Transfer';
+
+        // 3. Project Expense Entry (Debit Project, Credit Cash)
+        $this->add_double_entry(
+            $project_expense_acc, $branch_cash_acc,
+            $amount,
+            $note, $payer_id, $payer_name,
+            'Project Procurement', $paymethod, $date,
+            $loc, 0, $order_id, $project_id
+        );
+
+        // 4. Admin Commission Split (Debit Branch Cash, Credit Admin Commission)
+        if ($commission_amount > 0) {
+            // Register it in the commission tracker if applicable (treating order_id as invoice_id analog)
+            if ($this->db->table_exists('geopos_commissions')) {
+                $this->commission->record_commission($order_id, $amount, 0, $loc, 0, 'Project Shop Procurement');
+            }
+
+            $this->add_double_entry(
+                $admin_commission_acc, $branch_cash_acc,
+                $commission_amount,
+                "Commission for Order #$order_id", $loc, 'Branch ' . $loc,
+                'Admin Commission', 'Internal', $date,
+                $loc, 0, $order_id, $project_id
+            );
+        }
+
+        return true;
+    }
+
+    /**
      * Add a transaction entry
      * 
      * @param int $payer_id Payer ID
@@ -188,9 +274,10 @@ class Transactions_model extends CI_Model
      * @param int $doc_id Document ID
      * @param string $doc_type Document type
      * @param int $link_id Link ID
+     * @param int $project_id Project ID
      * @return mixed Insert result
      */
-        public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0, $wallet_balance = 0, $doc_id = 0, $doc_type = '', $link_id = 0)
+        public function addtrans($payer_id, $payer_name, $pay_acc, $date, $debit, $credit, $pay_type, $pay_cat, $paymethod, $note, $eid, $loc = 0, $ty = 0, $wallet_balance = 0, $doc_id = 0, $doc_type = '', $link_id = 0, $project_id = 0)
     {
         if (!$loc) $loc = $this->aauth->get_user()->loc;
 
@@ -199,13 +286,15 @@ class Transactions_model extends CI_Model
             $this->db->select('holder');
             $this->db->from('geopos_accounts');
             $this->db->where('id', $pay_acc);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             $account = $query->row_array();
@@ -261,7 +350,8 @@ class Transactions_model extends CI_Model
                     'note' => $note,
                     'ext' => $ty,
                     'loc' => $loc,
-                    'link_id' => $link_id
+                    'link_id' => $link_id,
+                    'project_id' => $project_id
                 );
                 $amount = $credit - $debit;
                 $this->db->set('lastbal', "lastbal+$amount", FALSE);
@@ -270,6 +360,17 @@ class Transactions_model extends CI_Model
 
                 $res = $this->db->insert('geopos_transactions', $data);
                 $tid = $this->db->insert_id();
+
+                // Real-Time Sync Trigger for Dashboards
+                $this->load->library('realtime');
+                $business_id = $this->aauth->get_user()->business_id ?: 0;
+                $this->realtime->trigger('new_transaction', [
+                    'id' => $tid,
+                    'amount' => $amount,
+                    'type' => $pay_type,
+                    'account' => $account['holder'],
+                    'message' => 'New '.$pay_type.' transaction added'
+                ], $business_id, $loc);
 
                 // Cheque Manager Integration
                 $cheque_number = $this->input->post('cheque_number', true);
@@ -316,26 +417,30 @@ class Transactions_model extends CI_Model
             $this->db->select('holder');
             $this->db->from('geopos_accounts');
             $this->db->where('id', $pay_acc);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             $account = $query->row_array();
             $this->db->select('holder');
             $this->db->from('geopos_accounts');
             $this->db->where('id', $pay_acc2);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             $account2 = $query->row_array();
@@ -404,57 +509,76 @@ class Transactions_model extends CI_Model
             return array('status' => 'Error', 'message' => 'Transaction not found');
         }
 
-        // --- FULL ROLLBACK LOGIC ---
+        $this->load->model('Audit_model', 'audit');
+        $user_id = $this->aauth->get_user()->id;
 
-        // 1. Check for Linked Transaction (Dual-Entry)
-        if ($trans['link_id'] > 0) {
-            $this->db->select('id');
-            $this->db->from('geopos_transactions');
-            $this->db->where('link_id', $trans['link_id']);
-            $this->db->where('id !=', $id); // Find the counterpart
-            $l_query = $this->db->get();
-            $l_trans = $l_query->row_array();
+        // Logging the attempt
+        $this->audit->log([
+            'user_id'   => $user_id,
+            'action'    => 'UNAUTHORIZED_DELETE_ATTEMPT',
+            'entity'    => 'geopos_transactions',
+            'entity_id' => $id,
+            'details'   => json_encode(['reason' => 'Immutable Ledger Rule Enforced']),
+            'ip_address'=> $this->input->ip_address(),
+        ]);
 
-            if ($l_trans) {
-                // Recursively delete the counterpart (but clear link_id first to avoid infinite loop)
-                $this->db->set('link_id', 0);
-                $this->db->where('id', $l_trans['id']);
-                $this->db->update('geopos_transactions');
-                $this->delt($l_trans['id']);
-            }
+        return array('status' => 'Error', 'message' => 'Financial records are immutable. Please use a Reversal Entry to correct mistakes.');
+    }
+
+    public function reverse_transaction($id, $reason)
+    {
+        $this->db->select('*');
+        $this->db->from('geopos_transactions');
+        $this->db->where('id', $id);
+        $query = $this->db->get();
+        $trans = $query->row_array();
+
+        if (!$trans) {
+            return array('status' => 'Error', 'message' => 'Transaction not found');
         }
 
-        // 2. Reverse Account Balance
-        $amt = $trans['credit'] - $trans['debit'];
-        $this->db->set('lastbal', "lastbal-$amt", FALSE);
-        $this->db->where('id', $trans['acid']);
-        $this->db->update('geopos_accounts');
+        $user_id = $this->aauth->get_user()->id;
+        $date = date('Y-m-d H:i:s');
+        $new_note = "REVERSAL of TRX #$id - Reason: " . $reason;
 
-        // 3. Reverse Invoice Payment (if applicable)
-        if ($trans['tid'] > 0 && $trans['ext'] == 0) {
-            $crd = $trans['credit'];
-            $this->db->set('pamnt', "pamnt-$crd", FALSE);
-            $this->db->set('status', "partial");
-            $this->db->where('id', $trans['tid']);
-            $this->db->update('geopos_invoices');
-        }
+        // Flip debit and credit to reverse the effect
+        $rev_debit = $trans['credit'];
+        $rev_credit = $trans['debit'];
+        $rev_type = ($trans['type'] == 'Income') ? 'Expense' : 'Income';
 
-        // 4. Delete Associated Cheques
-        $this->db->delete('geopos_cheques', array('tid' => $id));
+        // Perform the reverse transaction entry using addtrans
+        $this->addtrans(
+            $trans['payerid'],
+            $trans['payer'],
+            $trans['acid'],
+            $date,
+            $rev_debit,     // Swapped
+            $rev_credit,    // Swapped
+            $rev_type,      // Flipped
+            $trans['cat'],
+            $trans['method'],
+            $new_note,
+            $user_id,
+            $trans['loc'],
+            $trans['ext'],
+            0,
+            $trans['tid'],
+            'Reversal',
+            $id, // Link to original
+            $trans['project_id']
+        );
 
-        // 5. Delete the Transaction itself
-        $this->db->delete('geopos_transactions', array('id' => $id));
+        $this->load->model('Audit_model', 'audit');
+        $this->audit->log([
+            'user_id'   => $user_id,
+            'action'    => 'TRANSACTION_REVERSAL',
+            'entity'    => 'geopos_transactions',
+            'entity_id' => $id,
+            'details'   => json_encode(['reason' => $reason, 'reversed_amount' => ($rev_debit + $rev_credit)]),
+            'ip_address'=> $this->input->ip_address(),
+        ]);
 
-        // 6. Logging/Alerts
-        $alert = $this->custom->api_config(66);
-        if ($alert['key2'] == 1) {
-            $this->load->model('communication_model');
-            $subject = $trans['payer'] . ' ' . $this->lang->line('DELETED');
-            $body = $subject . '<br> ' . $this->lang->line('Credit') . ' ' . $this->lang->line('Amount') . ' ' . $trans['credit'] . '<br> ' . $this->lang->line('Debit') . ' ' . $this->lang->line('Amount') . ' ' . $trans['debit'] . '<br> ID# ' . $trans['id'];
-            $this->communication_model->send_corn_email($alert['url'], $alert['url'], $subject, $body, false, '');
-        }
-
-        return array('status' => 'Success', 'message' => $this->lang->line('DELETED'));
+        return array('status' => 'Success', 'message' => 'Transaction successfully reversed.');
     }
 
     public function view($id)
@@ -464,13 +588,15 @@ class Transactions_model extends CI_Model
         $this->db->from('geopos_transactions');
         $this->db->where('id', $id);
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('loc', 0);
-            $this->db->group_end();
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->group_start();
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+                $this->db->group_end();
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->row_array();
@@ -483,13 +609,15 @@ class Transactions_model extends CI_Model
             $this->db->select('*');
             $this->db->from('geopos_supplier');
             $this->db->where('id', $id);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             return $query->row_array();
@@ -498,13 +626,15 @@ class Transactions_model extends CI_Model
             $this->db->from('geopos_employees');
             $this->db->join('geopos_users', 'geopos_employees.id = geopos_users.id', 'left');
             $this->db->where('geopos_employees.id', $id);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             return $query->row_array();
@@ -512,13 +642,15 @@ class Transactions_model extends CI_Model
             $this->db->select('*');
             $this->db->from('geopos_customers');
             $this->db->where('id', $id);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->group_start();
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-                if (BDATA) $this->db->or_where('loc', 0);
-                $this->db->group_end();
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->group_start();
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                    if (BDATA) $this->db->or_where('loc', 0);
+                    $this->db->group_end();
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             $query = $this->db->get();
             return $query->row_array();
@@ -560,13 +692,15 @@ class Transactions_model extends CI_Model
         $this->db->select('balance');
         $this->db->from('geopos_customers');
         $this->db->where('id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if (BDATA) $this->db->or_where('loc', 0);
-            $this->db->group_end();
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->group_start();
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+                $this->db->group_end();
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->row_array();
@@ -588,6 +722,14 @@ class Transactions_model extends CI_Model
         $this->db->select('cat, SUM(debit) as total_debit, SUM(credit) as total_credit');
         $this->db->from('geopos_transactions');
         if ($loc > 0) {
+            $this->db->where('loc', $loc);
+        } elseif ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        } elseif ($loc > 0) {
             $this->db->where('loc', $loc);
         }
         if ($s_date && $e_date) {
@@ -658,7 +800,7 @@ class Transactions_model extends CI_Model
      * @return bool Success status
      */
     public function add_double_entry($debit_acc, $credit_acc, $amount, $note, $payer_id = 0, $payer_name = '', 
-                                     $category = '', $method = 'Journal', $date = '', $loc = 0, $ext = 0, $link_id = 0)
+                                     $category = '', $method = 'Journal', $date = '', $loc = 0, $ext = 0, $link_id = 0, $project_id = 0)
     {
         if (!$date) {
             $date = date('Y-m-d H:i:s');
@@ -702,7 +844,8 @@ class Transactions_model extends CI_Model
             0,           // wallet_balance
             0,           // doc_id
             '',          // doc_type
-            $link_id
+            $link_id,
+            $project_id
         );
         
         // Credit Entry
@@ -723,7 +866,8 @@ class Transactions_model extends CI_Model
             0,           // wallet_balance
             0,           // doc_id
             '',          // doc_type
-            $link_id
+            $link_id,
+            $project_id
         );
         
         $this->db->trans_complete();

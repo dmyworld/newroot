@@ -9,7 +9,7 @@ class Timesheets extends CI_Controller
         $this->load->library("Aauth");
         $this->load->model('payroll_rules_model', 'rules'); // Re-use this for job codes
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

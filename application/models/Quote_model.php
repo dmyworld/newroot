@@ -34,6 +34,13 @@ class Quote_model extends CI_Model
     {
         $this->db->select('tid');
         $this->db->from($this->table);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         $this->db->order_by('tid', 'DESC');
         $this->db->limit(1);
         $query = $this->db->get();
@@ -48,10 +55,14 @@ class Quote_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('geopos_warehouse');
-       if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-          if(BDATA)  $this->db->or_where('loc', 0);
-        }  elseif(!BDATA) { $this->db->where('loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
 
 
         $query = $this->db->get();
@@ -65,10 +76,12 @@ class Quote_model extends CI_Model
         $this->db->select('geopos_quotes.*,geopos_quotes.id AS iid,SUM(geopos_quotes.shipping + geopos_quotes.ship_tax) AS shipping,geopos_customers.*,geopos_quotes.loc as loc,geopos_customers.id AS cid,geopos_terms.id AS termid,geopos_terms.title AS termtit,geopos_terms.terms AS terms');
         $this->db->from($this->table);
         $this->db->where('geopos_quotes.id', $id);
-         if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_quotes.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
         }
         $this->db->join('geopos_customers', 'geopos_quotes.csd = geopos_customers.id', 'left');
         $this->db->join('geopos_terms', 'geopos_terms.id = geopos_quotes.term', 'left');
@@ -92,17 +105,16 @@ class Quote_model extends CI_Model
     public function quote_delete($id)
     {
         $this->db->trans_start();
-          if ($this->aauth->get_user()->loc) {
-                $res = $this->db->delete('geopos_quotes', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
-        }
-        else {
-            if (BDATA) {
-                    $res = $this->db->delete('geopos_quotes', array('id' => $id));
-
-            } else {
-                    $res = $this->db->delete('geopos_quotes', array('id' => $id,'loc' => 0));
+        $this->db->where('id', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
             }
         }
+        $res = $this->db->delete('geopos_quotes');
+
         if ($this->db->affected_rows()) $this->db->delete('geopos_quotes_items', array('tid' => $id));
         if ($this->db->trans_complete()) {
             return true;
@@ -118,10 +130,20 @@ class Quote_model extends CI_Model
         $this->db->select('geopos_quotes.id,geopos_quotes.tid,geopos_quotes.invoicedate,geopos_quotes.invoiceduedate,geopos_quotes.total,geopos_quotes.status,geopos_customers.name');
         $this->db->from($this->table);
         if ($eid) $this->db->where('geopos_quotes.eid', $eid);
-                if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_quotes.loc', $this->input->post('location'));
         }
-        elseif(!BDATA) { $this->db->where('geopos_quotes.loc', 0); }
+
+    // Business Isolation
+    if (isset($this->aauth->get_user()->business_id) && $this->aauth->get_user()->business_id > 0) {
+        $this->db->where('geopos_quotes.business_id', $this->aauth->get_user()->business_id);
+    }
                         if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
             $this->db->where('DATE(geopos_quotes.invoicedate) >=', datefordatabase($this->input->post('start_date')));
@@ -165,9 +187,15 @@ class Quote_model extends CI_Model
         $this->_get_datatables_query($eid);
         if ($_POST['length'] != -1)
             $this->db->limit($_POST['length'], $_POST['start']);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_quotes.loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_quotes.loc', $this->input->post('location'));
+        }
         $query = $this->db->get();
         return $query->result();
     }
@@ -175,9 +203,15 @@ class Quote_model extends CI_Model
     function count_filtered($eid)
     {
         $this->_get_datatables_query($eid);
-    if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_quotes.loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_quotes.loc', $this->input->post('location'));
+        }
         $query = $this->db->get();
         return $query->num_rows();
     }
@@ -186,9 +220,15 @@ class Quote_model extends CI_Model
     {
         $this->db->select('geopos_quotes.id');
         $this->db->from($this->table);
-         if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
-        }  elseif(!BDATA) { $this->db->where('geopos_quotes.loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_quotes.loc', $this->input->post('location'));
+        }
         if ($eid) $this->db->where('geopos_quotes.eid', $eid);
         return $this->db->count_all_results();
     }
@@ -233,7 +273,7 @@ class Quote_model extends CI_Model
         }
         $productlist = array();
         $prodindex = 0;
-        if($invoice['loc']==$this->aauth->get_user()->loc) {
+        if ($this->aauth->get_user()->roleid == 1 || $invoice['loc'] == $this->aauth->get_user()->loc) {
             $data = array('tid' => $iid, 'invoicedate' => $invoice['invoicedate'], 'invoiceduedate' => $invoice['invoicedate'], 'subtotal' => $invoice['invoicedate'], 'shipping' => $invoice['shipping'], 'ship_tax' => $invoice['ship_tax'], 'discount' => $invoice['discount'], 'tax' => $invoice['tax'], 'total' => $invoice['total'], 'notes' => $invoice['notes'], 'csd' => $invoice['csd'], 'eid' => $invoice['eid'], 'items' => $invoice['items'], 'taxstatus' => $invoice['taxstatus'], 'discstatus' => $invoice['discstatus'], 'format_discount' => $invoice['format_discount'], 'refer' => $invoice['refer'], 'term' => $invoice['term'], 'i_class' => 1, 'loc' => $invoice['loc']);
             $this->db->insert('geopos_invoices', $data);
             $iid = $this->db->insert_id();

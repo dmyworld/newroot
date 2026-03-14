@@ -49,10 +49,12 @@ class Customers_model extends CI_Model
             $this->db->from('geopos_invoices');
             $this->db->where('geopos_invoices.status!=', 'paid');
             $this->db->join('geopos_customers', 'geopos_customers.id = geopos_invoices.csd', 'left');
-            if ($this->aauth->get_user()->loc) {
-                $this->db->where('geopos_customers.loc', $this->aauth->get_user()->loc);
-            } elseif (!BDATA) {
-                $this->db->where('geopos_customers.loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->where('geopos_customers.loc', $this->aauth->get_user()->loc);
+                } elseif (!BDATA) {
+                    $this->db->where('geopos_customers.loc', 0);
+                }
             }
             if ($id != '') {
                 $this->db->where('geopos_customers.gid', $id);
@@ -62,10 +64,12 @@ class Customers_model extends CI_Model
 
         } else {
             $this->db->from($this->table);
-            if ($this->aauth->get_user()->loc) {
-                $this->db->where('loc', $this->aauth->get_user()->loc);
-            } elseif (!BDATA) {
-                $this->db->where('loc', 0);
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->where('loc', $this->aauth->get_user()->loc);
+                } elseif (!BDATA) {
+                    $this->db->where('loc', 0);
+                }
             }
             if ($id != '') {
                 $this->db->where('gid', $id);
@@ -107,8 +111,10 @@ class Customers_model extends CI_Model
     function get_datatables($id = '')
     {
         $this->_get_datatables_query($id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
         }
         if ($this->input->post('length') != -1)
             $this->db->limit($this->input->post('length'), $this->input->post('start'));
@@ -123,8 +129,10 @@ class Customers_model extends CI_Model
         if ($id != '') {
             $this->db->where('gid', $id);
         }
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
         }
         return $query->num_rows($id = '');
     }
@@ -132,8 +140,10 @@ class Customers_model extends CI_Model
     public function count_all($id = '')
     {
         $this->_get_datatables_query();
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
         }
         if ($id != '') {
             $this->db->where('gid', $id);
@@ -148,10 +158,12 @@ class Customers_model extends CI_Model
         $this->db->from($this->table);
         $this->db->join('users', 'users.cid=geopos_customers.id', 'left');
         $this->db->where('geopos_customers.id', $custid);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_customers.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_customers.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_customers.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_customers.loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->row_array();
@@ -224,8 +236,10 @@ class Customers_model extends CI_Model
             );
 
 
-            if ($this->aauth->get_user()->loc) {
-                $data['loc'] = $this->aauth->get_user()->loc;
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $data['loc'] = $this->aauth->get_user()->loc;
+                }
             }
 
             if ($this->db->insert('geopos_customers', $data)) {
@@ -317,10 +331,12 @@ class Customers_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
 
         if ($this->db->update('geopos_customers')) {
@@ -382,10 +398,12 @@ class Customers_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         if ($this->db->update('geopos_customers') AND $result['picture'] != 'example.png') {
 
@@ -399,11 +417,13 @@ class Customers_model extends CI_Model
     public function group_list()
     {
         $whr = "";
-        if ($this->aauth->get_user()->loc) {
-            $whr = "WHERE (geopos_customers.loc=" . $this->aauth->get_user()->loc . " ) ";
-            if (BDATA) $whr = "WHERE (geopos_customers.loc=" . $this->aauth->get_user()->loc . " OR geopos_customers.loc=0 ) ";
-        } elseif (!BDATA) {
-            $whr = "WHERE  geopos_customers.loc=0  ";
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $whr = "WHERE (geopos_customers.loc=" . $this->aauth->get_user()->loc . " ) ";
+                if (BDATA) $whr = "WHERE (geopos_customers.loc=" . $this->aauth->get_user()->loc . " OR geopos_customers.loc=0 ) ";
+            } elseif (!BDATA) {
+                $whr = "WHERE  geopos_customers.loc=0  ";
+            }
         }
 
         $query = $this->db->query("SELECT c.*,p.pc FROM geopos_cust_group AS c LEFT JOIN ( SELECT gid,COUNT(gid) AS pc FROM geopos_customers $whr GROUP BY gid) AS p ON p.gid=c.id");
@@ -414,13 +434,16 @@ class Customers_model extends CI_Model
     {
 
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->delete('geopos_customers', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->delete('geopos_customers', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
 
-        } elseif (!BDATA) {
-            $this->db->delete('geopos_customers', array('id' => $id, 'loc' => 0));
-        }
-        else{
+            } elseif (!BDATA) {
+                $this->db->delete('geopos_customers', array('id' => $id, 'loc' => 0));
+            } else {
+                $this->db->delete('geopos_customers', array('id' => $id));
+            }
+        } else {
             $this->db->delete('geopos_customers', array('id' => $id));
         }
 
@@ -525,10 +548,12 @@ class Customers_model extends CI_Model
         $this->db->select('geopos_invoices.*');
         $this->db->from('geopos_invoices');
         $this->db->where('geopos_invoices.csd', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
         }
 
         if ($tyd) $this->db->where('geopos_invoices.i_class>', 1);
@@ -585,6 +610,13 @@ class Customers_model extends CI_Model
     {
         $this->db->from('geopos_invoices');
         $this->db->where('csd', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
+        }
         return $this->db->count_all_results();
     }
 
@@ -594,10 +626,12 @@ class Customers_model extends CI_Model
         $this->db->select('geopos_quotes.*');
         $this->db->from('geopos_quotes');
         $this->db->where('geopos_quotes.csd', $id);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_quotes.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
         }
         $this->db->join('geopos_customers', 'geopos_quotes.csd=geopos_customers.id', 'left');
 
@@ -651,6 +685,13 @@ class Customers_model extends CI_Model
     {
         $this->db->from('geopos_quotes');
         $this->db->where('csd', $id);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_quotes.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_quotes.loc', 0);
+            }
+        }
         return $this->db->count_all_results();
     }
 
@@ -703,9 +744,14 @@ class Customers_model extends CI_Model
         $this->db->select("geopos_projects.*,geopos_customers.name AS customer");
         $this->db->from('geopos_projects');
         $this->db->join('geopos_customers', 'geopos_projects.cid = geopos_customers.id', 'left');
-
-
         $this->db->where('geopos_projects.cid=', $cday);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_customers.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_customers.loc', 0);
+            }
+        }
 
 
         $i = 0;
@@ -1005,10 +1051,12 @@ class Customers_model extends CI_Model
 
     public function get_fetchall()
     {
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get('geopos_customers');
         return $query->result_array();

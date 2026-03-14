@@ -30,7 +30,7 @@ class Delivery extends CI_Controller
         $this->load->library("Aauth");
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if (!$this->aauth->premission(1)) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');

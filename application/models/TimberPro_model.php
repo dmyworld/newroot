@@ -265,6 +265,23 @@ class TimberPro_model extends CI_Model
                 $this->db->insert('geopos_timber_wood_types', $d);
             }
         }
+
+        // Phase 22: AI Ads & Video Showcases (Revid AI Integration)
+        foreach ($main_tables as $table) {
+            if ($this->db->table_exists($table) && !$this->db->field_exists('revid_video_url', $table)) {
+                $this->dbforge->add_column($table, [
+                    'revid_video_url' => ['type' => 'VARCHAR', 'constraint' => '255', 'default' => NULL, 'null' => TRUE]
+                ]);
+                $this->db->query("ALTER TABLE `$table` ADD INDEX (`revid_video_url`)");
+            }
+        }
+
+        // Ensure Revid AI config slot exists
+        $this->db->where('id', 13);
+        $exists_revid = $this->db->get('geopos_config')->row_array();
+        if (!$exists_revid) {
+            $this->db->insert('geopos_config', array('id' => 13, 'fb_profile_id' => '', 'access_token' => ''));
+        }
     }
 
     public function save_photos($lot_id, $lot_type, $photos)
@@ -597,19 +614,19 @@ class TimberPro_model extends CI_Model
 
         // 1. Standing Trees Stats
         $this->db->select('COUNT(*) as total_lots');
-        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->_apply_loc_filter($loc);
         $results = $this->db->get('geopos_timber_standing')->row_array();
         $stats['standing'] = $results ? $results : array('total_lots' => 0);
 
         // 2. Logs Stats
         $this->db->select('COUNT(*) as total_lots, SUM(total_cubic_feet) as total_volume');
-        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->_apply_loc_filter($loc);
         $results = $this->db->get('geopos_timber_logs')->row_array();
         $stats['logs'] = $results ? $results : array('total_lots' => 0, 'total_volume' => 0);
 
         // 3. Sawn Timber Stats
         $this->db->select('COUNT(*) as total_lots, SUM(total_cubic_feet) as total_volume');
-        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->_apply_loc_filter($loc);
         $results = $this->db->get('geopos_timber_sawn')->row_array();
         $stats['sawn'] = $results ? $results : array('total_lots' => 0, 'total_volume' => 0);
 
@@ -658,7 +675,7 @@ class TimberPro_model extends CI_Model
 
     public function get_logs_at_location($loc = 0)
     {
-        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->_apply_loc_filter($loc);
         $this->db->where('status', 'available');
         return $this->db->get('geopos_timber_logs')->result_array();
     }
@@ -711,7 +728,7 @@ class TimberPro_model extends CI_Model
 
     public function get_sawmill_jobs($loc = 0)
     {
-        if ($loc > 0) $this->db->where('loc', $loc);
+        $this->_apply_loc_filter($loc);
         $this->db->order_by('created_at', 'DESC');
         return $this->db->get('geopos_timber_sawmill')->result_array();
     }
@@ -749,9 +766,29 @@ class TimberPro_model extends CI_Model
 
     public function get_global_inventory()
     {
-        $logs = $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc')->get('geopos_timber_logs')->result_array();
-        $sawn = $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc')->get('geopos_timber_sawn')->result_array();
+        $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc');
+        $this->_apply_loc_filter();
+        $logs = $this->db->get('geopos_timber_logs')->result_array();
+
+        $this->db->select('loc, SUM(total_cubic_feet) as vol')->group_by('loc');
+        $this->_apply_loc_filter();
+        $sawn = $this->db->get('geopos_timber_sawn')->result_array();
         
         return array('logs' => $logs, 'sawn' => $sawn);
+    }
+
+    private function _apply_loc_filter($loc = 0)
+    {
+        if ($this->aauth->get_user()->roleid == 1) {
+            if ($loc > 0) {
+                $this->db->where('loc', $loc);
+            }
+        } else {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
     }
 }

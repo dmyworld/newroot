@@ -125,12 +125,11 @@
 
                     <div class="col-sm-5">
                         <select name="roleid" class="form-control margin-bottom">
-                            <option value="4"><?= $this->lang->line('Business Manager') ?></option>
-                            <option value="3"><?= $this->lang->line('Sales Manager') ?></option>
-                            <option value="5"><?= $this->lang->line('Business Owner') ?></option>
-                            <option value="2"><?= $this->lang->line('Sales Person') ?></option>
-                            <option value="1"><?= $this->lang->line('Inventory Manager') ?></option>
-                            <option value="-1"><?= $this->lang->line('Project Manager') ?></option>
+                            <?php
+                            foreach ($roles as $row) {
+                                echo ' <option value="' . $row['id'] . '"> ' . $row['name'] . '</option>';
+                            }
+                            ?>
                         </select>
                     </div>
                 </div>
@@ -141,7 +140,7 @@
             <div class="form-group row">
 
                 <label class="col-sm-2 col-form-label"
-                       for="name"><?php echo $this->lang->line('Business Location') ?></label>
+                       for="name"><?php echo $this->lang->line('Business Location') ?> (Primary)</label>
 
                 <div class="col-sm-5">
                     <select name="location" class="form-control margin-bottom">
@@ -154,6 +153,23 @@
 
                         ?>
                     </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+
+                <label class="col-sm-2 col-form-label"
+                       for="locations">Assigned Branches</label>
+
+                <div class="col-sm-5">
+                    <select name="locations[]" class="form-control margin-bottom select-box" multiple="multiple">
+                        <?php
+                        foreach ($loc as $row) {
+                            echo ' <option value="' . $row['id'] . '"> ' . $row['cname'] . '</option>';
+                        }
+                        ?>
+                    </select>
+                    <small>Select additional branches for Business Owners and Service Providers.</small>
                 </div>
             </div>
 

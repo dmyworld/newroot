@@ -157,6 +157,11 @@ class Intelligence_model extends CI_Model
         $this->db->from('geopos_invoices');
         $this->db->where('DATE(invoicedate)', $date);
         if ($branch_id > 0) $this->db->where('loc', $branch_id);
+
+        // Business Isolation
+        if (isset($this->aauth->get_user()->business_id) && $this->aauth->get_user()->business_id > 0) {
+            $this->db->where('business_id', $this->aauth->get_user()->business_id);
+        }
         $query = $this->db->get();
         if (!$query) return 0.00;
         $result = $query->row();
@@ -171,6 +176,11 @@ class Intelligence_model extends CI_Model
         $this->db->where('geopos_metadata.type', 9);
         $this->db->where('DATE(geopos_metadata.d_date)', $date);
         if ($branch_id > 0) $this->db->where('geopos_invoices.loc', $branch_id);
+
+        // Business Isolation
+        if (isset($this->aauth->get_user()->business_id) && $this->aauth->get_user()->business_id > 0) {
+            $this->db->where('geopos_invoices.business_id', $this->aauth->get_user()->business_id);
+        }
         $query = $this->db->get();
         if (!$query) return 0.00;
         $result = $query->row();
@@ -673,29 +683,103 @@ class Intelligence_model extends CI_Model
         );
     }
 
+    public function get_dual_entry_profit($branch_id = 0, $start_date = '', $end_date = '')
+    {
+        // Net Profit = Total Income - Total Expenses (from transactions based on Account Type)
+        
+        $this->db->select_sum('t.credit');
+        $this->db->from('geopos_transactions t');
+        $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
+        $this->db->where('a.account_type', 'Income');
+        if ($branch_id > 0) $this->db->where('t.loc', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('t.loc', 0);
+        if ($start_date) $this->db->where('DATE(t.date) >=', $start_date);
+        if ($end_date) $this->db->where('DATE(t.date) <=', $end_date);
+        
+        $query_in = $this->db->get();
+        $income = ($query_in && $row = $query_in->row()) ? floatval($row->credit) : 0.00;
+
+        $this->db->select_sum('t.debit');
+        $this->db->from('geopos_transactions t');
+        $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
+        $this->db->where('a.account_type', 'Expenses');
+        if ($branch_id > 0) $this->db->where('t.loc', $branch_id);
+        elseif ($branch_id == 0 && !BDATA) $this->db->where('t.loc', 0);
+        if ($start_date) $this->db->where('DATE(t.date) >=', $start_date);
+        if ($end_date) $this->db->where('DATE(t.date) <=', $end_date);
+        
+        $query_out = $this->db->get();
+        $expense = ($query_out && $row = $query_out->row()) ? floatval($row->debit) : 0.00;
+
+        return ($income - $expense);
+    }
+
     public function get_total_cash_in_hand($branch_id = 0) { return $this->_get_balance_by_type('Assets', $branch_id, 'Cash'); }
     public function get_total_bank_balance($branch_id = 0) { return $this->_get_balance_by_type('Assets', $branch_id, 'Bank'); }
     public function get_total_receivables($branch_id = 0) { return $this->get_customer_due($branch_id, '', date('Y-m-d')); }
     public function get_total_payables($branch_id = 0) { return $this->get_supplier_due($branch_id, '', date('Y-m-d')); }
     public function get_today_total_sales($branch_id = 0) { return $this->get_aggregated_sales(date('Y-m-d'), $branch_id); }
 
-    public function get_dual_entry_profit($branch_id = 0, $start_date = '', $end_date = '')
+    public function get_bundle_suggestions($product_ids = [])
     {
-        if ($start_date && $end_date) {
-            $this->db->select_sum('t.credit'); $this->db->select_sum('t.debit');
-            $this->db->from('geopos_transactions t');
-            $this->db->join('geopos_accounts a', 't.acid = a.id', 'left');
-            $this->db->group_start();
-            $this->db->where('a.account_type', 'Income'); $this->db->or_where('a.account_type', 'Expenses');
-            $this->db->group_end();
-            if ($branch_id > 0) {
-                $this->db->group_start(); $this->db->where('t.loc', $branch_id); $this->db->or_where('a.loc', $branch_id); $this->db->group_end();
+        if (empty($product_ids)) return [];
+
+        $suggestions = [];
+        
+        // 1. Fetch product categories/names for bundling logic
+        $this->db->select('pid, product_name, pcat');
+        $this->db->from('geopos_products');
+        $this->db->where_in('pid', $product_ids);
+        $products = $this->db->get()->result_array();
+
+        foreach ($products as $p) {
+            $name = strtolower($p['product_name']);
+            $cat  = $p['pcat'];
+
+            // Logic rules
+            // Timber bundling
+            if (strpos($name, 'timber') !== false || strpos($name, 'log') !== false || strpos($name, 'wood') !== false) {
+                $suggestions[] = ['type' => 'service', 'category' => 'Transport', 'reason' => 'Need delivery for your timber?'];
+                $suggestions[] = ['type' => 'service', 'category' => 'Sawing', 'reason' => 'Professional sawing available.'];
             }
-            $this->db->where('DATE(t.date) >=', $start_date); $this->db->where('DATE(t.date) <=', $end_date);
-            $result = $this->db->get()->row();
-            return ($result->credit ?? 0) - ($result->debit ?? 0);
-        } else {
-            return ($this->_get_balance_by_type('Income', $branch_id) - $this->_get_balance_by_type('Expenses', $branch_id));
+
+            // Construction bundling
+            if (strpos($name, 'cement') !== false || strpos($name, 'brick') !== false) {
+                $suggestions[] = ['type' => 'service', 'category' => 'Masonry', 'reason' => 'Hire a skilled mason for your project.'];
+            }
+
+            // Finishings
+            if (strpos($name, 'paint') !== false) {
+                $suggestions[] = ['type' => 'service', 'category' => 'Painting', 'reason' => 'Find expert painters nearby.'];
+            }
         }
+
+        // Deduplicate and Fetch actual service providers or categories
+        $unique_cats = array_unique(array_column($suggestions, 'category'));
+        $final_suggestions = [];
+
+        foreach ($unique_cats as $cat_name) {
+            // Find first reason for this category
+            $reason = '';
+            foreach($suggestions as $s) if($s['category'] == $cat_name) { $reason = $s['reason']; break; }
+
+            // Fetch top 2 providers in this category
+            $this->db->select('id, name, rating, hourly_rate');
+            $this->db->from('geopos_workers'); // Assuming a workers table exists from previous steps
+            $this->db->where('category', $cat_name);
+            $this->db->order_by('rating', 'DESC');
+            $this->db->limit(2);
+            $providers = $this->db->get()->result_array();
+
+            if (!empty($providers)) {
+                $final_suggestions[] = [
+                    'category' => $cat_name,
+                    'reason'   => $reason,
+                    'providers'=> $providers
+                ];
+            }
+        }
+
+        return $final_suggestions;
     }
 }

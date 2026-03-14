@@ -26,10 +26,10 @@ class Templates extends CI_Controller
 
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
-        if ($this->aauth->get_user()->roleid < 5) {
+        if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 

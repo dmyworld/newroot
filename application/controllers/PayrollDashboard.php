@@ -15,7 +15,12 @@ class PayrollDashboard extends CI_Controller
         $this->load->model('payroll_report_model', 'reports');
         
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
+        }
+
+        if ($this->aauth->get_user()->roleid != 1) {
+             // Maybe allow other roles later, but for now restrict to Super Admin if sensitivity is an issue
+             // exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         
         $this->li_a = 'payroll';

@@ -28,50 +28,74 @@ class Myapp extends CI_Controller
         $row = $query->row_array();
         if ($query && $query->num_rows() > 0) {
             $row = $query->row_array();
-            $this->lang->load($row["lang"], $row["lang"]);
-            $this->config->set_item('ctitle', $row["cname"]);
-            $this->config->set_item('address', $row["address"]);
-            $this->config->set_item('city', $row["city"]);
-            $this->config->set_item('region', $row["region"]);
-            $this->config->set_item('country', $row["country"]);
-            $this->config->set_item('phone', $row["phone"]);
-            $this->config->set_item('email', $row["email"]);
-            $this->config->set_item('tax', $row["tax"]);
-            $this->config->set_item('taxno', $row["taxid"]);
+            $ci->lang->load($row["lang"], $row["lang"]);
+            $ci->config->set_item('ctitle', $row["cname"]);
+            $ci->config->set_item('address', $row["address"]);
+            $ci->config->set_item('city', $row["city"]);
+            $ci->config->set_item('region', $row["region"]);
+            $ci->config->set_item('country', $row["country"]);
+            $ci->config->set_item('phone', $row["phone"]);
+            $ci->config->set_item('email', $row["email"]);
+            $ci->config->set_item('tax', $row["tax"]);
+            $ci->config->set_item('taxno', $row["taxid"]);
 
-            $this->config->set_item('format_curr', $row["currency_format"]);
-            $this->config->set_item('prefix', $row["prefix"]);
-            // $this->config->set_item('date_f',$row["dfomat"]);
-            $this->config->set_item('tzone', $row["zone"]);
-            $this->config->set_item('logo', $row["logo"]);
+            $ci->config->set_item('format_curr', $row["currency_format"]);
+            $ci->config->set_item('prefix', $row["prefix"]);
+            // $ci->config->set_item('date_f',$row["dfomat"]);
+            $ci->config->set_item('tzone', $row["zone"]);
+            $ci->config->set_item('logo', $row["logo"]);
 
 
             switch ($row['dformat']) {
                 case 1:
-                    $this->config->set_item('date', date("d-m-Y"));
-                    $this->config->set_item('dformat', "d-m-Y");
-                    $this->config->set_item('dformat2', "dd-mm-yyyy");
+                    $ci->config->set_item('date', date("d-m-Y"));
+                    $ci->config->set_item('dformat', "d-m-Y");
+                    $ci->config->set_item('dformat2', "dd-mm-yyyy");
                     break;
                 case 2:
-                    $this->config->set_item('date', date("Y-m-d"));
-                    $this->config->set_item('dformat', "Y-m-d");
-                    $this->config->set_item('dformat2', "yyyy-mm-dd");
+                    $ci->config->set_item('date', date("Y-m-d"));
+                    $ci->config->set_item('dformat', "Y-m-d");
+                    $ci->config->set_item('dformat2', "yyyy-mm-dd");
                     break;
                 case 3:
-                    $this->config->set_item('date', date("m-d-Y"));
-                    $this->config->set_item('dformat', "m-d-Y");
-                    $this->config->set_item('dformat2', "mm-dd-yyyy");
+                    $ci->config->set_item('date', date("m-d-Y"));
+                    $ci->config->set_item('dformat', "m-d-Y");
+                    $ci->config->set_item('dformat2', "mm-dd-yyyy");
                     break;
             }
             date_default_timezone_set($row["zone"]);
         }
-
-
-
-
-
     }
 
+    public function subscription_check()
+    {
+        $ci =& get_instance();
+        
+        // Ensure Aauth is loaded. Many controllers load it, but we check here too.
+        if (!isset($ci->aauth)) {
+            $ci->load->library("Aauth");
+        }
+        
+        if (isset($ci->aauth) && $ci->aauth->is_loggedin()) {
+            $user_id = $ci->aauth->get_user()->id;
+            
+            // Check subscription status in geopos_users
+            $query_sub = $ci->db->query("SELECT subscription_status FROM geopos_users WHERE id = $user_id LIMIT 1");
+            $user_sub = $query_sub->row_array();
+            
+            $subscription_status = isset($user_sub['subscription_status']) ? $user_sub['subscription_status'] : 'active';
+
+            $current_uri = $ci->uri->uri_string();
+            $allowed_uris = array('user/logout', 'hub/pending', 'user/login');
+
+            if ($subscription_status == 'pending' && !in_array($current_uri, $allowed_uris)) {
+                // If the user is pending, only allow access to hub/ and user/logout
+                if (strpos($current_uri, 'hub/') === false && strpos($current_uri, 'user/logout') === false) {
+                    redirect('hub/pending');
+                }
+            }
+        }
+    }
 }
 
 ?>

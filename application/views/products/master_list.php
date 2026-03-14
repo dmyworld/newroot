@@ -27,7 +27,19 @@
                         <td><?php echo $row['product_name']; ?></td>
                         <td><?php echo $row['product_code']; ?></td>
                         <td><?php echo $row['warehouse_name']; ?></td>
-                        <td><?php echo $row['qty']; ?></td>
+                        <td>
+                            <?php
+                            $qty = +$row['qty'];
+                            $alert = +$row['alert'];
+                            $color = 'success';
+                            if ($qty <= $alert) {
+                                $color = 'danger';
+                            } elseif ($qty <= $alert * 2) {
+                                $color = 'warning';
+                            }
+                            ?>
+                            <span class="badge badge-<?php echo $color; ?> px-2" style="font-size:1rem; border-radius:12px;"><?php echo $qty; ?></span>
+                        </td>
                         <td>
                             <button class="btn btn-primary btn-sm import-btn" 
                                     data-pid="<?php echo $row['pid']; ?>" 

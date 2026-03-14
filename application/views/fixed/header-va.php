@@ -350,7 +350,7 @@
         .header-navbar .navbar-header { background: transparent !important; }
         .header-navbar .navbar-container { padding: 0 1.5rem; }
 
-        .nav-item .btn-pos {
+        .btn-pos {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
             border: none !important;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
@@ -361,9 +361,12 @@
             overflow: hidden;
             position: relative;
             color: white !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-item .btn-alert {
+        .btn-alert {
             background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
             border: none !important;
             box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4) !important;
@@ -374,15 +377,18 @@
             overflow: hidden;
             position: relative;
             color: white !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .nav-item .btn-pos:hover, .nav-item .btn-alert:hover {
+        .btn-pos:hover, .btn-alert:hover {
             transform: translateY(-2px);
             filter: brightness(1.1);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
         }
 
-        .nav-item .btn-pos::after, .nav-item .btn-alert::after {
+        .btn-pos::after, .btn-alert::after {
             content: '';
             position: absolute;
             top: 0;
@@ -843,6 +849,16 @@
         /* Show Expanded Logo on Hover */
         body.vertical-layout.vertical-menu-modern.menu-collapsed:has(.main-menu:hover) .navbar .navbar-header .brand-logo .logo-expanded { display: block !important; }
         body.vertical-layout.vertical-menu-modern.menu-collapsed:has(.main-menu:hover) .navbar .navbar-header .brand-logo .logo-collapsed { display: none !important; }
+
+        /* Multi-location / Sprint 1: Soft-Delete Highlighting */
+        .pending-delete-row {
+            background-color: rgba(239, 68, 68, 0.08) !important;
+            border-left: 4px solid #ef4444 !important;
+            transition: all 0.3s ease;
+        }
+        .pending-delete-row:hover {
+            background-color: rgba(239, 68, 68, 0.12) !important;
+        }
     </style>
     <script type="text/javascript">
         var baseurl = '<?php echo base_url(); ?>';
@@ -871,19 +887,39 @@
                                                               href="#"><i class="ft-menu"></i></a></li>
 
 
-                    <li class="dropdown  nav-item"><a class="nav-link nav-link-label" href="#"
+                    <li class="dropdown nav-item"><a class="nav-link nav-link-label" href="#"
                                                       data-toggle="dropdown"><i
-                                    class="ficon ft-map-pin success"></i></a>
+                                     class="ficon ft-map-pin success"></i></a>
                         <ul class="dropdown-menu dropdown-menu-media dropdown-menu-left">
                             <li class="dropdown-menu-header">
                                 <h6 class="dropdown-header m-0"><span
-                                            class="grey darken-2"><i
-                                                class="ficon ft-map-pin success"></i><?php echo $this->lang->line('Business') . ' ' . $this->lang->line('Location') ?></span>
+                                             class="grey darken-2"><i
+                                                 class="ficon ft-map-pin success"></i><?php echo $this->lang->line('Business') . ' ' . $this->lang->line('Location') ?></span>
                                 </h6>
                             </li>
-
+                            <div class="scrollable-container media-list">
+                                <?php
+                                $this->db->select('geopos_locations.id, geopos_locations.cname');
+                                $this->db->from('geopos_locations');
+                                $roleid = $this->aauth->get_user()->roleid;
+                                if ($roleid != 1) {
+                                    // If not Super Admin, check assigned locations
+                                    $this->db->join('geopos_user_locations', 'geopos_locations.id = geopos_user_locations.location_id');
+                                    $this->db->where('geopos_user_locations.user_id', $this->aauth->get_user()->id);
+                                }
+                                $this->db->where('geopos_locations.delete_status', 0);
+                                $this->db->where('geopos_locations.id !=', 0);
+                                $query = $this->db->get();
+                                $locs = ($query) ? $query->result_array() : array();
+                                
+                                foreach ($locs as $row) {
+                                    $active = ($row['id'] == $this->session->userdata('loc')) ? 'style="border-left: 3px solid #22c55e; background: rgba(34, 197, 94, 0.05);"' : '';
+                                    echo '<a class="dropdown-item" '.$active.' href="'.base_url('OwnerDashboard/switch_location?id='.$row['id']).'">'.$row['cname'].'</a>';
+                                }
+                                ?>
+                            </div>
                             <li class="dropdown-menu-footer"><span class="dropdown-item text-muted text-center blue"
-                                > <?php $loc = location($this->aauth->get_user()->loc);
+                                > Current: <?php $loc = location($this->session->userdata('loc'));
                                     echo $loc['cname']; ?></span>
                             </li>
                         </ul>
@@ -911,7 +947,7 @@
 
                 </ul>
 
-                <ul class="nav navbar-nav float-right"><?php if ($this->aauth->get_user()->roleid == 5) { ?>
+                <ul class="nav navbar-nav float-right"><?php if ($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid == 5) { ?>
                         <li class="dropdown nav-item mega-dropdown"><a class="dropdown-toggle nav-link " href="#"
                                                                        data-toggle="dropdown"><?php echo $this->lang->line('Business') ?><?php echo $this->lang->line('Settings') ?></a>
                             <ul class="mega-dropdown-menu dropdown-menu row">
@@ -1415,541 +1451,284 @@
             <?php
                 $roleid = $this->aauth->get_user()->roleid;
                 $username = $this->aauth->get_user()->username;
-                $is_superadmin = ($roleid == 5);
-                $is_owner      = ($roleid == 5 || $roleid == 4);
+                $is_superadmin = ($roleid == 1 || $roleid == 5);
+                $is_owner      = ($roleid == 1 || $roleid == 5 || $roleid == 4);
                 $is_manager    = ($roleid >= 3);
                 $is_staff      = ($roleid >= 1);
                 $is_customer   = ($roleid == 0);
                 
-                // Blueprint visibility flags
-                $show_erp         = ($is_manager); 
-                $show_finance     = ($is_manager || $username == 'accountant');
-                $show_timber      = ($is_manager || $roleid == 2);
-                $show_hr          = ($is_manager || $username == 'accountant');
-                $show_logistics   = ($is_manager || $roleid == 2);
+                // Blueprint visibility flags: Incorporating Granular RBAC
+                $show_erp         = ($is_manager || $this->aauth->has_permission('sales_invoices_view')); 
+                $show_finance     = ($is_manager || $this->aauth->has_permission('accounts_view'));
+                $show_health      = ($is_superadmin || $this->aauth->has_permission('global_settings_view'));
+                $show_hr          = ($is_manager || $this->aauth->has_permission('employees_view'));
+                $show_gig         = ($is_manager || $this->aauth->has_permission('active_rings_view'));
+                $show_marketing   = ($is_manager || $this->aauth->has_permission('ai_video_showcase_view'));
                 $show_marketplace = ($is_staff || $is_customer);
-                $show_workforce   = ($is_manager || $username == 'servicepro' || $username == 'accountant');
             ?>
             
-            <!-- 1. MY ORGANIZATION & CORE -->
-            <?php if ($show_erp) { ?>
-            <li class="navigation-header section-erp"><span>🏢 My Organization</span></li>
-            <?php } ?>
-            
+            <!-- 1. DASHBOARDS (Common) -->
+            <li class="navigation-header section-erp"><span>📊 Dashboard Center</span></li>
             <li class="nav-item section-erp <?php if (current_url() == base_url('dashboard')) echo 'active'; ?>">
-                <a href="<?= base_url(); ?>dashboard/"><i class="ft-home"></i><span>Dashboard (Main)</span></a>
+                <a href="<?= base_url(); ?>dashboard/"><i class="ft-home"></i><span>Main Dashboard</span></a>
             </li>
 
-            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "org") echo 'open active'; ?>">
-                <a href="#"><i class="ft-briefcase"></i><span>Organization (Locations අනුව)</span></a>
-                <ul class="menu-content">
-                    <?php if ($is_manager) { ?>
-                    <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>productcategory/warehouse"><i class="ft-map-pin"></i>Locations & Warehouses</a>
-                    </li>
-                    <?php } ?>
-                    <?php if ($this->aauth->premission(9) || $this->aauth->is_admin()) { ?>
-                    <li class="menu-item <?php if ($this->li_a == 'employee') echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>employee"><i class="ft-users"></i>Staff Management</a>
-                    </li>
-                    <li class="menu-item <?php if (current_url() == base_url('employee/roles')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>employee/roles"><i class="ft-shield"></i>Roles & Permissions</a>
-                    </li>
-                    <?php } ?>
-                </ul>
+            <?php if ($roleid == 1 || $roleid == 5 || $this->aauth->premission(10)) { ?>
+            <li class="nav-item section-erp <?php if (strpos(current_url(), 'SystemHealth') !== false) echo 'active'; ?>">
+                <a href="<?= base_url(); ?>SystemHealth/dashboard"><i class="ft-activity"></i><span>System Health Status</span></a>
             </li>
+            <?php } ?>
 
-            <!-- 2. ACCOUNTING & FINANCE -->
-            <?php if ($show_finance) { ?>
-            <li class="navigation-header section-erp"><span>💰 Accounting (Locations අනුව)</span></li>
-            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounting") echo 'open active'; ?>">
-                <a href="#"><i class="ft-trending-up"></i><span>Accounting Center</span></a>
+            <!-- 2. SALES (Module 1) -->
+            <?php if ($this->aauth->premission(1)) { ?>
+            <li class="navigation-header section-erp"><span>💰 Sales & Invoicing</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "sales") echo 'open active'; ?>">
+                <a href="#"><i class="ft-shopping-cart"></i><span><?php echo $this->lang->line('sales') ?></span></a>
                 <ul class="menu-content">
-                    <li class="menu-item <?php if (current_url() == base_url('settings/dual_entry')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>settings/dual_entry"><i class="ft-list"></i>Double Entry Ledger</a>
+                    <li class="menu-item <?php if (current_url() == base_url('pos_invoices/create')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>pos_invoices/create"><i class="ft-plus-circle"></i><?php echo $this->lang->line('New Invoice'); ?></a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('financial/profit_loss')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>financial/profit_loss"><i class="ft-pie-chart"></i>Profit & Loss (P&L)</a>
+                    <li class="menu-item <?php if (current_url() == base_url('pos_invoices')) echo 'active'; ?>">
+                        <a href="<?php echo base_url(); ?>pos_invoices"><i class="ft-list"></i><?php echo $this->lang->line('Manage Invoices'); ?></a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('financial/balance_sheet')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>financial/balance_sheet"><i class="ft-file-text"></i>Balance Sheet</a>
-                    </li>
-                    <li class="menu-item <?php if ($this->li_a == 'accounts') echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>accounts"><i class="ft-credit-card"></i>Manage Accounts</a>
+                    <li class="menu-item <?php if (current_url() == base_url('pos_invoices/quotecreate')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>pos_invoices/quotecreate"><i class="ft-file"></i><?php echo $this->lang->line('New Quote'); ?></a>
                     </li>
                 </ul>
             </li>
             <?php } ?>
 
-            <!-- 3. TIMBER OPERATIONS -->
-            <?php if ($show_timber) { ?>
-            <li class="navigation-header section-erp"><span>🌲 Timber Operations</span></li>
-            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "timberpro") echo 'open active'; ?>">
-                <a href="#"><i class="ft-layers"></i><span>Operations Engine</span></a>
+            <!-- 3. STOCK & INVENTORY (Module 2) -->
+            <?php if ($this->aauth->premission(2)) { ?>
+            <li class="navigation-header section-erp"><span>📦 Inventory Operations</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock") echo 'open active'; ?>">
+                <a href="#"><i class="ft-package"></i><span><?php echo $this->lang->line('Stock') ?></span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('products')) echo 'active'; ?>">
+                        <a href="<?php echo base_url(); ?>products"><i class="ft-box"></i><?= $this->lang->line('Manage Products'); ?></a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('products/stock_transfer')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>products/stock_transfer"><i class="ft-wind"></i>Stock Transfer</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>productcategory/warehouse"><i class="ft-map-pin"></i>Warehouses</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "purchase") echo 'open active'; ?>">
+                <a href="#"><i class="ft-download"></i><span>Purchasing (LOGS)</span></a>
                 <ul class="menu-content">
                     <li class="menu-item <?php if (current_url() == base_url('purchase/log_purchasing')) echo 'active'; ?>">
                         <a href="<?= base_url(); ?>purchase/log_purchasing"><i class="ft-shopping-cart"></i>Log Purchasing</a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('sawmill/processing')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>sawmill/processing"><i class="ft-cpu"></i>Sawmill Processing</a>
+                    <li class="menu-item <?php if (current_url() == base_url('purchase')) echo 'active'; ?>">
+                        <a href="<?php echo base_url(); ?>purchase"><i class="ft-file-text"></i><?= $this->lang->line('Manage Orders'); ?></a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('TimberPro/input')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>TimberPro/input"><i class="ft-package"></i>Stock (Sawn Timber)</a>
+                </ul>
+            </li>
+            <?php } ?>
+            
+            <!-- Service Management (Phase 1) -->
+            <?php if ($roleid == 1) { ?>
+            <li class="navigation-header section-services"><span>🛠️ Service Management</span></li>
+            <li class="nav-item has-sub section-services <?php if ($this->li_a == "service_mgmt") echo 'open active'; ?>">
+                <a href="#"><i class="ft-briefcase"></i><span>Service Management</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('servicecategories')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>servicecategories"><i class="ft-folder"></i>Service Categories</a>
                     </li>
+                    <li class="menu-item <?php if (current_url() == base_url('services')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>services"><i class="ft-list"></i>Master Service List</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <!-- 4. CRM & CUSTOMERS (Module 3) -->
+            <?php if ($this->aauth->premission(3)) { ?>
+            <li class="navigation-header section-erp"><span>👥 CRM & Clients</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "customers") echo 'open active'; ?>">
+                <a href="#"><i class="ft-users"></i><span>Customers</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>customers">Manage Customers</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('customers/groups')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>customers/groups">Customer Groups</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <!-- 5. PROJECT MANAGEMENT (Module 4) -->
+            <?php if ($this->aauth->premission(4)) { ?>
+            <li class="navigation-header section-erp"><span>🏗️ Project Hub</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "projects") echo 'open active'; ?>">
+                <a href="#"><i class="ft-grid"></i><span>Manage Projects</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('projects')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>projects">Projects List</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('projects/tasks')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>projects/tasks">Project Tasks</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "timberpro") echo 'open active'; ?>">
+                <a href="#"><i class="ft-layers"></i><span>Timber Operations</span></a>
+                <ul class="menu-content">
                     <li class="menu-item <?php if (current_url() == base_url('TimberPro')) echo 'active'; ?>">
                         <a href="<?= base_url(); ?>TimberPro"><i class="ft-activity"></i>Timber Dashboard</a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('transfers')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>transfers"><i class="ft-shuffle"></i>Inter-Location Transfers</a>
+                    <li class="menu-item <?php if (current_url() == base_url('sawmill/processing')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>sawmill/processing"><i class="ft-cpu"></i>Sawmill Processing</a>
                     </li>
-                    <?php if ($this->aauth->get_user()->roleid == 9) { ?>
-                    <li class="menu-item <?php if (current_url() == base_url('TimberPro/global_inventory')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>TimberPro/global_inventory"><i class="ft-globe"></i>Global Stock Report</a>
-                    </li>
-                    <?php } ?>
                 </ul>
             </li>
             <?php } ?>
 
-            <?php if ($this->aauth->premission(1)) { ?>
-                <!-- Sales -->
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "sales") echo 'open'; ?>">
-                    <a href="#"><i class="ft-shopping-cart"></i><span><?php echo $this->lang->line('sales') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if ($this->li_a == "pos") echo 'active'; ?>">
-                            <a href="#"><i class="ft-chevron-right"></i>POS <?php echo $this->lang->line('sales') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/create')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>pos_invoices/create"><?php echo $this->lang->line('New Invoice'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>pos_invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if ($this->li_a == "timber") echo 'active'; ?>">
-                            <a href="#"><i class="ft-chevron-right"></i>Timber Treatment</a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('invoices/create')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>invoices/create"><?php echo $this->lang->line('New Invoice'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('invoices')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>invoices"><?php echo $this->lang->line('Manage Invoices'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if ($this->li_a == "quotes") echo 'active'; ?>">
-                            <a href="#"><i class="ft-chevron-right"></i><?php echo $this->lang->line('Quotes') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('pos_invoices/quotecreate')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>pos_invoices/quotecreate"><?php echo $this->lang->line('New Quote'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('quote')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>quote"><?php echo $this->lang->line('Manage Quotes'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('stockreturn/creditnotes')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>stockreturn/creditnotes"><i class="ft-chevron-right"></i><?php echo $this->lang->line('Credit Notes'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('pos_invoices/invoices_list_action')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>pos_invoices/invoices_list_action"><i class="ft-file-text"></i><span>Sales Reports</span></a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Stock Transfer -->
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock_transfer") echo 'active'; ?>">
-                    <a href="#"><i class="ft-wind"></i><span>Stock Transfer</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('products/stock_transfer')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>products/stock_transfer">New Transfer</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('products/manage_transfer2')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>products/manage_transfer2">Manage Transfer</a>
-                        </li>
-                    </ul>
-                </li>
-            <?php } ?>
-
-            <?php if ($this->aauth->premission(2)) { ?>
-                <!-- Stock -->
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "stock") echo 'open'; ?>">
-                    <a href="#"><i class="ft-package"></i><span><?php echo $this->lang->line('Stock') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('products/add') || current_url() == base_url('products')) echo 'active'; ?>">
-                            <a href="#"><i class="ft-list"></i><?php echo $this->lang->line('Items Manager') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('products/add')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>products/add"><?php echo $this->lang->line('New Product'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('products')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>products"><?= $this->lang->line('Manage Products'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('productcategory')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>productcategory"><i class="ft-umbrella"></i><?php echo $this->lang->line('Product Categories'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('productcategory/warehouse')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>productcategory/warehouse"><i class="ft-home"></i><?php echo $this->lang->line('Warehouses'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (strpos(current_url(), 'stockreturn') !== false && strpos(current_url(), 'creditnotes') === false) echo 'active'; ?>">
-                            <a href="#"><i class="ft-repeat"></i><?php echo $this->lang->line('Stock Return') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('stockreturn')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>stockreturn"><?php echo $this->lang->line('Suppliers') . ' ' . $this->lang->line('Records'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('stockreturn/customer')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>stockreturn/customer"><?php echo $this->lang->line('Customers') . ' ' . $this->lang->line('Records'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('supplier/create') || current_url() == base_url('supplier')) echo 'active'; ?>">
-                            <a href="#"><i class="ft-target"></i><?php echo $this->lang->line('Suppliers') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('supplier/create')) echo 'active'; ?>">
-                                    <a href="<?= base_url(); ?>supplier/create"><?php echo $this->lang->line('New Supplier'); ?></a>
-                                </li>
-                                <li class="menu-item <?php if (current_url() == base_url('supplier')) echo 'active'; ?>">
-                                    <a href="<?php echo base_url(); ?>supplier"><?php echo $this->lang->line('Manage Suppliers'); ?></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Purchase -->
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "purchase") echo 'active'; ?>">
-                    <a href="#"><i class="ft-shopping-cart"></i><span><?php echo $this->lang->line('Purchase Order') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('pos_invoices/purchasecreate')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>pos_invoices/purchasecreate"><?php echo $this->lang->line('New Order'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('purchase')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase"><?= $this->lang->line('Manage Orders'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/createlogs')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>purchase/createlogs">New Logs Order</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/list')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase/list">Manage Logs Orders</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Trunks -->
-                <li class="nav-item has-sub section-erp <?php if (current_url() == base_url('purchase/newprocessing') || current_url() == base_url('purchase/manageprocessing')) echo 'open active'; ?>">
-                    <a href="#"><i class="ft-cpu"></i><span>Trunks Processing</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/newprocessing')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase/newprocessing"><i class="ft-chevron-right"></i>New Processing</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('purchase/manageprocessing')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>purchase/manageprocessing"><i class="ft-chevron-right"></i>Manage Processing</a>
-                        </li>
-                    </ul>
-                </li>
-
-            <?php } ?>
-            
-            <!-- 2. FINANCIAL CENTER -->
-            <?php if ($show_finance) { ?>
-                <li class="navigation-header section-erp"><span>💰 Financial Center</span></li>
-                
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "transactions") echo 'active'; ?>">
-                    <a href="#"><i class="ft-repeat"></i><span><?php echo $this->lang->line('Transactions') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('transactions')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>transactions"><?php echo $this->lang->line('View Transactions') ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('transactions/add')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>transactions/add"><?= $this->lang->line('New Transaction'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('transactions/transfer')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>transactions/transfer"><?= $this->lang->line('New Transfer'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('transactions/income')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>transactions/income"><?= $this->lang->line('Income'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('transactions/expense')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>transactions/expense"><?= $this->lang->line('Expense'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('financial_settings')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>financial_settings"><i class="ft-settings"></i> Financial Settings</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('financial/profit_loss')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>financial/profit_loss"><i class="ft-trending-up"></i> Profit & Loss</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('financial/balance_sheet')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>financial/balance_sheet"><i class="ft-briefcase"></i> Balance Sheet</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('customers')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>customers"><?= $this->lang->line('Clients Transactions'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (strpos(current_url(), 'escrow') !== false) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>escrow"><i class="ft-shield"></i>Escrow Vault</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounts") echo 'active'; ?>">
-                    <a href="#"><i class="ft-briefcase"></i><span><?php echo $this->lang->line('Accounts') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('accounts')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>accounts"><?php echo $this->lang->line('Manage Accounts') ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('accounts/balancesheet')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>accounts/balancesheet"><?= $this->lang->line('BalanceSheet'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Hire Purchase -->
-                <li class="nav-item has-sub section-erp <?php if ($this->li_a == "hp") echo 'open active'; ?>">
-                    <a href="#"><i class="ft-credit-card"></i><span>Hire Purchase</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('hp/create')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>hp/create">New HP Contract</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('hp/manage')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>hp/manage">Manage Contracts</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('hp')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>hp">HP Dashboard</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('hp/performance')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>hp/performance">Hire Purchase Performance</a>
-                        </li>
-                    </ul>
-                </li>
-            <?php } ?>
-
-            <!-- 4. WORKFORCE & SERVICES -->
-            <?php if ($show_workforce) { ?>
-            <li class="navigation-header section-services"><span>⚡ Workforce & Services</span></li>
-            <li class="nav-item has-sub section-services <?php if ($this->li_a == "services" || $this->li_a == "worker") echo 'open active'; ?>">
-                <a href="#"><i class="ft-award"></i><span>Workforce Hub</span></a>
+            <!-- 6. ACCOUNTS & FINANCE (Module 5) -->
+            <?php if ($this->aauth->premission(5)) { ?>
+            <li class="navigation-header section-erp"><span>💳 Financial Center</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "accounting") echo 'open active'; ?>">
+                <a href="#"><i class="ft-trending-up"></i><span>Accounting & Ledger</span></a>
                 <ul class="menu-content">
-                    <li class="menu-item <?php if (current_url() == base_url('worker/profiles')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/profiles"><i class="ft-users"></i>Management Desk</a>
+                    <li class="menu-item <?php if (current_url() == base_url('settings/dual_entry')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>settings/dual_entry"><i class="ft-list"></i>Double Entry Ledger</a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('worker/job_requests')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/job_requests"><i class="ft-mail"></i>Marketplace Hub</a>
-                    </li>
-                    <li class="menu-item <?php if (current_url() == base_url('worker/attendance')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>worker/attendance"><i class="ft-clock"></i>Time & Payroll</a>
+                    <li class="menu-item <?php if ($this->li_a == 'accounts') echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>accounts"><i class="ft-credit-card"></i>Financial Accounts</a>
                     </li>
                 </ul>
             </li>
-            
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "hp") echo 'open active'; ?>">
+                <a href="#"><i class="ft-credit-card"></i><span>Hire Purchase</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('hp/manage')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>hp/manage"><i class="ft-file"></i>Manage Contracts</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <!-- 7. DATA & REPORTS (Module 6) -->
+            <?php if ($this->aauth->premission(6)) { ?>
+            <li class="navigation-header section-data"><span>📈 Data & Analytics</span></li>
+            <li class="nav-item has-sub section-data <?php if ($this->li_a == "data") echo 'open active'; ?>">
+                <a href="#"><i class="ft-pie-chart"></i><span>Intelligence Reports</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('financial/profit_loss')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>financial/profit_loss"><i class="ft-pie-chart"></i>Profit & Loss</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('financial/balance_sheet')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>financial/balance_sheet"><i class="ft-file-text"></i>Balance Sheet</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('advanced_reports')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>advanced_reports"><i class="fa fa-line-chart"></i>Advanced Report Center</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <!-- 8. PROJECT WORKER / FIELD HUB (Module 7) -->
+            <?php if ($this->aauth->premission(7)) { ?>
+            <li class="navigation-header section-services"><span>⚡ Field Workforce</span></li>
+            <li class="nav-item section-services <?php if (current_url() == base_url('worker/job_requests')) echo 'active'; ?>">
+                <a href="<?= base_url(); ?>worker/job_requests"><i class="ft-mail"></i><span>Marketplace Hub</span></a>
+            </li>
+            <li class="nav-item section-services <?php if (current_url() == base_url('worker/attendance')) echo 'active'; ?>">
+                <a href="<?= base_url(); ?>worker/attendance"><i class="ft-clock"></i><span>Time & Attendance</span></a>
+            </li>
+            <?php } ?>
+
+            <!-- 9. SERVICES & TICKETS (Module 8) -->
+            <?php if ($this->aauth->premission(8)) { ?>
+            <li class="navigation-header section-services"><span>🔔 Service Desk</span></li>
             <li class="nav-item section-services <?php if (strpos(current_url(), 'ring') !== false) echo 'active'; ?>">
                 <a href="<?= base_url(); ?>ring"><i class="ft-bell"></i><span>Ring (Service Logs)</span></a>
             </li>
-            <li class="nav-item section-services <?php if ($this->li_a == 'whatsapp') echo 'active'; ?>">
-                <a href="<?= base_url(); ?>whatsapp"><i class="fab fa-whatsapp"></i><span>WhatsApp Automation</span></a>
+            <?php } ?>
+
+            <!-- 10. HRM (Module 9) -->
+            <?php if ($this->aauth->premission(9)) { ?>
+            <li class="navigation-header section-erp"><span>👮 HRM & Staff</span></li>
+            <li class="nav-item has-sub section-erp <?php if ($this->li_a == "employee") echo 'open active'; ?>">
+                <a href="#"><i class="ft-users"></i><span>Staff Management</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('employee')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>employee"><i class="ft-users"></i>Employees List</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('employee/roles')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>employee/roles"><i class="ft-shield"></i>Roles & Permissions</a>
+                    </li>
+                </ul>
             </li>
             <?php } ?>
 
-            <!-- 5. MARKETPLACE ADMIN -->
-            <?php if ($show_marketplace) { ?>
-            <li class="navigation-header section-tools"><span>🛒 Marketplace Admin</span></li>
+            <!-- 11. SETTINGS & SYSTEM (Module 10) -->
+            <?php if ($this->aauth->premission(10)) { ?>
+            <li class="navigation-header section-settings"><span>⚙️ System Settings</span></li>
+            <li class="nav-item has-sub section-settings <?php if ($this->li_a == "settings") echo 'open active'; ?>">
+                <a href="#"><i class="ft-settings"></i><span>Configuration</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('settings/company')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>settings/company"><i class="ft-briefcase"></i>Company Settings</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('export/dbexport')) echo 'active'; ?>">
+                        <a href="<?php echo base_url(); ?>export/dbexport"><i class="ft-database"></i>Database Backup</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <!-- 11.5 SUBSCRIPTIONS & COMMISSIONS (Super Admin) -->
+            <?php if ($is_superadmin) { ?>
+            <li class="navigation-header section-settings"><span>💎 Subscription Manager</span></li>
+            <li class="nav-item has-sub section-settings <?php if ($this->li_a == "subscriptions") echo 'open active'; ?>">
+                <a href="#"><i class="ft-award"></i><span>Subscriptions</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('subscriptions/approvals')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>subscriptions/approvals"><i class="ft-check-circle"></i>Pending Approvals</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('subscriptions/active_users')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>subscriptions/active_users"><i class="ft-users"></i>Active Subscribers</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('subscriptions/commissions')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>subscriptions/commissions"><i class="ft-trending-up"></i>Commission Tracker</a>
+                    </li>
+                </ul>
+            </li>
+            <?php } ?>
+
+
+            <!-- 12. SPECIALIZED SECTIONS (CSR / MARKETPLACE) -->
+            <li class="navigation-header"><span>🌍 Global Network</span></li>
+            <li class="nav-item has-sub <?php if (strpos(current_url(), 'greenfuture') !== false) echo 'open active'; ?>">
+                <a href="#"><i class="ft-globe" style="color:#22c55e;"></i><span>🌳 Green Future (CSR)</span></a>
+                <ul class="menu-content">
+                    <li class="menu-item <?php if (current_url() == base_url('greenfuture')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>greenfuture"><i class="ft-bar-chart-2"></i> CSR Dashboard</a>
+                    </li>
+                    <li class="menu-item <?php if (current_url() == base_url('greenfuture/donate')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>greenfuture/donate"><i class="ft-heart"></i> Participate/Donate</a>
+                    </li>
+                </ul>
+            </li>
+
+            <?php if ($roleid == 1 || $roleid == 5 || $roleid == 0) { ?>
+            <!-- CUSTOMER MARKETPLACE LINK -->
             <li class="nav-item has-sub section-tools <?php if ($this->li_a == "marketplace_admin") echo 'open active'; ?>">
-                <a href="#"><i class="ft-shopping-bag"></i><span>Marketplace Control</span></a>
+                <a href="#"><i class="ft-shopping-bag"></i><span>Marketplace Portal</span></a>
                 <ul class="menu-content">
                     <li class="menu-item <?php if (current_url() == base_url('shop/listings')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>shop/listings"><i class="ft-list"></i>My Products/Listings</a>
+                        <a href="<?= base_url(); ?>shop/listings"><i class="ft-list"></i>My Purchases</a>
                     </li>
-                    <li class="menu-item <?php if (current_url() == base_url('shop/quotations')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>shop/quotations"><i class="ft-file-text"></i>Received Quotations</a>
-                    </li>
-                    <li class="menu-item <?php if (current_url() == base_url('shop/orders')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>shop/orders"><i class="ft-package"></i>Orders Management</a>
+                    <li class="menu-item <?php if (current_url() == base_url('referral')) echo 'active'; ?>">
+                        <a href="<?= base_url(); ?>referral"><i class="ft-users"></i> Referral Program</a>
                     </li>
                 </ul>
             </li>
             <?php } ?>
-
-            <!-- 6. LOGISTICS -->
-            <?php if ($show_logistics) { ?>
-            <li class="navigation-header section-data"><span>🚛 Logistics & Transport</span></li>
-            <li class="nav-item has-sub section-data <?php if ($this->li_a == "logistics") echo 'open active'; ?>">
-                <a href="#"><i class="ft-truck"></i><span>Logistics Hub</span></a>
-                <ul class="menu-content">
-                    <li class="menu-item <?php if (current_url() == base_url('logistics/fleet')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>logistics/fleet"><i class="ft-users"></i>Vehicles & Drivers</a>
-                    </li>
-                    <li class="menu-item <?php if (current_url() == base_url('logistics/orders')) echo 'active'; ?>">
-                        <a href="<?= base_url(); ?>logistics/orders"><i class="ft-map"></i>Transport Orders</a>
-                    </li>
-                </ul>
-            </li>
-            <?php } ?>
-
-            <?php if (!$this->aauth->premission(4) && $this->aauth->premission(7)) { ?>
-                <li class="nav-item has-sub section-tools <?php if ($this->li_a == "manager") echo 'open'; ?>">
-                    <a href="#"><i class="icon-briefcase"></i><span><?php echo $this->lang->line('Project') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('manager/projects')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>manager/projects"><i class="ft-chevron-right"></i> <?php echo $this->lang->line('Manage Projects'); ?></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('manager/todo')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>manager/todo"><i class="ft-chevron-right"></i> <?php echo $this->lang->line('To Do List'); ?></a>
-                        </li>
-                    </ul>
-                </li>
-            <?php } ?>
-
-            <!-- 4. SYSTEM & DATA -->
-            <?php if ($is_manager) { ?>
-            <li class="navigation-header section-tools"><span>System & Data</span></li>
-            
-            <li class="nav-item has-sub section-tools <?php if ($this->li_a == "tools") echo 'open'; ?>">
-                <a href="#"><i class="ft-briefcase"></i><span>Tools</span></a>
-                <ul class="menu-content">
-                    <?php if ($this->aauth->premission(6)) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('events')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>events"><i class="ft-chevron-right"></i>Events & Calendar</a></li>
-                    <?php } ?>
-                    <?php if ($this->aauth->premission(6) || $this->aauth->premission(7)) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('manager/todo')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>manager/todo"><i class="ft-chevron-right"></i>Notes & To-Do</a></li>
-                    <?php } ?>
-                    <?php if ($this->aauth->get_user()->roleid < 5) { ?>
-                        <li class="menu-item <?php if (current_url() == base_url('tools/setgoals')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>tools/setgoals"><i class="ft-chevron-right"></i>Set Goals</a></li>
-                    <?php } ?>
-                </ul>
-            </li>
-
-            <?php if ($this->aauth->premission(6)) { ?>
-                <li class="nav-item has-sub section-data <?php if ($this->li_a == "data") echo 'open'; ?>">
-                    <a href="#"><i class="icon-pie-chart"></i><span><?php echo $this->lang->line('Data & Reports') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if ($this->li_a == 'adv_reports') echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>advanced_reports"><i class="fa fa-line-chart"></i><span>Advanced Report Center</span></a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('register')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>register"><i class="icon-eyeglasses"></i> <?php echo $this->lang->line('Business Registers'); ?></a>
-                        </li>
-                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'reports/statement') !== false) echo 'active'; ?>">
-                             <a href="#" class="dropdown-toggle"><i class="ft-file-text"></i> <?php echo $this->lang->line('Statements') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('reports/accountstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/accountstatement"><?= $this->lang->line('Account Statements'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/customerstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/customerstatement"><?php echo $this->lang->line('Customer') . ' ' . $this->lang->line('Account Statements') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/supplierstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/supplierstatement"><?php echo $this->lang->line('Supplier') . ' ' . $this->lang->line('Account Statements') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/taxstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Statements'); ?></a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'chart/') !== false) echo 'active'; ?>">
-                             <a href="#" class="dropdown-toggle"><i class="ft-bar-chart-2"></i> <?php echo $this->lang->line('Graphical Reports') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('chart/product_cat')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/product_cat"><?= $this->lang->line('Product Categories'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('chart/trending_products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/trending_products"><?= $this->lang->line('Trending Products'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('chart/profit')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/profit"><?= $this->lang->line('Profit'); ?></a></li>
-                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/topcustomers"><?php echo $this->lang->line('Top') . ' ' . $this->lang->line('Customers') ?></a></li>
-                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/incvsexp"><?php echo $this->lang->line('Income') . ' vs ' . $this->lang->line('Expenses') ?></a></li>
-                                <li class="menu-item"><a href="<?php echo base_url(); ?>chart/income"><?= $this->lang->line('Income'); ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('chart/expenses')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>chart/expenses"><?= $this->lang->line('Expenses'); ?></a></li>
-                            </ul>
-                        </li>
-                        <li class="menu-item dropdown <?php if (strpos(current_url(), 'reports/') !== false && strpos(current_url(), 'statement') === false) echo 'active'; ?>">
-                             <a href="#" class="dropdown-toggle"><i class="ft-pie-chart"></i> <?php echo $this->lang->line('Summary') . ' & ' . $this->lang->line('Report') ?></a>
-                            <ul class="menu-content">
-                                <li class="menu-item <?php if (current_url() == base_url('reports/statistics')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/statistics"><?php echo $this->lang->line('Statistics') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/profitstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/profitstatement"><?= $this->lang->line('Profit'); ?></a></li>
-                                <li class="menu-item"><a href="<?php echo base_url(); ?>reports/incomestatement"><?php echo $this->lang->line('Calculate Income'); ?></a></li>
-                                <li class="menu-item"><a href="<?php echo base_url(); ?>reports/expensestatement"><?php echo $this->lang->line('Calculate Expenses') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/sales')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/sales"><?php echo $this->lang->line('Sales') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/products"><?php echo $this->lang->line('Products') ?></a></li>
-                                <li class="menu-item <?php if (current_url() == base_url('reports/commission')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>reports/commission"><?= $this->lang->line('Employee'); ?> <?= $this->lang->line('Commission'); ?></a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                
-                <li class="nav-item has-sub section-data <?php if (current_url() == base_url('export/people')) echo 'open active'; ?>">
-                    <a href="#"><i class="ft-database"></i><span><?php echo $this->lang->line('Backup & Export') ?></span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('export/people')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/people"><?php echo $this->lang->line('Export People Data'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('export/transactions')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/transactions"><?php echo $this->lang->line('Export Transactions'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('export/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/products"><?php echo $this->lang->line('Export Products'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('export/account')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/account"><?php echo $this->lang->line('Account Statements'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('export/taxstatement')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/taxstatement"><?php echo $this->lang->line('TAX') . ' ' . $this->lang->line('Backup & Export'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('export/dbexport')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>export/dbexport"><?php echo $this->lang->line('Database Backup'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('import/products')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>import/products"><?php echo $this->lang->line('Import Products'); ?></a></li>
-                        <li class="menu-item <?php if (current_url() == base_url('import/customers')) echo 'active'; ?>"><a href="<?php echo base_url(); ?>import/customers"><?php echo $this->lang->line('Import Customers'); ?></a></li>
-                    </ul>
-                </li>
-
-                <!-- ====== SOCIAL GROWTH MODULE ====== -->
-                <li class="nav-item has-sub section-services <?php if (strpos(current_url(), 'social_growth') !== false) echo 'open active'; ?>">
-                    <a href="#"><i class="ft-share-2"></i><span>📢 Social Growth</span></a>
-                    <ul class="menu-content">
-                        <?php if ($this->aauth->is_admin()): ?>
-                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_settings')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>social_growth/admin_settings"><i class="ft-settings"></i> API Settings</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_templates')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>social_growth/admin_templates"><i class="ft-image"></i> Poster Templates</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_logs')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>social_growth/admin_logs"><i class="ft-bar-chart-2"></i> Usage Logs</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('social_growth/admin_leaderboard')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>social_growth/admin_leaderboard"><i class="ft-award"></i> Leaderboard (Admin)</a>
-                        </li>
-                        <?php endif; ?>
-                        <li class="menu-item <?php if (current_url() == base_url('social_growth/my_insights')) echo 'active'; ?>">
-                            <a href="<?php echo base_url(); ?>social_growth/my_insights"><i class="ft-trending-up"></i> My Insights</a>
-                        </li>
-                        <li class="menu-item <?php if (strpos(current_url(), 'referral') !== false) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>referral"><i class="ft-users"></i> Referral Program</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- ====== END SOCIAL GROWTH ====== -->
-
-                <!-- ====== BLUEPRINT ENTERPRISE FEATURES ====== -->
-                <?php if ($is_manager) { ?>
-                <li class="navigation-header section-erp"><span>🚀 Enterprise Blueprints</span></li>
-
-                <!-- ====== GREEN FUTURE (Section 11 CSR) — has-sub ====== -->
-                <li class="nav-item has-sub section-erp <?php if (strpos(current_url(), 'greenfuture') !== false) echo 'open active'; ?>">
-                    <a href="#"><i class="ft-globe" style="color:#22c55e;"></i><span>🌳 Green Future (CSR)</span></a>
-                    <ul class="menu-content">
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture"><i class="ft-bar-chart-2"></i> CSR Dashboard</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/donate')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/donate"><i class="ft-heart"></i> Donate (Manual)</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/invoice_settings')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/invoice_settings"><i class="ft-percent"></i> Invoice Donation %</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/plant')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/plant"><i class="ft-plus-circle"></i> Request Tree Planting</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/planting_list')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/planting_list"><i class="ft-list"></i> Planting Requests List</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/maintenance')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/maintenance"><i class="ft-settings"></i> Maintenance Fund (Admin)</a>
-                        </li>
-                        <li class="menu-item <?php if (current_url() == base_url('greenfuture/apply_maintenance')) echo 'active'; ?>">
-                            <a href="<?= base_url(); ?>greenfuture/apply_maintenance"><i class="ft-camera"></i> Apply for Maintenance</a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- ====== END GREEN FUTURE ====== -->
-
-                <li class="nav-item section-erp <?php if (strpos(current_url(), 'subscriptions') !== false) echo 'active'; ?>">
-                    <a href="<?= base_url(); ?>subscriptions"><i class="ft-credit-card"></i><span>Subscriptions</span></a>
-                </li>
-                <?php } ?>
-                <?php } ?>
-                <?php } ?>
-            </ul>
         </div>
         <!-- /main menu content-->
     </div>

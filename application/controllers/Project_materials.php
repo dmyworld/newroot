@@ -10,7 +10,7 @@ class Project_materials extends CI_Controller
         $this->load->model('project_costing_model');
         $this->load->model('projects_model'); 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

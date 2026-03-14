@@ -27,9 +27,9 @@ class Supplier extends CI_Controller
         $this->load->model('supplier_model', 'supplier');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -49,7 +49,7 @@ class Supplier extends CI_Controller
 
     public function create()
     {
-        if (!$this->aauth->premission(2, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $data['customergrouplist'] = $this->supplier->group_list();
@@ -106,7 +106,7 @@ class Supplier extends CI_Controller
     //edit section
     public function edit()
     {
-        if (!$this->aauth->premission(2, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $pid = $this->input->get('id');
@@ -124,7 +124,7 @@ class Supplier extends CI_Controller
 
     public function addsupplier()
     {
-        if (!$this->aauth->premission(2, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $name = $this->input->post('name', true);
@@ -144,7 +144,7 @@ class Supplier extends CI_Controller
 
     public function editsupplier()
     {
-        if (!$this->aauth->premission(2, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('id', true);
@@ -167,7 +167,7 @@ class Supplier extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(2, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('deleteid');

@@ -1,10 +1,11 @@
 <div class="content-body">
     <div class="card">
         <div class="card-header">
-            <h4 class="card-title"><?php echo $this->lang->line('Manage POS Invoices') ?> <a
-                        href="<?php echo base_url('pos_invoices/create') ?>"
-                        class="btn btn-primary btn-sm rounded">
-                    <?php echo $this->lang->line('Add new') ?></a></h4>
+            <h4 class="card-title"><?php echo $this->lang->line('Manage POS Invoices') ?> 
+                    <?php if ($this->aauth->has_permission('sales_invoices_add')): ?>
+                    <a href="<?php echo base_url('pos_invoices/create') ?>" class="btn btn-primary btn-sm rounded"><?php echo $this->lang->line('Add new') ?></a>
+                    <?php endif; ?>
+                </h4>
                                     <?php $id = $_GET['id'] ?? null;
                         
                         if ($id == 'v2'): ?>

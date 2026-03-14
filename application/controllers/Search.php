@@ -27,7 +27,7 @@ class Search extends CI_Controller
         $this->load->model('search_model', 'search');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
     }

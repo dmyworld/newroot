@@ -64,6 +64,20 @@
                         </button>
                     </form>
                 </div>
+
+                <!-- Revid AI Config -->
+                <div class="mb-4">
+                    <label class="small font-weight-bold text-muted text-uppercase">Revid AI Integration</label>
+                    <form id="revid-config-form" class="bg-light p-3 rounded border" style="border-left: 4px solid #f59e0b !important;">
+                        <input type="hidden" name="revid_id" value="1">
+                        <div class="form-group mb-2">
+                            <textarea name="token" class="form-control-sm form-control" rows="2" placeholder="Revid API Key / Bearer Token"><?= @$revid_config['access_token'] ?></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-sm btn-block font-weight-bold shadow-sm" style="color: #000;">
+                            <i class="fa fa-bolt mr-1"></i> CONNECT REVID AI
+                        </button>
+                    </form>
+                </div>
                 
                 <div class="alert alert-info p-2 small mb-0">
                     <i class="fa fa-info-circle mr-1"></i> Tokens ensure your ads reach the correct professional timber groups automatically.
@@ -139,6 +153,10 @@
                             <button id="btn-bulk-broadcast" class="btn btn-success btn-block py-3 font-weight-bold shadow-lg mt-3" onclick="broadcastAd()">
                                 <i class="fa fa-paper-plane mr-2"></i> BULK BROADCAST TO ALL
                             </button>
+
+                            <button id="btn-ai-video" class="btn btn-warning btn-block py-3 font-weight-bold shadow-lg mt-3" style="background: linear-gradient(to right, #f59e0b, #d97706); border: none; color: #fff;" onclick="generateAIVideo()">
+                                <i class="fa fa-film mr-2"></i> 1-CLICK AI VIDEO AD
+                            </button>
                         </div>
                     </div>
                     
@@ -150,9 +168,18 @@
                             </div>
                             <div id="render-spinner" style="display:none; position: absolute;">
                                 <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
-                                <p class="mt-2 small font-weight-bold">RENDERING POSTER...</p>
+                                <p class="mt-2 small font-weight-bold">RENDERING ASSET...</p>
                             </div>
                             <img id="live-poster" src="" class="img-fluid rounded shadow-lg border" style="display:none; max-height: 500px;" alt="Poster Preview">
+                            <div id="video-preview-container" style="display:none; width: 100%;">
+                                <video id="ai-video-player" controls class="img-fluid rounded shadow-lg border" style="max-height: 500px; width: 100%;">
+                                    <source src="" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="mt-2">
+                                    <a id="download-video" href="#" class="btn btn-sm btn-outline-primary" download>Download Video</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -239,6 +266,22 @@
         });
     });
 
+    $('#revid-config-form').submit(function(e) {
+        e.preventDefault();
+        const btn = $(this).find('button');
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> CONNECTING...');
+        $.ajax({
+            url: baseurl + 'Marketing/save_revid_link',
+            type: 'POST',
+            data: $(this).serialize() + '&' + crsf_token + '=' + crsf_hash,
+            dataType: 'json',
+            success: function(data) {
+                alert(data.message);
+                btn.prop('disabled', false).html('<i class="fa fa-bolt mr-1"></i> CONNECT REVID AI');
+            }
+        });
+    });
+
     function toggleAllGroups() {
         const checked = $('#select-all-groups').is(':checked');
         $('.group-check').prop('checked', checked);
@@ -246,6 +289,7 @@
 
     function resetPreview() {
         $('#live-poster').hide();
+        $('#video-preview-container').hide();
         $('#preview-placeholder').show();
         $('#render-spinner').hide();
     }
@@ -333,6 +377,57 @@
             error: function() {
                 alert('Connection error. Initialized offline broadcast.');
                 btn.prop('disabled', false).html('<i class="fa fa-paper-plane mr-2"></i> BULK BROADCAST TO ALL');
+            }
+        });
+    }
+
+    function generateAIVideo() {
+        const option = $('#lot-selector option:selected');
+        const id = option.val();
+        const type = option.data('type');
+        
+        if(!id) return alert('Select a listing first');
+        
+        if(!confirm('This will use your Revid AI credits to generate a professional video ad. Proceed?')) return;
+
+        $('#preview-placeholder').hide();
+        $('#live-poster').hide();
+        $('#video-preview-container').hide();
+        $('#render-spinner').show().find('p').text('AI IS RENDERING YOUR VIDEO...');
+
+        const btn = $('#btn-ai-video');
+        btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> GENERATING AI VIDEO...');
+
+        $.ajax({
+            url: baseurl + 'Marketing/generate_ai_video',
+            type: 'POST',
+            data: {
+                id: id,
+                type: type,
+                [crsf_token]: crsf_hash
+            },
+            dataType: 'json',
+            success: function(data) {
+                btn.prop('disabled', false).html('<i class="fa fa-film mr-2"></i> 1-CLICK AI VIDEO AD');
+                if(data.status == 'Success') {
+                    if(data.video_url) {
+                        $('#ai-video-player source').attr('src', data.video_url);
+                        $('#ai-video-player')[0].load();
+                        $('#video-preview-container').fadeIn();
+                        $('#download-video').attr('href', data.video_url);
+                    } else {
+                        alert('Video generation queued! You will be notified via webhook/browser when ready.');
+                    }
+                    $('#render-spinner').hide();
+                } else {
+                    alert(data.message || 'AI Generation failed');
+                    resetPreview();
+                }
+            },
+            error: function() {
+                alert('Connection failure');
+                btn.prop('disabled', false).html('<i class="fa fa-film mr-2"></i> 1-CLICK AI VIDEO AD');
+                resetPreview();
             }
         });
     }

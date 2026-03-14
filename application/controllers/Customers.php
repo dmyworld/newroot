@@ -26,9 +26,9 @@ class Customers extends CI_Controller
         $this->load->model('customers_model', 'customers');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(3)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -48,7 +48,7 @@ class Customers extends CI_Controller
 
     public function create()
     {
-        if (!$this->aauth->premission(3, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -64,7 +64,7 @@ class Customers extends CI_Controller
 
     public function view()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -129,7 +129,7 @@ class Customers extends CI_Controller
     //edit section
     public function edit()
     {
-        if (!$this->aauth->premission(3, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -148,7 +148,7 @@ class Customers extends CI_Controller
 
     public function addcustomer()
     {
-        if (!$this->aauth->premission(3, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $name = $this->input->post('name', true);
@@ -183,7 +183,7 @@ class Customers extends CI_Controller
 
     public function editcustomer()
     {
-        if (!$this->aauth->premission(3, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('id');
@@ -217,7 +217,7 @@ class Customers extends CI_Controller
 
     public function changepassword()
     {
-        if (!$this->aauth->premission(3, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         if ($id = $this->input->post()) {
@@ -242,23 +242,41 @@ class Customers extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(3, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
         $id = $this->input->post('deleteid');
         if ($id > 1) {
-            if ($this->customers->delete($id)) {
-                echo json_encode(array('status' => 'Success', 'message' => 'Customer details deleted Successfully!'));
-            } else {
-                echo json_encode(array('status' => 'Error', 'message' => 'Error!'));
+            $user_role = $this->aauth->get_user()->roleid;
+            
+            if ($user_role > 2) {
+                // Staff - Request Delete
+                $this->db->set('delete_status', 1);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_customers');
+                echo json_encode(array('status' => 'Success', 'message' => 'Delete Requested Successfully'));
+            } elseif ($user_role == 2) {
+                // Owner - Approve Delete
+                $this->db->set('delete_status', 2);
+                $this->db->where('id', $id);
+                $this->db->update('geopos_customers');
+                echo json_encode(array('status' => 'Success', 'message' => 'Moved to Pending Review by Super Admin'));
+            } elseif ($user_role == 1) {
+                if ($this->customers->delete($id)) {
+                    echo json_encode(array('status' => 'Success', 'message' => 'Customer details deleted Successfully!'));
+                } else {
+                    echo json_encode(array('status' => 'Error', 'message' => 'Error!'));
+                }
             }
+        } else {
+            echo json_encode(array('status' => 'Error', 'message' => 'Invalid Customer ID'));
         }
     }
 
     public function displaypic()
     {
-        if (!$this->aauth->premission(3, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->get('id');
@@ -274,7 +292,7 @@ class Customers extends CI_Controller
 
     public function translist()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $cid = $this->input->post('cid');
@@ -307,7 +325,7 @@ class Customers extends CI_Controller
 
     public function inv_list()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $cid = $this->input->post('cid');
@@ -319,6 +337,7 @@ class Customers extends CI_Controller
         foreach ($list as $invoices) {
             $no++;
             $row = array();
+            if ($invoices->delete_status > 0) $row['DT_RowClass'] = 'pending-delete-row';
             $row[] = $invoices->tid;
             $row[] = $invoices->invoicedate;
             $row[] = amountExchange($invoices->total, 0, $this->aauth->get_user()->loc);
@@ -338,7 +357,7 @@ class Customers extends CI_Controller
 
     public function transactions()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -353,7 +372,7 @@ class Customers extends CI_Controller
 
     public function invoices()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -368,7 +387,7 @@ class Customers extends CI_Controller
 
     public function quotes()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -383,7 +402,7 @@ class Customers extends CI_Controller
 
     public function qto_list()
     {
-        if (!$this->aauth->premission(3, 'view')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(3, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $cid = $this->input->post('cid');
@@ -415,7 +434,7 @@ class Customers extends CI_Controller
 
     public function balance()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         if ($this->input->post()) {
@@ -442,7 +461,7 @@ class Customers extends CI_Controller
 
     public function projects()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -457,7 +476,7 @@ class Customers extends CI_Controller
 
     public function prj_list()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $cid = $this->input->post('cid');
@@ -494,7 +513,7 @@ class Customers extends CI_Controller
 
     public function notes()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $custid = $this->input->get('id');
@@ -509,7 +528,7 @@ class Customers extends CI_Controller
 
     public function notes_load_list()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $cid = $this->input->post('cid');
@@ -538,7 +557,7 @@ class Customers extends CI_Controller
 
     public function editnote()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         if ($this->input->post()) {
@@ -566,7 +585,7 @@ class Customers extends CI_Controller
 
     public function addnote()
     {
-        if (!$this->aauth->premission(8)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(8))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         if ($this->input->post('title')) {

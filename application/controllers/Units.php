@@ -26,7 +26,7 @@ class Units Extends CI_Controller
         $this->load->model('units_model', 'units');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if ($this->aauth->get_user()->roleid < 4) {
 

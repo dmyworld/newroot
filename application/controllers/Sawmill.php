@@ -10,7 +10,7 @@ class Sawmill extends CI_Controller
         $this->load->model('locations_model', 'locations');
         $this->load->model('TimberPro_model', 'timberpro');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

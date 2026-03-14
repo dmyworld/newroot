@@ -8,11 +8,11 @@ class ChequeManager extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         
         // Security check - only admin and above can access
-        if ($this->aauth->get_user()->roleid < 5) {
+        if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
             redirect('access-denied');
         }
         
@@ -258,7 +258,10 @@ class ChequeManager extends CI_Controller
                     $this->db->update('geopos_accounts');
                     
                     // Delete the transaction
-                    $this->db->delete('geopos_transactions', array('id' => $current_tid));
+                    // Replaced direct hard-delete with immutable reversal
+                    // $this->db->delete('geopos_transactions', array('id' => $current_tid));
+                    $this->load->model('transactions_model');
+                    $this->transactions_model->reverse_transaction($current_tid, 'Cheque Status Updated to Pending/Bounced');
                 }
 
                 // Reset TID in cheque table

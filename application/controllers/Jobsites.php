@@ -9,7 +9,7 @@ class Jobsites extends CI_Controller
         $this->load->library("Aauth");
         $this->load->model('job_sites_model');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

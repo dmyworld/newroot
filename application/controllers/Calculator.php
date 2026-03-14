@@ -8,7 +8,7 @@ class Calculator extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->model('Timber_Calculator_model', 'timber_calc');
         $this->li_a = 'calculator';

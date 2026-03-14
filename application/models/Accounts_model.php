@@ -33,11 +33,13 @@ class Accounts_model extends CI_Model
         $this->db->select('*');
         $this->db->from($this->table);
 
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-           if(BDATA) $this->db->or_where('loc', 0);
-        }else{
-             if(!BDATA) $this->db->where('loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } else {
+                if (!BDATA) $this->db->where('loc', 0);
+            }
         }
 
         $query = $this->db->get();
@@ -50,11 +52,15 @@ class Accounts_model extends CI_Model
         $this->db->select('*');
         $this->db->from('geopos_accounts');
         $this->db->where('id', $acid);
-        if ($this->aauth->get_user()->loc) {
-            $this->db->group_start();
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-            if(BDATA)  $this->db->or_where('loc', 0);
-            $this->db->group_end();
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->group_start();
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+                $this->db->group_end();
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
         }
         $query = $this->db->get();
         return $query->row_array();
@@ -106,9 +112,11 @@ class Accounts_model extends CI_Model
 
         $this->db->set($data);
         $this->db->where('id', $acid);
-         if ($this->aauth->get_user()->loc) {
-           $this->db->where('loc', $this->aauth->get_user()->loc);
-         }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            }
+        }
 
         if ($this->db->update('geopos_accounts')) {
             $this->aauth->applog("[Account Edited] $accno - ID " . $acid, $this->aauth->get_user()->username);
@@ -124,9 +132,11 @@ class Accounts_model extends CI_Model
     public function account_stats()
     {
         $whr = ' ';
-        if ($this->aauth->get_user()->loc) {
-            $whr = ' WHERE loc=' . $this->aauth->get_user()->loc;
-             if(BDATA) $whr .= ' OR loc=0 ';
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $whr = ' WHERE loc=' . $this->aauth->get_user()->loc;
+                if (BDATA) $whr .= ' OR loc=0 ';
+            }
         }
 
         $query = $this->db->query("SELECT SUM(lastbal) AS balance,COUNT(id) AS count_a FROM geopos_accounts $whr");

@@ -47,10 +47,12 @@ class Invoices_model extends CI_Model
         if ($eid) {
             $this->db->where('geopos_purchase.eid', $eid);
         }
-              if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_purchase.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_purchase.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_purchase.loc', 0);
+            }
         }
         $this->db->join('geopos_supplier', 'geopos_purchase.csd = geopos_supplier.id', 'left');
         $this->db->join('geopos_terms', 'geopos_terms.id = geopos_purchase.term', 'left');
@@ -117,10 +119,12 @@ class Invoices_model extends CI_Model
         if ($eid) {
             $this->db->where('geopos_invoices.eid', $eid);
         }
-              if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-        } elseif (!BDATA) {
-            $this->db->where('geopos_invoices.loc', 0);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
+            }
         }
         $this->db->join('geopos_customers', 'geopos_invoices.csd = geopos_customers.id', 'left');
         $this->db->join('geopos_terms', 'geopos_terms.id = geopos_invoices.term', 'left');
@@ -166,10 +170,14 @@ class Invoices_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('geopos_warehouse');
-        if ($this->aauth->get_user()->loc) {
-            $this->db->where('loc', $this->aauth->get_user()->loc);
-          if(BDATA)  $this->db->or_where('loc', 0);
-        }  elseif(!BDATA) { $this->db->where('loc', 0); }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+                if (BDATA) $this->db->or_where('loc', 0);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
 
         $query = $this->db->get();
 
@@ -197,40 +205,18 @@ class Invoices_model extends CI_Model
         $this->db->where('id', $id);
         $query = $this->db->get();
         $result = $query->row_array();
-        if ($this->aauth->get_user()->loc) {
-            if ($eid) {
-
-                $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => $this->aauth->get_user()->loc));
-
-
-            } else {
-                $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => $this->aauth->get_user()->loc));
+        $this->db->where('id', $id);
+        if ($eid) {
+            $this->db->where('eid', $eid);
+        }
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
             }
         }
-
-        else {
-            if (BDATA) {
-                if ($eid) {
-
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid));
-
-
-                } else {
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id));
-                }
-            } else {
-
-
-                if ($eid) {
-
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'eid' => $eid, 'loc' => 0));
-
-
-                } else {
-                    $res = $this->db->delete('geopos_invoices', array('id' => $id, 'loc' => 0));
-                }
-            }
-        }
+        $res = $this->db->delete('geopos_invoices');
 
         $affect = $this->db->affected_rows();
 
@@ -276,24 +262,24 @@ class Invoices_model extends CI_Model
 
     private function _get_datatables_query($opt = '')
     {
-        $this->db->select('geopos_invoices.id,geopos_invoices.tid,geopos_invoices.invoicedate,geopos_invoices.invoiceduedate,geopos_invoices.total,geopos_invoices.status,geopos_invoices.local,geopos_invoices.imported,geopos_customers.name');
+        $this->db->select('geopos_invoices.id,geopos_invoices.tid,geopos_invoices.invoicedate,geopos_invoices.invoiceduedate,geopos_invoices.total,geopos_invoices.status,geopos_invoices.local,geopos_invoices.imported,geopos_customers.name,geopos_invoices.delete_status');
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 0);
         if ($opt) {
             $this->db->where('geopos_invoices.eid', $opt);
         }
 
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) {
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
                 $this->db->where('geopos_invoices.loc', $loc);
             }
         } else {
             if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-            } elseif(!BDATA) { 
-                $this->db->where('geopos_invoices.loc', 0); 
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
             }
         }
 
@@ -366,15 +352,17 @@ class Invoices_model extends CI_Model
         $this->db->from($this->table);
         $this->db->where('geopos_invoices.i_class', 0);
         
-        // Branch Filter
+        // Branch Filter Secure Logic
         $loc = $this->input->post('loc');
-        if($loc !== null && $loc !== '') {
-            if($loc > 0) $this->db->where('geopos_invoices.loc', $loc);
+        if($this->aauth->get_user()->roleid == 1) {
+            if ($loc !== null && $loc !== '' && $loc > 0) {
+                $this->db->where('geopos_invoices.loc', $loc);
+            }
         } else {
             if ($this->aauth->get_user()->loc) {
                 $this->db->where('geopos_invoices.loc', $this->aauth->get_user()->loc);
-            } elseif(!BDATA) { 
-                $this->db->where('geopos_invoices.loc', 0); 
+            } elseif (!BDATA) {
+                $this->db->where('geopos_invoices.loc', 0);
             }
         }
 

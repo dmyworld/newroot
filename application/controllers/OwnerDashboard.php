@@ -12,22 +12,41 @@ class OwnerDashboard extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         
-        if ($this->aauth->get_user()->roleid < 3) {
-             // Redirect based on role
-             $roleid = $this->aauth->get_user()->roleid;
-             if ($roleid == 2) {
-                 redirect('/pos_invoices/create', 'refresh');
-             } else if ($roleid == 1) {
-                 redirect('/worker/profiles', 'refresh');
-             } else if ($roleid == 0) {
-                 redirect('/shop/', 'refresh');
-             } else {
-                 exit('Authorization Failed');
-             }
+        $user = $this->aauth->get_user();
+        $roleid = $user->roleid;
+        $username = $user->username;
+        $role_name = isset($user->role_name) ? strtolower($user->role_name) : '';
+
+        // 1. Super Admin (Role ID: 1 or 5)
+        if ($roleid == 1 || $roleid == 5) {
+            // Role 5 is the original Super Admin role in some versions
+            // Role 1 is our repaired Super Admin role
+            // Allow them to stay on the main OwnerDashboard overview
+            // No redirect needed here unless we want to force SystemHealth/dashboard
+            // Keeping them on this dashboard for full overview
         }
+
+        // 2. Service Provider (Specific check)
+        if ($username == 'Sunil_Caregiver' || $username == 'servicepro' || $role_name == 'service provider') {
+            redirect('ServiceDashboard/', 'refresh');
+        }
+
+        // 3. Customer (Role ID: 0)
+        if ($roleid == 0) {
+            redirect('shop/index', 'refresh');
+        }
+
+        // 4. Branch Staff (Role ID: 2)
+        if ($roleid == 2) {
+            redirect('pos_invoices/create', 'refresh');
+        } 
+        // Note: Role ID 1 used to redirect to worker/profiles here. 
+        // It has been moved to the Super Admin check above.
+
+        // Business Owner (Role ID: 4) and Branch Manager (Role ID: 3) stay on this dashboard
 
         $this->load->model('dashboard_model');
         $this->load->model('intelligence_model');
@@ -45,7 +64,7 @@ class OwnerDashboard extends CI_Controller
             // Capture branch filter
             $branch_id = $this->input->get('branch_id');
             if (!isset($_GET['branch_id'])) { 
-                 $branch_id = 0; 
+                 $branch_id = $this->session->userdata('loc'); 
             }
             
             // Capture date range
@@ -123,6 +142,14 @@ class OwnerDashboard extends CI_Controller
             } else {
                 $data['tasks'] = array();
             }
+
+            // Phase 4: Service Management Dashboard Widgets
+            $data['kyc_pending'] = $this->db->where('status', 0)->count_all_results('tp_service_providers');
+            // Today's commission from service bookings (Simplified for now)
+            $data['today_commission'] = $this->db->select('SUM(credit) as total')
+                ->from('geopos_transactions')
+                ->where('DATE(date)', date('Y-m-d'))
+                ->get()->row()->total;
             
             // Intelligence Data (0 means All)
             // Intelligence Data (0 means All)
@@ -255,6 +282,56 @@ class OwnerDashboard extends CI_Controller
         $this->load->view('fixed/header', $head);
         $this->load->view('intelligence/staff_leaderboard', $data);
         $this->load->view('fixed/footer');
+    }
+
+    public function switch_location()
+    {
+        $id = intval($this->input->get('id'));
+        $user_id = $this->aauth->get_user()->id;
+        $role_id = $this->aauth->get_user()->roleid;
+
+        $allowed = false;
+
+        if ($role_id == 1) {
+            // Super Admin can access any location
+            $allowed = true;
+        } else {
+            if ($id == 0) {
+                // Wait: depending on business logic, maybe roles shouldn't switch to global (0) unless super admin.
+                // Keeping previous logic where role >= 4 could switch to global for backward capability.
+                if ($role_id >= 4) {
+                    $allowed = true;
+                }
+            } else {
+                // Determine if this user has access to this specific location
+                $this->db->where('user_id', $user_id);
+                $this->db->where('location_id', $id);
+                $query = $this->db->get('geopos_user_locations');
+                if ($query->num_rows() > 0) {
+                    $allowed = true;
+                }
+            }
+        }
+
+        if ($allowed) {
+            if ($id > 0) {
+                $this->db->where('id', $id);
+                $query = $this->db->get('geopos_locations');
+                if ($query->num_rows() > 0) {
+                    $this->db->set('loc', $id);
+                    $this->db->where('id', $user_id);
+                    $this->db->update('geopos_users');
+                    $this->session->set_userdata('loc', $id);
+                }
+            } else {
+                $this->db->set('loc', 0);
+                $this->db->where('id', $user_id);
+                $this->db->update('geopos_users');
+                $this->session->set_userdata('loc', 0);
+            }
+        }
+
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
 }

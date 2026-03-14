@@ -49,6 +49,26 @@ class Locations_model extends CI_Model
 
     public function create($name, $address, $city, $region, $country, $postbox, $phone, $email, $taxid, $image, $cur_id, $ac_id, $wid)
     {
+        // Package limit check
+        $user_id = $this->aauth->get_user()->id;
+        
+        $this->db->select('geopos_packages.location_limit');
+        $this->db->from('geopos_users');
+        $this->db->join('geopos_packages', 'geopos_users.package_id = geopos_packages.id', 'left');
+        $this->db->where('geopos_users.id', $user_id);
+        $pkg = $this->db->get()->row_array();
+        
+        $limit = isset($pkg['location_limit']) ? (int)$pkg['location_limit'] : 1;
+        
+        $this->db->where('delete_status', 0); // Exclude soft-deleted items
+        $loc_count = $this->db->count_all_results('geopos_locations');
+        
+        if ($loc_count >= $limit) {
+            echo json_encode(array('status' => 'Error', 'message' =>
+                "Your current package limits you to $limit locations. Please upgrade your package to add more."));
+            return;
+        }
+
         $data = array(
             'cname' => $name,
             'address' => $address,

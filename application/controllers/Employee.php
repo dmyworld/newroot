@@ -26,12 +26,10 @@ class Employee extends CI_Controller
         $this->load->model('employee_model', 'employee');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
-        if (!$this->aauth->premission(9)) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(9))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $this->li_a = 'emp';
 
@@ -89,13 +87,14 @@ class Employee extends CI_Controller
 
     public function add()
     {
-        if (!$this->aauth->premission(9, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(9, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = 'Add Employee';
         $data['dept'] = $this->employee->department_list(0);
+        $data['roles'] = $this->employee->get_roles();
 
         $this->load->view('fixed/header', $head);
         $this->load->view('employee/add', $data);
@@ -123,12 +122,13 @@ class Employee extends CI_Controller
         }
 
         if ($roleid > 3) {
-            if ($this->aauth->get_user()->roleid < 5) {
+            if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
                 die('No! Permission');
             }
         }
 
         $location = $this->input->post('location', true);
+        $locations = $this->input->post('locations'); // Array of additional locations
         $name = $this->input->post('name', true);
         $phone = $this->input->post('phone', true);
         $email = $this->input->post('email', true);
@@ -154,7 +154,7 @@ class Employee extends CI_Controller
             if ($nuid > 0) {
 
 
-                $this->employee->add_employee($nuid, (string)$this->aauth->get_user($a)->username, $name, $roleid, $phone, $address, $city, $region, $country, $postbox, $location, $salary, $commission, $department);
+                $this->employee->add_employee($nuid, (string)$this->aauth->get_user($a)->username, $name, $roleid, $phone, $address, $city, $region, $country, $postbox, $location, $salary, $commission, $department, $locations);
 
             }
 
@@ -278,7 +278,7 @@ class Employee extends CI_Controller
 
     function disable_user()
     {
-        if (!$this->aauth->get_user()->roleid == 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid == 5)) {
             redirect('/dashboard/', 'refresh');
         }
         $uid = intval($this->input->post('deleteid'));
@@ -310,7 +310,7 @@ class Employee extends CI_Controller
 
     function enable_user()
     {
-        if (!$this->aauth->get_user()->roleid == 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid == 5)) {
             redirect('/dashboard/', 'refresh');
         }
         $uid = intval($this->input->post('deleteid'));
@@ -337,26 +337,37 @@ class Employee extends CI_Controller
         if (!$this->aauth->premission(9, 'delete')) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
-        if (!$this->aauth->get_user()->roleid == 5) {
-            redirect('/dashboard/', 'refresh');
-        }
+        
         $uid = intval($this->input->post('empid'));
-
         $nuid = intval($this->aauth->get_user()->id);
 
         if ($nuid == $uid) {
             echo json_encode(array('status' => 'Error', 'message' =>
                 'You can not delete yourself!'));
         } else {
-
-            $this->db->delete('geopos_employees', array('id' => $uid));
-
-            $this->db->delete('geopos_users', array('id' => $uid));
-
-            echo json_encode(array('status' => 'Success', 'message' =>
-                'User Profile deleted successfully! Please refresh the page!'));
-
-
+            $user_role = $this->aauth->get_user()->roleid;
+            
+            if ($user_role > 2) {
+                // Staff - Request Delete
+                $this->db->set('delete_status', 1);
+                $this->db->where('id', $uid);
+                $this->db->update('geopos_employees');
+                echo json_encode(array('status' => 'Success', 'message' => 'Delete Requested Successfully'));
+            } elseif ($user_role == 2) {
+                // Owner - Approve Delete
+                $this->db->set('delete_status', 2);
+                $this->db->where('id', $uid);
+                $this->db->update('geopos_employees');
+                echo json_encode(array('status' => 'Success', 'message' => 'Moved to Pending Review by Super Admin'));
+            } elseif ($user_role == 1 || $user_role == 5) {
+                // Super Admin / Legacy Admin - Hard Delete
+                $this->db->delete('geopos_employees', array('id' => $uid));
+                $this->db->delete('geopos_users', array('id' => $uid));
+                echo json_encode(array('status' => 'Success', 'message' =>
+                    'User Profile deleted successfully! Please refresh the page!'));
+            } else {
+                echo json_encode(array('status' => 'Error', 'message' => 'Insufficient permissions'));
+            }
         }
     }
 
@@ -420,7 +431,7 @@ class Employee extends CI_Controller
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -437,11 +448,12 @@ class Employee extends CI_Controller
             $country = $this->input->post('country', true);
             $postbox = $this->input->post('postbox', true);
             $location = $this->input->post('location', true);
+            $locations = $this->input->post('locations'); // Array of additional locations
             $salary = numberClean($this->input->post('salary', true));
             $department = $this->input->post('department', true);
             $commission = $this->input->post('commission', true);
             $roleid = $this->input->post('roleid', true);
-            $this->employee->update_employee($eid, $name, $phone, $phonealt, $address, $city, $region, $country, $postbox, $location, $salary, $department, $commission, $roleid);
+            $this->employee->update_employee($eid, $name, $phone, $phonealt, $address, $city, $region, $country, $postbox, $location, $salary, $department, $commission, $roleid, $locations);
 
         } else {
             $head['usernm'] = $this->aauth->get_user($id)->username;
@@ -450,6 +462,7 @@ class Employee extends CI_Controller
 
             $data['user'] = $this->employee->employee_details($id);
             $data['dept'] = $this->employee->department_list($id, $this->aauth->get_user()->loc);
+            $data['roles'] = $this->employee->get_roles();
             $data['eid'] = intval($id);
             $this->load->view('fixed/header', $head);
             $this->load->view('employee/edit', $data);
@@ -464,7 +477,7 @@ class Employee extends CI_Controller
     {
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $this->load->model('employee_model', 'employee');
@@ -484,7 +497,7 @@ class Employee extends CI_Controller
     public function user_sign()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
 
@@ -506,7 +519,7 @@ class Employee extends CI_Controller
     {
 
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->library("form_validation");
 
@@ -543,12 +556,28 @@ class Employee extends CI_Controller
 
     public function roles()
     {
-        if (!$this->aauth->premission(9, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(9, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = 'Role Management';
-        $data['roles'] = $this->aauth->get_roles();
+        
+        $current_role_id = $this->aauth->get_user()->roleid;
+        
+        // Fetch Master Roles
+        if ($current_role_id == 1) {
+            $master_roles = $this->db->where('parent_id', 0)->get('geopos_roles')->result_array();
+        } else {
+            // Only show THEIR own master role and its sub-roles
+            $master_roles = $this->db->where('id', $current_role_id)->where('parent_id', 0)->get('geopos_roles')->result_array();
+        }
+        
+        // Fetch Sub-roles mapped to their Master
+        foreach ($master_roles as &$master) {
+            $master['sub_roles'] = $this->db->where('parent_id', $master['id'])->get('geopos_roles')->result_array();
+        }
+        $data['master_roles'] = $master_roles;
+
         $this->load->view('fixed/header', $head);
         $this->load->view('employee/roles', $data);
         $this->load->view('fixed/footer');
@@ -556,40 +585,134 @@ class Employee extends CI_Controller
 
     public function role_add()
     {
-        if (!$this->aauth->premission(9, 'edit')) {
-            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        // Allow Super Admin (1), Business Owner (5), and Service Provider (12)
+        $current_role_id = $this->aauth->get_user()->roleid;
+        if (!in_array($current_role_id, [1, 5, 12])) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section.</h3>');
         }
+
         if ($this->input->post()) {
              $name = $this->input->post('name', true);
-             $this->db->insert('geopos_roles', array('name' => $name));
+             $parent_id = $this->input->post('parent_id', true);
+             
+             // Validate parent_id belongs to a master role
+             $valid_parents = [1, 5, 12, 13];
+             if ($current_role_id != 1) {
+                 // For Roles 5 & 12, they can ONLY add to themselves
+                 if ($parent_id != $current_role_id) {
+                     echo json_encode(array('status' => 'Error', 'message' => 'You can only add sub-roles to your own role tree.'));
+                     return;
+                 }
+             } else {
+                 if (!in_array($parent_id, $valid_parents)) {
+                     echo json_encode(array('status' => 'Error', 'message' => 'Invalid Master Role selected.'));
+                     return;
+                 }
+             }
+
+             $this->db->insert('geopos_roles', array('name' => $name, 'parent_id' => $parent_id));
              echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('ADDED') . " <a href='roles' class='btn btn-grey btn-lg'><span class='icon-eye' aria-hidden='true'></span>  </a>"));
         } else {
              $head['usernm'] = $this->aauth->get_user()->username;
              $head['title'] = 'Add Role';
+             
+             // Fetch Master Roles
+             if ($current_role_id == 1) {
+                 $data['master_roles'] = $this->db->where('parent_id', 0)->get('geopos_roles')->result_array();
+             } else {
+                 $data['master_roles'] = $this->db->where('id', $current_role_id)->where('parent_id', 0)->get('geopos_roles')->result_array();
+             }
+
              $this->load->view('fixed/header', $head);
-             $this->load->view('employee/role_add');
+             $this->load->view('employee/role_add', $data);
              $this->load->view('fixed/footer');
+        }
+    }
+
+    public function delete_role()
+    {
+        if (!$this->aauth->premission(9, 'delete')) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
+        $id = $this->input->post('deleteid');
+
+        // Prevent deletion of essential roles (e.g., Admin ID 1)
+        if ($id == 1) {
+            echo json_encode(array('status' => 'Error', 'message' => 'Cannot delete the core Super Admin role.'));
+            return;
+        }
+
+        // Hierarchical Restriction for non-SuperAdmins
+        $current_user_role_id = $this->aauth->get_user()->roleid;
+        if ($current_user_role_id != 1) {
+             $target_role = $this->db->get_where('geopos_roles', array('id' => $id))->row_array();
+             if (!$target_role || $target_role['parent_id'] != $current_user_role_id) {
+                 echo json_encode(array('status' => 'Error', 'message' => 'Access Denied: You can only delete sub-roles within your own hierarchy.'));
+                 return;
+             }
+        }
+
+        // Check if role is assigned to any active users
+        $users_with_role = $this->db->get_where('geopos_users', array('roleid' => $id))->num_rows();
+        if ($users_with_role > 0) {
+            echo json_encode(array('status' => 'Error', 'message' => 'Cannot delete this role because it is actively assigned to ' . $users_with_role . ' user(s). Plese reassign them first.'));
+            return;
+        }
+
+        if ($this->db->delete('geopos_roles', array('id' => $id))) {
+            // Clean up related permissions
+            $this->db->delete('geopos_role_permissions', array('role_id' => $id));
+            $this->db->delete('rbac_role_permissions', array('role_id' => $id));
+            echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('DELETED')));
+        } else {
+            echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
         }
     }
 
     public function role_edit()
     {
-        if (!$this->aauth->premission(9, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || ($this->aauth->premission(9, 'edit') && $this->aauth->has_permission('roles_permissions_edit')))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
+        
         $id = $this->input->get('id');
+        if (!$id) $id = $this->input->post('id'); // Support both GET and POST
+        
+        // --- HIERARCHY PERMISSION CHECK ---
+        $current_user_role_id = $this->aauth->get_user()->roleid;
+        $target_role = $this->db->get_where('geopos_roles', array('id' => $id))->row_array();
+        
+        if (!$target_role) {
+             exit('<h3>Role not found!</h3>');
+        }
+
+        // 1. Super Admin (ID 1) can edit everything. 
+        // 2. Others can only edit if the target role is a SUB-ROLE of their own Master Role tree.
+        if ($current_user_role_id != 1) {
+             // Current user must be a Business Owner (5) or Service Provider (12) to be here
+             // They can only edit roles where parent_id == $current_user_role_id
+             if ($target_role['parent_id'] != $current_user_role_id) {
+                 exit('<h3>Access Denied: You can only edit permissions for sub-roles within your own hierarchy.</h3>');
+             }
+        }
+        // --- END CHECK ---
         
         if ($this->input->post()) {
-             $id = $this->input->post('id');
-             $permissions = $this->input->post('p'); // Array [module_id][action] = 1
-             
-             // Clear existing permissions for this role?
-             // Or better, update. 
-             // To simplify: Delete all for this role, then insert checks.
-             
+             // Hierarchical Filtering: Only allow permissions the current user possesses
+             $current_user_role_id = $this->aauth->get_user()->roleid;
+             $current_user_legacy_perms = [];
+             $current_user_granular_perms = [];
+             if ($current_user_role_id != 1) {
+                 $c_lp = $this->aauth->get_role_permissions($current_user_role_id);
+                 foreach($c_lp as $p) {
+                     $current_user_legacy_perms[$p['module_id']] = $p;
+                 }
+                 $c_gp = $this->db->get_where('rbac_role_permissions', ['role_id' => $current_user_role_id])->result_array();
+                 $current_user_granular_perms = array_column($c_gp, 'permission_id');
+             }
+
+             // 1. Legacy Permission Handling 
              $this->db->delete('geopos_role_permissions', array('role_id' => $id));
-             
-             // Get all modules to ensure we save 0s for unchecked modules
              $modules = $this->aauth->get_modules();
              $permissions_post = $this->input->post('p');
              
@@ -597,19 +720,35 @@ class Employee extends CI_Controller
                  $mod_id = $row['id'];
                  $actions = isset($permissions_post[$mod_id]) ? $permissions_post[$mod_id] : [];
                  
+                 // Hierarchical Restriction
+                 $parent_p = isset($current_user_legacy_perms[$mod_id]) ? $current_user_legacy_perms[$mod_id] : ['can_view'=>0,'can_add'=>0,'can_edit'=>0,'can_delete'=>0,'can_demo'=>0];
+                 if ($current_user_role_id == 1) $parent_p = ['can_view'=>1,'can_add'=>1,'can_edit'=>1,'can_delete'=>1,'can_demo'=>1];
+
                  $data = array(
                      'role_id' => $id,
                      'module_id' => $mod_id,
-                     'can_view' => isset($actions['view']) ? 1 : 0,
-                     'can_add' => isset($actions['add']) ? 1 : 0,
-                     'can_edit' => isset($actions['edit']) ? 1 : 0,
-                     'can_delete' => isset($actions['delete']) ? 1 : 0,
-                     'can_demo' => isset($actions['demo']) ? 1 : 0
-
+                     'can_view' => (isset($actions['view']) && $parent_p['can_view']) ? 1 : 0,
+                     'can_add' => (isset($actions['add']) && $parent_p['can_add']) ? 1 : 0,
+                     'can_edit' => (isset($actions['edit']) && $parent_p['can_edit']) ? 1 : 0,
+                     'can_delete' => (isset($actions['delete']) && $parent_p['can_delete']) ? 1 : 0,
+                     'can_demo' => (isset($actions['demo']) && $parent_p['can_demo']) ? 1 : 0
                  );
-                 
-                 // Always insert/update to ensure permission state is explicit
                  $this->db->insert('geopos_role_permissions', $data);
+             }
+
+             // 2. Granular RBAC Handling
+             $this->db->delete('rbac_role_permissions', array('role_id' => $id));
+             $granular_perms = $this->input->post('gp'); 
+             if (is_array($granular_perms)) {
+                 foreach ($granular_perms as $perm_id => $val) {
+                     // Hierarchical Restriction
+                     if ($current_user_role_id == 1 || in_array($perm_id, $current_user_granular_perms)) {
+                         $this->db->insert('rbac_role_permissions', [
+                             'role_id' => $id,
+                             'permission_id' => $perm_id
+                         ]);
+                     }
+                 }
              }
              
              echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('UPDATED')));
@@ -619,15 +758,139 @@ class Employee extends CI_Controller
              $head['title'] = 'Edit Role Permissions';
              
              $data['role'] = $this->db->get_where('geopos_roles', array('id' => $id))->row_array();
-             $data['modules'] = $this->aauth->get_modules();
-             $data['permissions'] = $this->aauth->get_role_permissions($id);
              
-             // Reformat permissions for easy view lookup
+             // Consolidated Data Structure
+             $rbac_modules = $this->db->get('rbac_modules')->result_array();
+             
+             // Current User's Permissions for Filtering
+             $current_user_role_id = $this->aauth->get_user()->roleid;
+             $current_user_legacy_perms = [];
+             $current_user_granular_perms = [];
+             if ($current_user_role_id != 1) {
+                 $c_lp = $this->aauth->get_role_permissions($current_user_role_id);
+                 foreach($c_lp as $p) {
+                     $current_user_legacy_perms[$p['module_id']] = $p;
+                 }
+                 $c_gp = $this->db->get_where('rbac_role_permissions', ['role_id' => $current_user_role_id])->result_array();
+                 $current_user_granular_perms = array_column($c_gp, 'permission_id');
+             }
+
+             // Mapping for target role lookup
              $p_map = [];
-             foreach($data['permissions'] as $p) {
+             $permissions = $this->aauth->get_role_permissions($id);
+             foreach($permissions as $p) {
                  $p_map[$p['module_id']] = $p;
              }
-             $data['p_map'] = $p_map;
+             
+             $consolidated = [];
+             $groups = [
+                 ['title' => 'Sales', 'legacy_id' => 1, 'rbac_title' => 'Sales'],
+                 ['title' => 'Stock', 'legacy_id' => 2, 'rbac_title' => 'Stock'],
+                 ['title' => 'CRM', 'legacy_id' => 3, 'rbac_title' => 'CRM'],
+                 ['title' => 'Project Management', 'legacy_id' => 4, 'rbac_title' => 'Project Management'],
+                 ['title' => 'Accounts', 'legacy_id' => 5, 'rbac_title' => 'Accounts'],
+                 ['title' => 'Data & Reports', 'legacy_id' => 6, 'rbac_title' => 'Data & Reports'],
+                 ['title' => 'Project Worker', 'legacy_id' => 7, 'rbac_title' => 'Project Worker'],
+                 ['title' => 'Services', 'legacy_id' => 8, 'rbac_title' => 'Services'],
+                 ['title' => 'HRM', 'legacy_id' => 9, 'rbac_title' => 'HRM'],
+                 ['title' => 'Settings', 'legacy_id' => 10, 'rbac_title' => 'Settings']
+             ];
+
+             $used_rm = [];
+             foreach ($groups as $g) {
+                 $item = [
+                     'title' => $g['title'],
+                     'legacy_id' => $g['legacy_id'],
+                     'legacy_perms' => isset($p_map[$g['legacy_id']]) ? $p_map[$g['legacy_id']] : null,
+                     'pages' => []
+                 ];
+
+                 // Filter target legacy_perms by what parent possesses
+                 if ($current_user_role_id != 1 && $item['legacy_perms'] && isset($current_user_legacy_perms[$g['legacy_id']])) {
+                     $parent_p = $current_user_legacy_perms[$g['legacy_id']];
+                     $item['legacy_perms']['can_view'] &= $parent_p['can_view'];
+                     $item['legacy_perms']['can_add'] &= $parent_p['can_add'];
+                     $item['legacy_perms']['can_edit'] &= $parent_p['can_edit'];
+                     $item['legacy_perms']['can_delete'] &= $parent_p['can_delete'];
+                     $item['legacy_perms']['can_demo'] &= $parent_p['can_demo'];
+                 }
+
+                 // Find matching RBAC pages
+                 foreach ($rbac_modules as $rm) {
+                     if ($rm['title'] == $g['rbac_title'] || $rm['title'] == $g['title']) {
+                         $used_rm[] = $rm['id'];
+                         $pages = $this->db->get_where('rbac_pages', ['module_id' => $rm['id']])->result_array();
+                         foreach ($pages as $p) {
+                             $this->db->select('rbac_permissions.*, rbac_actions.name as action_title, rbac_actions.code as action_code');
+                             $this->db->from('rbac_permissions');
+                             $this->db->join('rbac_actions', 'rbac_actions.id = rbac_permissions.action_id');
+                             $this->db->where('page_id', $p['id']);
+                             $perms = $this->db->get()->result_array();
+                             
+                             // Filter perms by what current user has
+                             $filtered_perms = [];
+                             foreach ($perms as $perm) {
+                                 if ($current_user_role_id == 1 || in_array($perm['id'], $current_user_granular_perms)) {
+                                     $filtered_perms[] = $perm;
+                                 }
+                             }
+                             
+                             if (!empty($filtered_perms)) {
+                                 $p['permissions'] = $filtered_perms;
+                                 $item['pages'][] = $p;
+                             }
+                         }
+                     }
+                 }
+                 
+                 // Visibility check: Only add if current user has some right to this module or its pages
+                 if ($current_user_role_id == 1 || isset($current_user_legacy_perms[$g['legacy_id']]) || !empty($item['pages'])) {
+                      $consolidated[] = $item;
+                 }
+             }
+
+             // Append any remaining/unmapped modules
+             foreach ($rbac_modules as $rm) {
+                 if (!in_array($rm['id'], $used_rm)) {
+                     $item = [
+                         'title' => $rm['title'] . ' (Extended Module)',
+                         'legacy_id' => null,
+                         'legacy_perms' => null,
+                         'pages' => []
+                     ];
+                     $pages = $this->db->get_where('rbac_pages', ['module_id' => $rm['id']])->result_array();
+                     foreach ($pages as $p) {
+                         $this->db->select('rbac_permissions.*, rbac_actions.name as action_title, rbac_actions.code as action_code');
+                         $this->db->from('rbac_permissions');
+                         $this->db->join('rbac_actions', 'rbac_actions.id = rbac_permissions.action_id');
+                         $this->db->where('page_id', $p['id']);
+                         $perms = $this->db->get()->result_array();
+                         
+                         $filtered_perms = [];
+                         foreach ($perms as $perm) {
+                             if ($current_user_role_id == 1 || in_array($perm['id'], $current_user_granular_perms)) {
+                                 $filtered_perms[] = $perm;
+                             }
+                         }
+                         
+                         if (!empty($filtered_perms)) {
+                             $p['permissions'] = $filtered_perms;
+                             $item['pages'][] = $p;
+                         }
+                     }
+                     if (!empty($item['pages'])) {
+                         $consolidated[] = $item;
+                     }
+                 }
+             }
+             
+             $data['consolidated'] = $consolidated;
+             $current_gp = $this->db->get_where('rbac_role_permissions', ['role_id' => $id])->result_array();
+             $data['current_gp'] = array_column($current_gp, 'permission_id');
+
+             $data['parent_legacy_perms'] = $current_user_legacy_perms;
+             $data['parent_granular_perms'] = $current_user_granular_perms;
+             $data['is_super_admin'] = ($current_user_role_id == 1);
              
              $this->load->view('fixed/header', $head);
              $this->load->view('employee/role_edit', $data);
@@ -813,9 +1076,10 @@ class Employee extends CI_Controller
         if ($this->input->post()) {
 
             $name = $this->input->post('name', true);
+            $icon = $this->input->post('icon', true) ?: 'fa-tools';
+            $commission_rate = numberClean($this->input->post('commission_rate', true) ?? 0);
 
-
-            if ($this->employee->adddepartment($this->aauth->get_user()->loc, $name)) {
+            if ($this->employee->adddepartment($this->aauth->get_user()->loc, $name, $icon, $commission_rate)) {
                 echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('ADDED') . "  <a href='adddep' class='btn btn-indigo btn-lg'><span class='icon-plus-circle' aria-hidden='true'></span>  </a> <a href='departments' class='btn btn-grey btn-lg'><span class='icon-eye' aria-hidden='true'></span>  </a>"));
             } else {
                 echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
@@ -841,8 +1105,10 @@ class Employee extends CI_Controller
 
             $name = $this->input->post('name', true);
             $id = $this->input->post('did');
+            $icon = $this->input->post('icon', true) ?: 'fa-tools';
+            $commission_rate = numberClean($this->input->post('commission_rate', true) ?? 0);
 
-            if ($this->employee->editdepartment($id, $this->aauth->get_user()->loc, $name)) {
+            if ($this->employee->editdepartment($id, $this->aauth->get_user()->loc, $name, $icon, $commission_rate)) {
                 echo json_encode(array('status' => 'Success', 'message' => $this->lang->line('ADDED') . "  <a href='adddep' class='btn btn-indigo btn-lg'><span class='icon-plus-circle' aria-hidden='true'></span>  </a> <a href='departments' class='btn btn-grey btn-lg'><span class='icon-eye' aria-hidden='true'></span>  </a>"));
             } else {
                 echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
@@ -1067,6 +1333,5 @@ class Employee extends CI_Controller
             echo json_encode(array('status' => 'Error', 'message' => $this->lang->line('ERROR')));
         }
     }
-
 
 }

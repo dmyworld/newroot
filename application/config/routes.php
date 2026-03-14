@@ -51,6 +51,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'user';
 $route['404_override'] = '';
+$route['register'] = 'Hub/register';
+$route['login'] = 'Hub/login';
+$route['hub/register'] = 'Hub/register';
+$route['hub/login'] = 'Hub/login';
+$route['hub/pending'] = 'Hub/pending';
+$route['user/login'] = 'User/login';
 $route['translate_uri_dashes'] = FALSE;
 
 /* ------ Dashboard ------ */
@@ -111,25 +117,68 @@ $route['api/market/record_price']   = 'api/Dashboard/record_price';
 $route['api/workers/list']         = 'api/Dashboard/workers';
 
 /* =========================================================
+ * Action Module (Phase 2)   /api/action/*
+ * ========================================================= */
+$route['api/action/device/register']        = 'api/Action/register_device';
+$route['api/action/provider/ping']          = 'api/Action/provider_ping';
+$route['api/action/provider/availability']  = 'api/Action/provider_availability';
+$route['api/action/request/create']         = 'api/Action/request_create';
+$route['api/action/request/status']         = 'api/Action/request_status';
+$route['api/action/request/accept']         = 'api/Action/request_accept';
+$route['api/action/request/reject']         = 'api/Action/request_reject';
+$route['api/action/nearby_markers']         = 'api/Action/nearby_markers';
+$route['api/action/request/complete']       = 'api/Action/request_complete';
+$route['api/action/rating/add']             = 'api/Action/rating_add';
+$route['api/action/rating/list']            = 'api/Action/rating_list';
+
+/* =========================================================
+ * Service Management (Phase 1)
+ * ========================================================= */
+$route['servicecategories']                 = 'Servicecategories/index';
+$route['servicecategories/add']            = 'Servicecategories/add';
+$route['servicecategories/add_sub']        = 'Servicecategories/add_sub';
+$route['servicecategories/edit/(:num)']    = 'Servicecategories/edit/$1';
+$route['servicecategories/delete']         = 'Servicecategories/delete';
+
+$route['services']                         = 'Services/index';
+$route['services/add']                    = 'Services/add';
+$route['services/edit/(:num)']            = 'Services/edit/$1';
+$route['services/delete']                 = 'Services/delete';
+$route['services/status']                 = 'Services/status';
+$route['services/bulk_commission']         = 'Services/bulk_commission';
+$route['services/surge']                   = 'Services/surge';
+
+$route['providers']                        = 'Providers/index';
+$route['providers/active']                 = 'Providers/active';
+$route['providers/view']                   = 'Providers/view';
+$route['providers/approve']                = 'Providers/approve';
+$route['providers/reject']                 = 'Providers/reject';
+$route['providers/suspend']                = 'Providers/suspend';
+$route['providers/monitoring']             = 'Providers/monitoring';
+$route['providers/get_locations']          = 'Providers/get_locations';
+
+$route['promos']                           = 'Promos/index';
+$route['promos/add']                       = 'Promos/add';
+
+$route['complaints']                       = 'Complaints/index';
+$route['complaints/resolve']               = 'Complaints/resolve';
+
+$route['service_reports/commissions']      = 'Service_reports/commissions';
+$route['service_reports/performance']      = 'Service_reports/provider_performance';
+$route['service_reports/categories']       = 'Service_reports/category_analysis';
+
+/* =========================================================
  * Consumer Shop Portal   /shop/*
  * ========================================================= */
+/* -- Consumer Shop Portal -- */
 $route['shop']                         = 'Shop/index';
-$route['shop/calculator']              = 'Shop/calculator';
-$route['shop/request_quote']           = 'Shop/request_quote';
-$route['shop/submit_quote']            = 'Shop/submit_quote';
-$route['shop/my_orders']               = 'Shop/my_orders';
-$route['shop/admin_orders']            = 'Shop/admin_orders';
-$route['shop/update_order_status']     = 'Shop/update_order_status';
-$route['shop/manage_bids']             = 'Shop/manage_bids';
-$route['shop/my_deals']               = 'Shop/my_deals';
-$route['shop/place_bid']              = 'Shop/place_bid';
-$route['shop/buy_now']                = 'Shop/buy_now';
-$route['shop/finalize_deal']          = 'Shop/finalize_deal';
-$route['shop/approve_request_buy']    = 'Shop/approve_request_buy';
-$route['shop/update_bid_status']      = 'Shop/update_bid_status';
-$route['shop/record_measurements']    = 'Shop/record_measurements';
-$route['shop/set_agreement']          = 'Shop/set_agreement';
-$route['shop/track']                   = 'Shop/track';
-$route['shop/track/(:any)']            = 'Shop/track/$1';
-$route['shop/checkout/(:any)/(:any)']  = 'Shop/checkout/$1/$2';
+// ... (existing shop routes)
 $route['shop/view/(:any)/(:num)']      = 'Shop/view/$1/$2';
+
+/* =========================================================
+ * Subscription & Commission Module
+ * ========================================================= */
+$route['subscriptions/admin']        = 'Subscriptions/index';
+$route['subscriptions/approvals']    = 'Subscriptions/approvals';
+$route['subscriptions/active_users'] = 'Subscriptions/active_users';
+$route['subscriptions/commissions']  = 'Subscriptions/commissions';

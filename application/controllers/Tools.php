@@ -25,7 +25,7 @@ class Tools Extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $this->load->model('tools_model', 'tools');
@@ -38,10 +38,8 @@ class Tools Extends CI_Controller
     public function todo()
     {
         $this->li_a = 'project';
-        if (!$this->aauth->premission(4, 'view')) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'view'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $head['usernm'] = $this->aauth->get_user()->username;
         $head['title'] = 'ToDo List';
@@ -56,10 +54,8 @@ class Tools Extends CI_Controller
     public function addtask()
     {
         $this->li_a = 'project';
-        if (!$this->aauth->premission(4, 'add')) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $this->load->model('employee_model', 'employee');
         $head['usernm'] = $this->aauth->get_user()->username;
@@ -75,7 +71,7 @@ class Tools Extends CI_Controller
     public function edittask()
     {
         $this->li_a = 'project';
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -117,7 +113,7 @@ class Tools Extends CI_Controller
 
     public function save_addtask()
     {
-        if (!$this->aauth->premission(4, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'add'))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -143,7 +139,7 @@ class Tools Extends CI_Controller
 
     public function set_task()
     {
-        if (!$this->aauth->premission(4, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'edit'))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -158,7 +154,7 @@ class Tools Extends CI_Controller
 
     public function view_task()
     {
-        if (!$this->aauth->premission(4)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -172,7 +168,7 @@ class Tools Extends CI_Controller
 
     public function task_stats()
     {
-        if (!$this->aauth->premission(4)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -184,10 +180,8 @@ class Tools Extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(4, 'delete')) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $id = $this->input->post('deleteid');
 
@@ -201,7 +195,7 @@ class Tools Extends CI_Controller
 
     public function todo_load_list()
     {
-        if (!$this->aauth->premission(4)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(4))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -244,7 +238,7 @@ class Tools Extends CI_Controller
 
     public function setgoals()
     {
-        if ($this->aauth->get_user()->roleid < 5) {
+        if ($this->aauth->get_user()->roleid != 1 && $this->aauth->get_user()->roleid < 5) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 

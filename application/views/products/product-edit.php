@@ -239,6 +239,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row" id="rent_price_div" style="display:<?php echo $product['is_rent'] ? 'flex' : 'none' ?>;">
+                        <label class="col-sm-2 col-form-label" for="product_rent">Rent Price (Monthly) *</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><?php echo $this->config->item('currency') ?></span>
+                                <input type="text" name="product_rent" id="product_rent" class="form-control" placeholder="0.00" onkeypress="return isNumber(event)" value="<?php echo edit_amountExchange_s($product['product_rent'], 0, $this->aauth->get_user()->loc) ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" id="installment_price_div" style="display:<?php echo $product['is_installment'] ? 'flex' : 'none' ?>;">
+                        <label class="col-sm-2 col-form-label" for="product_installment">Installment Price (Total) *</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><?php echo $this->config->item('currency') ?></span>
+                                <input type="text" name="product_installment" id="product_installment" class="form-control" placeholder="0.00" onkeypress="return isNumber(event)" value="<?php echo edit_amountExchange_s($product['product_installment'], 0, $this->aauth->get_user()->loc) ?>">
+                            </div>
+                        </div>
+                    </div>
   
           
                     
@@ -297,11 +317,17 @@
                             </select>
                         </div>
                         <div class="col-sm-4">
-                            <input type="text" placeholder="BarCode Numeric Digit 123112345671"
-                                   class="form-control margin-bottom" name="barcode"
-                                   value="<?php echo $product['barcode'] ?>"
-                                   onkeypress="return isNumber(event)">
-
+                            <div class="input-group">
+                                <input type="text" placeholder="BarCode Numeric Digit 123112345671"
+                                       class="form-control margin-bottom" name="barcode" id="barcode_input"
+                                       value="<?php echo $product['barcode'] ?>"
+                                       onkeypress="return isNumber(event)">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" onclick="startScanner('barcode_input')">
+                                        <i class="fa fa-qrcode"></i> Scan
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -510,6 +536,23 @@
 
             });
 
+            // Triple-Mode Toggles
+            $('#is_rent').change(function() {
+                if($(this).is(":checked")) {
+                    $('#rent_price_div').fadeIn();
+                } else {
+                    $('#rent_price_div').fadeOut();
+                }
+            });
+
+            $('#is_installment').change(function() {
+                if($(this).is(":checked")) {
+                    $('#installment_price_div').fadeIn();
+                } else {
+                    $('#installment_price_div').fadeOut();
+                }
+            });
+
             $("#sub_cat").select2();
             $("#product_cat").on('change', function () {
                 $("#sub_cat").val('').trigger('change');
@@ -541,3 +584,4 @@
                 });
             });
         </script>
+<?php $this->load->view('fixed/scanner_modal'); ?>

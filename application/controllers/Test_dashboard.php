@@ -3,6 +3,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Test_dashboard extends CI_Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library("Aauth");
+        if (!$this->aauth->is_loggedin()) {
+            redirect('/hub/login', 'refresh');
+        }
+        if ($this->aauth->get_user()->roleid != 1) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
+    }
+
     public function index()
     {
         echo "<h1>Testing Owner Dashboard Dependencies</h1>";

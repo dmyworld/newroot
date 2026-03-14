@@ -24,6 +24,27 @@
                     </div>
                 </div>
 
+                <div class="form-group row">
+
+                    <label class="col-sm-3 col-form-label" for="icon">Icon (FontAwesome)</label>
+
+                    <div class="col-sm-8">
+                        <input type="text" placeholder="fa-tools"
+                               class="form-control margin-bottom b_input" name="icon">
+                        <small>Example: fa-truck, fa-user-gear, fa-wrench, fa-hammer</small>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+
+                    <label class="col-sm-3 col-form-label" for="commission_rate">Commission Rate (%)</label>
+
+                    <div class="col-sm-8">
+                        <input type="number" placeholder="0.00" step="0.01"
+                               class="form-control margin-bottom b_input" name="commission_rate">
+                    </div>
+                </div>
+
 
                 <div class="form-group row">
 

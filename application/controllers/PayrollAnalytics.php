@@ -8,7 +8,7 @@ class PayrollAnalytics extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         // Permission check - e.g. Admin or Payroll Manager
         if ($this->aauth->get_user()->roleid < 5 && !$this->aauth->premission(14)) { 

@@ -117,6 +117,9 @@
             <h2><?php echo $this->lang->line('Add New Product') ?></h2>
         </div>
         <div class="header-actions">
+            <button type="button" class="btn-premium btn-success-glass" data-toggle="modal" data-target="#masterProductModal">
+                 <i class="fa fa-magic"></i> Select from Master List
+            </button>
             <a href="<?php echo base_url('products') ?>" class="btn-premium">
                  <i class="fa fa-list"></i> Products List
             </a>
@@ -326,7 +329,14 @@
                         </select>
                     </div>
                     <div class="col-sm-4">
-                        <input type="text" placeholder="BarCode Numeric Digit 123112345671" class="form-control" name="barcode" onkeypress="return isNumber(event)">
+                        <div class="input-group">
+                            <input type="text" placeholder="BarCode Numeric Digit 123112345671" class="form-control" name="barcode" id="barcode_input" onkeypress="return isNumber(event)">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="startScanner('barcode_input')">
+                                    <i class="fa fa-qrcode"></i> Scan
+                                </button>
+                            </div>
+                        </div>
                         <small class="text-muted">Leave blank for auto generated EAN13.</small>
                     </div>
                     <label class="col-sm-2 col-form-label">Product Quick Code</label>
@@ -352,6 +362,28 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group row" id="rent_price_div" style="display:none;">
+                    <label class="col-sm-2 col-form-label" for="product_rent">Rent Price (Monthly) *</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"><?php echo $this->config->item('currency') ?></span>
+                            <input type="text" name="product_rent" id="product_rent" class="form-control" placeholder="0.00" onkeypress="return isNumber(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row" id="installment_price_div" style="display:none;">
+                    <label class="col-sm-2 col-form-label" for="product_installment">Installment Price (Total) *</label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"><?php echo $this->config->item('currency') ?></span>
+                            <input type="text" name="product_installment" id="product_installment" class="form-control" placeholder="0.00" onkeypress="return isNumber(event)">
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="master_pid" id="master_pid" value="0">
 
                 <hr class="my-4">
                 <h5 class="mb-3 text-psy-primary font-weight-bold"><i class="fa fa-ruler-combined mr-2"></i> Dimensions</h5>
@@ -524,6 +556,76 @@
 
             </form>
         </div>
+
+        <!-- Master Product Modal -->
+        <div class="modal fade" id="masterProductModal" tabindex="-1" role="dialog" aria-labelledby="masterProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-gradient-directional-blue white">
+                        <h5 class="modal-title" id="masterProductModalLabel"><i class="fa fa-magic"></i> Select from Master Product List</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="master_products_table">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Code</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                $master_products = $this->products->get_master_products();
+                                if ($master_products) {
+                                    $i = 1;
+                                    foreach ($master_products as $m_row) {
+                                        echo '<tr>
+                                                <td>' . $i++ . '</td>
+                                                <td><img src="' . base_url() . 'userfiles/product/' . $m_row['image'] . '" height="50"></td>
+                                                <td><b>' . $m_row['product_name'] . '</b></td>
+                                                <td>' . $m_row['product_code'] . '</td>
+                                                <td>' . $m_row['pcat'] . '</td>
+                                                <td>' . amountExchange($m_row['product_price'], 0, $this->aauth->get_user()->loc) . '</td>
+                                                <td><button type="button" class="btn btn-success btn-sm select-master" 
+                                                    data-id="' . $m_row['id'] . '" 
+                                                    data-name="' . htmlspecialchars($m_row['product_name']) . '" 
+                                                    data-code="' . htmlspecialchars($m_row['product_code']) . '" 
+                                                    data-price="' . $m_row['product_price'] . '" 
+                                                    data-rent="' . $m_row['product_rent'] . '" 
+                                                    data-installment="' . $m_row['product_installment'] . '" 
+                                                    data-image="' . $m_row['image'] . '" 
+                                                    data-unit="' . $m_row['unit'] . '" 
+                                                    data-desc="' . htmlspecialchars($m_row['product_des']) . '"
+                                                    data-pwith="' . $m_row['pwith'] . '"
+                                                    data-pthickness="' . $m_row['pthickness'] . '"
+                                                    data-pquick="' . $m_row['pquick'] . '"
+                                                    data-pquick_code="' . $m_row['pquick_code'] . '"
+                                                    data-cat="' . $m_row['pcat'] . '"
+                                                    >Select</button></td>
+                                              </tr>';
+                                    }
+                                } else {
+                                    echo '<tr><td colspan="7" class="text-center">No master products found.</td></tr>';
+                                }
+                                ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <script src="<?php echo assets_url('assets/myjs/jquery.ui.widget.js'); ?>"></script>
 <script src="<?php echo assets_url('assets/myjs/jquery.fileupload.js') ?>"></script>
@@ -598,6 +700,68 @@
         $(this).closest('tr').remove();
     });
 
+    // Triple-Mode Toggles
+    $('#is_rent').change(function() {
+        if($(this).is(":checked")) {
+            $('#rent_price_div').fadeIn();
+        } else {
+            $('#rent_price_div').fadeOut();
+        }
+    });
+
+    $('#is_installment').change(function() {
+        if($(this).is(":checked")) {
+            $('#installment_price_div').fadeIn();
+        } else {
+            $('#installment_price_div').fadeOut();
+        }
+    });
+
+    // Master Product Selection
+    $(document).on('click', '.select-master', function() {
+        var data = $(this).data();
+        
+        // Populate fields
+        $('input[name="product_name"]').val(data.name);
+        $('input[name="product_code"]').val(data.code);
+        $('input[name="product_price"]').val(data.price);
+        $('input[name="product_rent"]').val(data.rent);
+        $('input[name="product_installment"]').val(data.installment);
+        $('input[name="product_desc"]').val(data.desc); // This is Length in this UI
+        $('input[name="product_width"]').val(data.pwith);
+        $('input[name="product_thickness"]').val(data.pthickness);
+        $('input[name="product_quick_code"]').val(data.pquick_code);
+        $('#master_pid').val(data.id);
+        $('#product_cat').val(data.cat).trigger('change');
+        $('select[name="unit"]').val(data.unit);
+        
+        // Handle Toggles
+        if(parseFloat(data.rent) > 0) {
+            $('#is_rent').prop('checked', true).trigger('change');
+        }
+        if(parseFloat(data.installment) > 0) {
+            $('#is_installment').prop('checked', true).trigger('change');
+        }
+
+        // Handle Image
+        if(data.image) {
+            $('#files').html('<tr><td><img style="max-height:200px;" src="<?php echo base_url() ?>userfiles/product/' + data.image + '"></td></tr>');
+            $('#image').val(data.image);
+        }
+
+        // Close Modal
+        $('#masterProductModal').modal('hide');
+        
+        // Notify
+        Swal.fire({
+            icon: 'success',
+            title: 'Product Details Imported!',
+            text: 'Master details for ' + data.name + ' have been loaded.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+
 
     $("#sub_cat").select2();
     $("#product_cat").on('change', function () {
@@ -630,3 +794,4 @@
         });
     });
 </script>
+<?php $this->load->view('fixed/scanner_modal'); ?>

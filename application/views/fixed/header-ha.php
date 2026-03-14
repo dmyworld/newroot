@@ -5,7 +5,7 @@
       data-col="2-columns">
 <span id="hdata"
       data-df="<?php echo $this->config->item('dformat2'); ?>"
-      data-curr="<?php echo currency($this->aauth->get_user()->loc); ?>"></span>
+      data-curr="<?php echo currency($this->session->userdata('loc')); ?>"></span>
 <!-- fixed-top-->
 <nav class="header-navbar navbar-expand-md navbar navbar-with-menu navbar-static-top navbar-dark bg-gradient-x-grey-blue navbar-border navbar-brand-center">
     <div class="navbar-wrapper">
@@ -41,7 +41,7 @@
                             </li>
 
                             <li class="dropdown-menu-footer"><span class="dropdown-item text-muted text-center blue"
-                                > <?php $loc = location($this->aauth->get_user()->loc);
+                                > <?php $loc = location($this->session->userdata('loc'));
                                     echo $loc['cname']; ?></span>
                             </li>
                         </ul>
@@ -56,10 +56,10 @@
                                                                         title="Advanced Alert Management System"><i
                                     class="ft-bell mr-1"></i>Alerts </a>
                     </li>
-                    <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>products/stock_transfer"
-                                                                        class="btn btn-info btn-md t_tooltip"
-                                                                        title="Stock Transfer"><i
-                                    class="ft-repeat mr-1"></i>Transfer </a>
+                    <li class="nav-item d-none d-md-block nav-link "><a href="<?= base_url() ?>ServiceDashboard"
+                                                                        class="btn btn-warning btn-md t_tooltip"
+                                                                        title="Service Provider Dashboard"><i
+                                    class="ft-user mr-1"></i>Worker Dashboard </a>
                     </li>
                     <li class="nav-item nav-search"><a class="nav-link nav-link-search" href="#" aria-haspopup="true"
                                                        aria-expanded="false" id="search-input"><i
@@ -347,33 +347,28 @@
                                                 </div>
                                             </div>
 
-                                            <div class="card-header p-0 pb-1 border-0 mt-1" id="heading9" role="tab">
+                                             <div class="card-header p-0 pb-1 border-0 mt-1" id="heading_sub" role="tab">
                                                 <a class=" text-uppercase black" data-toggle="collapse"
-                                                   data-parent="#accordionWrap2" href="#accordion9"
-                                                   aria-controls="accordion9"><i
-                                                            class="fa fa-umbrella"></i><?php echo $this->lang->line('CRM') . ' & ' . $this->lang->line('HRM') . ' ' . $this->lang->line('Settings') ?>
+                                                   data-parent="#accordionWrap2" href="#accordion_sub"
+                                                   aria-controls="accordion_sub"><i
+                                                             class="fa fa-diamond"></i>Subscriptions
                                                 </a></div>
-                                            <div class="card-collapse collapse mb-1 " id="accordion9" role="tabpanel"
-                                                 aria-labelledby="heading9" aria-expanded="true">
+                                            <div class="card-collapse collapse mb-1 " id="accordion_sub" role="tabpanel"
+                                                 aria-labelledby="heading_sub" aria-expanded="true">
                                                 <div class="card-content">
                                                     <ul>
                                                         <li><a class="dropdown-item"
-                                                               href="<?php echo base_url(); ?>employee/auto_attendance"><i
-                                                                        class="ft-chevron-right"></i><?php echo $this->lang->line('Self') . ' ' . $this->lang->line('Attendance') ?>
-                                                            </a></li>
-
+                                                               href="<?php echo base_url(); ?>subscriptions/approvals"><i
+                                                                        class="ft-chevron-right"></i>Pending Approvals</a>
+                                                        </li>
                                                         <li><a class="dropdown-item"
-                                                               href="<?php echo base_url(); ?>settings/registration"><i
-                                                                        class="ft-chevron-right"></i> <?php echo $this->lang->line('CRM') . ' ' . $this->lang->line('Settings') ?>
-                                                            </a></li>
+                                                               href="<?php echo base_url(); ?>subscriptions/active_users"><i
+                                                                        class="ft-chevron-right"></i> Active Users</a>
+                                                        </li>
                                                         <li><a class="dropdown-item"
-                                                               href="<?php echo base_url(); ?>plugins/recaptcha"><i
-                                                                        class="ft-chevron-right"></i><?php echo $this->lang->line('Security') ?>
-                                                            </a></li>
-                                                        <li><a class="dropdown-item"
-                                                               href="<?php echo base_url(); ?>settings/tickets"><i
-                                                                        class="ft-chevron-right"></i> <?php echo $this->lang->line('Support Tickets') ?>
-                                                            </a></li>
+                                                               href="<?php echo base_url(); ?>subscriptions/commissions"><i
+                                                                        class="ft-chevron-right"></i> Commissions</a>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -382,6 +377,7 @@
                                         </div>
                                     </div>
                                 </li>
+
 
 
                                 <li class="col-md-3">

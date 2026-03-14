@@ -28,13 +28,11 @@ class Purchase extends CI_Controller
         $this->load->model('TimberPro_model', 'timber');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
-        if (!$this->aauth->premission(2)) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $this->li_a = 'stock';
 
@@ -43,7 +41,7 @@ class Purchase extends CI_Controller
     //create invoice
     public function create()
     {
-        if (!$this->aauth->premission(2, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -67,7 +65,7 @@ class Purchase extends CI_Controller
     //create createlogs
     public function createlogs()
     {
-        if (!$this->aauth->premission(2, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $this->load->library("Common");
@@ -90,7 +88,7 @@ class Purchase extends CI_Controller
 
     public function log_purchasing()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['title'] = "Raw Log Purchasing";
@@ -104,7 +102,7 @@ class Purchase extends CI_Controller
 
     public function logs_inventory()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['title'] = "Logs Inventory (Location Aware)";
@@ -123,7 +121,7 @@ class Purchase extends CI_Controller
     //create newprocessing
     public function newprocessing($pid = 0, $pcode = '')
     {
-        if (!$this->aauth->premission(2, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $data['pre_pid'] = $pid;
@@ -151,7 +149,7 @@ class Purchase extends CI_Controller
     //edit invoice
     public function edit()
     {
-        if (!$this->aauth->premission(2, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 

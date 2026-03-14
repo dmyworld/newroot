@@ -162,6 +162,11 @@
                                     class="fa fa-file-text-o"></i> <?php echo $this->lang->line('Invoices') ?></a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="ledger-tab" data-toggle="tab" href="#ledger"
+                           aria-controls="ledger"><i
+                                    class="fa fa-money"></i> Financial Ledger</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="comments-tab" data-toggle="tab" href="#comments"
                            aria-controls="comments"><i
                                     class="fa fa-comment-o"></i> <?php echo $this->lang->line('Comments') ?></a>
@@ -175,10 +180,63 @@
                         <a class="nav-link" href="<?php echo base_url('project_materials/view?pid=' . $project['id']) ?>"><i
                                     class="fa fa-cubes"></i> Materials & Costing</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link bg-success white" href="<?php echo base_url('shop?project_id=' . $project['id']) ?>" target="_blank"><i
+                                    class="fa fa-shopping-cart"></i> Add Resources (Shop)</a>
+                    </li>
                 </ul>
                 <div class="tab-content px-1 pt-1">
                     <div role="tabpanel" class="tab-pane active show" id="active"
                          aria-labelledby="active-tab" aria-expanded="true">
+                        
+                        <!-- Premium Transparency & Budget Meter -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="card bg-gradient-x-blue-grey border-0 shadow-sm" style="background: linear-gradient(to right, #2c3e50, #3498db); color: white; border-radius: 15px;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h5 class="text-white m-0 font-weight-bold"><i class="fa fa-shield"></i> Financial Transparency Meter</h5>
+                                            <span class="badge badge-success px-2 py-1">Verified Audit Trail</span>
+                                        </div>
+                                        <?php 
+                                            // Calculate utilization safely
+                                            $budget = (float)$project['worth'];
+                                            $expenses = (float)($project_expenses ?? 0);
+                                            $util_pct = $budget > 0 ? min(100, round(($expenses / $budget) * 100)) : 0;
+                                        ?>
+                                        <div class="progress mt-2 mb-1" style="height: 12px; background-color: rgba(255,255,255,0.2); border-radius: 10px;">
+                                            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: <?= $util_pct ?>%" aria-valuenow="<?= $util_pct ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between text-sm mt-1">
+                                            <span><strong>Budget:</strong> <?= amountExchange($budget, 0, $this->aauth->get_user()->loc) ?></span>
+                                            <span><strong>Tracked Procurement:</strong> <span class="project-expense-total"><?= amountExchange($expenses, 0, $this->aauth->get_user()->loc) ?></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Resource Map -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm rounded-lg">
+                                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between">
+                                        <h4 class="card-title font-weight-bold text-success"><i class="fa fa-map-marker mr-2"></i> Project Resource Map</h4>
+                                        <button class="btn btn-outline-success btn-sm rounded-pill px-3" onclick="alert('Live GPS Tracking initializing...')">Refresh Map</button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="project-resource-map" class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 250px; background-image: url('<?= base_url('assets/images/map-placeholder.png') ?>'); background-size: cover; background-position: center; border: 2px dashed #95a5a6;">
+                                            <div class="text-center bg-white p-3 rounded shadow-sm opacity-90">
+                                                <i class="fa fa-map fa-3x text-success mb-2"></i>
+                                                <h5 class="font-weight-bold text-dark mb-1">Live Asset Tracking</h5>
+                                                <p class="text-muted small mb-0">Map integration ready for Shop Deliveries & Workers.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive col-sm-12">
                             <table class="table">
 
@@ -262,9 +320,7 @@
                                     <th scope="row"><?php echo $this->lang->line('Budget') ?></th>
                                     <td>
                                         <p><?php echo amountExchange($project['worth'], 0, $this->aauth->get_user()->loc) ?></p>
-
                                     </td>
-
                                 </tr>
                                 <tr>
                                     <th scope="row">Communication</th>
@@ -321,37 +377,42 @@
                     <div class="tab-pane fade" id="thread" role="tabpanel" aria-labelledby="thread-tab"
                          aria-expanded="false">
 
-                        <ul class="timeline">
-                            <?php $flag = true;
-                            $total = count($thread_list);
-                            foreach ($thread_list as $row) {
-
-
-                                ?>
-                                <li class="<?php if (!$flag) {
-                                    echo 'timeline-inverted';
-                                } ?>">
-                                    <div class="timeline-badge info"><?php echo $total ?></div>
-                                    <div class="timeline-panel">
-                                        <div class="timeline-heading">
-                                            <h4 class="timeline-title"><?php echo $row['name'] ?></h4>
-                                            <p>
-                                                <small class="text-muted"><i
-                                                            class="fa fa-clock-o"></i> <?php echo $row['emp'] . ' ' . $row['start'] . ' ~ ' . $row['duedate'] ?>
-                                                </small>
-                                            </p>
-                                        </div>
-                                        <div class="timeline-body">
-                                            <p><?php echo $row['description'] ?></p>
-                                        </div>
+                        <!-- Premium Interactive Timeline -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0 rounded-lg">
+                                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                                        <h4 class="card-title font-weight-bold text-primary"><i class="fa fa-stream mr-2"></i> Interactive Project Timeline</h4>
                                     </div>
-                                </li>
-                                <?php $flag = !$flag;
-                                $total--;
-                            } ?>
-
-
-                        </ul>
+                                    <div class="card-body">
+                                        <ul class="timeline timeline-center">
+                                            <?php $flag = true;
+                                            $total = count($thread_list);
+                                            foreach ($thread_list as $row) {
+                                                ?>
+                                                <li class="<?php if (!$flag) { echo 'timeline-inverted'; } ?>">
+                                                    <div class="timeline-badge bg-gradient-x-info shadow-sm"><i class="fa fa-tasks"></i></div>
+                                                    <div class="timeline-panel shadow-sm border-0 rounded-lg" style="transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                                                        <div class="timeline-heading border-bottom pb-2 mb-2">
+                                                            <h5 class="timeline-title font-weight-bold"><?php echo htmlspecialchars($row['name']) ?></h5>
+                                                            <p class="mb-0">
+                                                                <small class="text-muted font-weight-bold"><i class="fa fa-calendar-check-o mr-1"></i> <?php echo dateformat($row['start']) . ' - ' . dateformat($row['duedate']) ?></small><br>
+                                                                <small class="text-primary"><i class="fa fa-user-circle mr-1"></i> <?php echo htmlspecialchars($row['emp']) ?></small>
+                                                            </p>
+                                                        </div>
+                                                        <div class="timeline-body text-secondary mt-2">
+                                                            <p><?php echo $row['description'] ?></p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <?php $flag = !$flag;
+                                                $total--;
+                                            } ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
                     </div>
@@ -530,6 +591,12 @@
 
                     </div>
                     <!--invoices-->
+                    <!--ledger-->
+                    <div class="tab-pane fade" id="ledger" role="tabpanel" aria-labelledby="ledger-tab"
+                         aria-expanded="false">
+                        <?php $this->load->view('projects/project_ledger'); ?>
+                    </div>
+                    <!--ledger-->
                     <!--comments-->
                     <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab"
                          aria-expanded="false">

@@ -18,3 +18,10 @@ $hook['pre_controller'] = array(
     'filepath' => 'hooks'
 );
 
+$hook['post_controller_constructor'] = array(
+    'class' => 'Myapp',
+    'function' => 'subscription_check',
+    'filename' => 'Myapp.php',
+    'filepath' => 'hooks'
+);
+

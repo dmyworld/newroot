@@ -34,6 +34,13 @@ class Stockreturn_model extends CI_Model
     {
         $this->db->select('tid');
         $this->db->from($this->table);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         $this->db->order_by('tid', 'DESC');
         $this->db->limit(1);
         $query = $this->db->get();
@@ -175,19 +182,29 @@ class Stockreturn_model extends CI_Model
             $this->db->from($this->table);
             $this->db->where('geopos_stock_r.i_class', $type);
             $this->db->join('geopos_customers', 'geopos_stock_r.csd=geopos_customers.id', 'left');
-                  if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
-        }
-        elseif(!BDATA) { $this->db->where('geopos_stock_r.loc', 0); }
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
+                } elseif (!BDATA) {
+                    $this->db->where('geopos_stock_r.loc', 0);
+                }
+            } elseif ($this->input->post('location')) {
+                $this->db->where('geopos_stock_r.loc', $this->input->post('location'));
+            }
         } else {
             $this->db->select('geopos_stock_r.id,geopos_stock_r.tid,geopos_stock_r.invoicedate,geopos_stock_r.invoiceduedate,geopos_stock_r.total,geopos_stock_r.status,geopos_supplier.name');
             $this->db->from($this->table);
             $this->db->where('geopos_stock_r.i_class', $type);
             $this->db->join('geopos_supplier', 'geopos_stock_r.csd=geopos_supplier.id', 'left');
-                 if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
-        }
-        elseif(!BDATA) { $this->db->where('geopos_stock_r.loc', 0); }
+            if ($this->aauth->get_user()->roleid != 1) {
+                if ($this->aauth->get_user()->loc) {
+                    $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
+                } elseif (!BDATA) {
+                    $this->db->where('geopos_stock_r.loc', 0);
+                }
+            } elseif ($this->input->post('location')) {
+                $this->db->where('geopos_stock_r.loc', $this->input->post('location'));
+            }
         }
                     if ($this->input->post('start_date') && $this->input->post('end_date')) // if datatable send POST for search
         {
@@ -245,10 +262,15 @@ class Stockreturn_model extends CI_Model
     public function count_all()
     {
         $this->db->from($this->table);
-               if ($this->aauth->get_user()->loc) {
-            $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('geopos_stock_r.loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('geopos_stock_r.loc', 0);
+            }
+        } elseif ($this->input->post('location')) {
+            $this->db->where('geopos_stock_r.loc', $this->input->post('location'));
         }
-        elseif(!BDATA) { $this->db->where('geopos_stock_r.loc', 0); }
         return $this->db->count_all_results();
     }
 

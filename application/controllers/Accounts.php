@@ -25,13 +25,11 @@ class Accounts Extends CI_Controller
         parent::__construct();
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
-        if (!$this->aauth->premission(5)) {
-
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
-
         }
         $this->load->model('accounts_model', 'accounts');
         $this->li_a = 'accounts';
@@ -60,7 +58,7 @@ class Accounts Extends CI_Controller
 
     public function add()
     {
-        if (!$this->aauth->premission(5, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $head['usernm'] = $this->aauth->get_user()->username;
@@ -74,7 +72,7 @@ class Accounts Extends CI_Controller
 
     public function addacc()
     {
-        if (!$this->aauth->premission(5, 'add')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5, 'add'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $accno = $this->input->post('accno');
@@ -96,7 +94,7 @@ class Accounts Extends CI_Controller
 
     public function delete_i()
     {
-        if (!$this->aauth->premission(5, 'delete')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5, 'delete'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $id = $this->input->post('deleteid');
@@ -115,7 +113,7 @@ class Accounts Extends CI_Controller
 //view for edit
     public function edit()
     {
-        if (!$this->aauth->premission(5, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $catid = $this->input->get('id');
@@ -140,7 +138,7 @@ class Accounts Extends CI_Controller
 
     public function editacc()
     {
-        if (!$this->aauth->premission(5, 'edit')) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5, 'edit'))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $acid = $this->input->post('acid');

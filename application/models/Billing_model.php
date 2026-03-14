@@ -192,7 +192,13 @@ class Billing_model extends CI_Model
     public function bank_accounts($enable = '')
     {
 
-        $this->db->from('geopos_bank_ac');
+        if ($this->aauth->get_user()->roleid != 1) {
+            if ($this->aauth->get_user()->loc) {
+                $this->db->where('loc', $this->aauth->get_user()->loc);
+            } elseif (!BDATA) {
+                $this->db->where('loc', 0);
+            }
+        }
         if ($enable == 'Yes') {
             $this->db->where('enable', 'Yes');
         }
@@ -428,6 +434,17 @@ class Billing_model extends CI_Model
 
         $query = $this->db->get();
         $account = $query->row_array();
+
+        // Location based account selection for POS
+        if ($this->aauth->get_user()->loc) {
+            $this->db->select('geopos_accounts.id,geopos_accounts.holder,');
+            $this->db->from('geopos_locations');
+            $this->db->where('geopos_locations.id', $this->aauth->get_user()->loc);
+            $this->db->join('geopos_accounts', 'geopos_locations.ext = geopos_accounts.id', 'left');
+            $query = $this->db->get();
+            $loc_account = $query->row_array();
+            if ($loc_account['id']) $account = $loc_account;
+        }
 
         $this->db->select('geopos_invoices.*,geopos_customers.name,geopos_customers.id AS cid');
         $this->db->from('geopos_invoices');

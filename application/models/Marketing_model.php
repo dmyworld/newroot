@@ -158,6 +158,12 @@ class Marketing_model extends CI_Model
         return $this->db->get('geopos_config')->row_array();
     }
 
+    public function get_revid_config()
+    {
+        $this->db->where('id', 13); // ID 13 for Revid AI
+        return $this->db->get('geopos_config')->row_array();
+    }
+
     public function save_fb_config($id, $token)
     {
         $data = array(
@@ -181,6 +187,23 @@ class Marketing_model extends CI_Model
             return $this->db->update('geopos_config', $data);
         } else {
             $data['id'] = 12;
+            return $this->db->insert('geopos_config', $data);
+        }
+    }
+
+    public function save_revid_config($id, $token)
+    {
+        $data = array(
+            'fb_profile_id' => $id,
+            'access_token' => $token
+        );
+        $this->db->where('id', 13);
+        $exists = $this->db->get('geopos_config')->row_array();
+        if ($exists) {
+            $this->db->where('id', 13);
+            return $this->db->update('geopos_config', $data);
+        } else {
+            $data['id'] = 13;
             return $this->db->insert('geopos_config', $data);
         }
     }
@@ -278,5 +301,90 @@ class Marketing_model extends CI_Model
         $caption .= "#TimberPro #TimberTrade #LogExport #" . str_replace(' ', '', $species);
 
         return $caption;
+    }
+
+    public function generate_ai_video($lot_id, $lot_type)
+    {
+        $config = $this->get_revid_config();
+        if (empty($config['access_token'])) {
+            return array('status' => 'Error', 'message' => 'Revid AI API Key not configured.');
+        }
+
+        // 1. Get Lot Details
+        $this->load->model('Marketplace_model', 'marketplace');
+        $lot = $this->marketplace->get_lot_details($lot_id, $lot_type);
+        if (!$lot) return array('status' => 'Error', 'message' => 'Lot not found');
+
+        // 2. Generate AI Script ( inputText )
+        $name = $lot['lot_name'] ?? 'Timber Lot';
+        $vol = isset($lot['total_cubic_feet']) ? number_format($lot['total_cubic_feet'], 2) . ' ft³' : '';
+        $loc = $lot['location_gps'] ?? 'Premium Source';
+        
+        $script = "Check out this amazing $name lot! ";
+        $script .= "It features a total volume of $vol. ";
+        $script .= "Located at $loc. ";
+        $script .= "Premium timber, ready for industrial use or custom projects. ";
+        $script .= "Powered by TimberPro ERP. Contact us for details!";
+
+        // 3. Prepare Revid API Payload
+        $payload = array(
+            'webhook' => base_url('Marketing/revid_webhook?id=' . $lot_id . '&type=' . $lot_type),
+            'frameRate' => 30,
+            'resolution' => '720p',
+            'creationParams' => array(
+                'inputText' => $script,
+                'flowType' => 'text-to-video',
+                'hasToGenerateVoice' => true,
+                'hasToSearchMedia' => true,
+                'ratio' => '9 / 16',
+                'selectedVoice' => 'Echo' // Premium voice
+            )
+        );
+
+        // 4. API Call
+        $ch = curl_init('https://api.revid.ai/v2/render');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Authorization: Bearer ' . $config['access_token'],
+            'Content-Type: application/json'
+        ));
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($http_code == 200 || $http_code == 201) {
+            $res = json_decode($response, true);
+            $video_url = $res['url'] ?? ''; // Some APIs return URL immediately if cached or simple
+
+            // Save video URL placeholder or actual
+            $table = $this->get_table_by_type($lot_type);
+            if ($table && $video_url) {
+                $this->db->where('id', $lot_id);
+                $this->db->update($table, array('revid_video_url' => $video_url));
+            }
+
+            return array(
+                'status' => 'Success', 
+                'message' => 'AI Video Generation Triggered!', 
+                'video_url' => $video_url,
+                'raw' => $res
+            );
+        } else {
+            return array('status' => 'Error', 'message' => 'API Error: ' . $response);
+        }
+    }
+
+    private function get_table_by_type($type)
+    {
+        switch ($type) {
+            case 'logs': return 'geopos_timber_logs';
+            case 'standing': return 'geopos_timber_standing';
+            case 'sawn': return 'geopos_timber_sawn';
+            case 'machinery': return 'geopos_timber_machinery';
+            default: return '';
+        }
     }
 }

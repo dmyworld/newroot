@@ -74,16 +74,14 @@
                             <span>Advanced Timber Calculator</span>
                         </a>
                     </div>
-                    <div class="col-md-6">
-                        <a href="<?= base_url('Marketplace') ?>" class="shortcut-btn">
-                            <i class="fa fa-store"></i>
-                            <span>Browse Marketplace</span>
+                        <a href="<?= base_url('Marketing') ?>" class="shortcut-btn" style="background: #fffbeb; border-color: #f59e0b; color: #b45309;">
+                            <i class="fa fa-bolt" style="color: #f59e0b;"></i>
+                            <span>Marketing Hub & AI Ads</span>
                         </a>
                         <a href="<?= base_url('TimberPro/bulk_upload') ?>" class="shortcut-btn">
                             <i class="fa fa-upload"></i>
                             <span>Bulk Data Upload</span>
                         </a>
-                    </div>
                 </div>
             </div>
         </div>

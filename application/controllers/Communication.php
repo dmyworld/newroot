@@ -27,7 +27,7 @@ class Communication extends CI_Controller
         $this->load->model('communication_model');
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

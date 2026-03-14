@@ -58,6 +58,13 @@ function timefordatabase($input)
 function user_role($id = 5)
 {
     $ci =& get_instance();
+    $ci->load->database();
+    $query = $ci->db->query("SELECT name FROM geopos_roles WHERE id=$id LIMIT 1");
+    $row = $query->row_array();
+    if ($row) {
+        return $row['name'];
+    }
+
     switch ($id) {
         case 5:
             return $ci->lang->line('Business Owner');
@@ -77,6 +84,8 @@ function user_role($id = 5)
         case -1:
             return $ci->lang->line('Project Manager');
             break;
+        default:
+            return 'User';
     }
 }
 

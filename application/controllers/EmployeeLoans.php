@@ -12,7 +12,7 @@ class EmployeeLoans extends CI_Controller
         $this->load->model('accounts_model', 'accounts');
         
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
 

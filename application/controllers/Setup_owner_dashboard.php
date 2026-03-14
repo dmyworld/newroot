@@ -11,7 +11,7 @@ class Setup_owner_dashboard extends CI_Controller
         // Security check - only allow admin access
         $this->load->library("Aauth");
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         if ($this->aauth->get_user()->roleid < 5) {
             exit('Authorization Failed - Admin access required');

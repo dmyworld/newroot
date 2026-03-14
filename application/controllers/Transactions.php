@@ -28,7 +28,7 @@ class Transactions extends CI_Controller
         $this->load->model('transactions_model', 'transactions');
         $this->load->model('customers_model', 'customers');
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
         $this->load->library("Custom");
         $this->li_a = 'accounts';
@@ -42,7 +42,7 @@ class Transactions extends CI_Controller
 
     public function index()
     {
-        if (!$this->aauth->premission(5)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -57,7 +57,7 @@ class Transactions extends CI_Controller
 
     public function add()
     {
-        if (!$this->aauth->premission(5)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -77,7 +77,7 @@ class Transactions extends CI_Controller
 
     public function transfer()
     {
-        if (!$this->aauth->premission(5)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -96,7 +96,7 @@ class Transactions extends CI_Controller
     public function payinvoice()
     {
 
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -383,6 +383,26 @@ class Transactions extends CI_Controller
             $this->db->where('id', $dual['key2']);
             $this->db->update('geopos_accounts');
         }
+
+        // --- PROJECT LEDGER HOOK ---
+        // If the invoice is linked to a project, record it in the project ledger
+        $this->db->select('project_id, total, loc');
+        $this->db->from('geopos_invoices');
+        $this->db->where('id', $tid);
+        $inv_info = $this->db->get()->row_array();
+
+        if (!empty($inv_info['project_id'])) {
+            $this->load->model('Transactions_model', 'transactions');
+            $this->transactions->record_project_shop_expense(
+                $tid, 
+                $amount, 
+                $inv_info['project_id'], 
+                "Payment for Invoice #$tid", 
+                $inv_info['loc']
+            );
+        }
+        // ---------------------------
+
         echo json_encode(array('status' => 'Success', 'message' =>
             $this->lang->line('Transaction has been added'), 'pstatus' => $this->lang->line($status), 'activity' => $activitym, 'amt' => $totalrm, 'ttlpaid' => amountExchange_s($amount, 0, $this->aauth->get_user()->loc)));
     }
@@ -390,7 +410,7 @@ class Transactions extends CI_Controller
     public function paypurchase()
     {
 
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -558,7 +578,7 @@ class Transactions extends CI_Controller
     public function paypurchase_wood()
     {
 
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -726,7 +746,7 @@ class Transactions extends CI_Controller
 
     public function cancelinvoice()
     {
-        if (!$this->aauth->premission(1)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(1))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -743,16 +763,13 @@ class Transactions extends CI_Controller
         $this->db->where('id', $tid);
         $this->db->update('geopos_invoices');
         //reverse
-        $this->db->select('credit,debit,acid');
+        $this->db->select('id,credit,debit,acid');
         $this->db->from('geopos_transactions');
         $this->db->where('tid', $tid);
         $query = $this->db->get();
         $revresult = $query->result_array();
         foreach ($revresult as $trans) {
-            $amt = $trans['credit'] - $trans['debit'];
-            $this->db->set('lastbal', "lastbal-$amt", FALSE);
-            $this->db->where('id', $trans['acid']);
-            $this->db->update('geopos_accounts');
+            $this->transactions->reverse_transaction($trans['id'], 'Invoice Cancelled');
         }
         $this->db->select('pid,qty');
         $this->db->from('geopos_invoice_items');
@@ -765,7 +782,7 @@ class Transactions extends CI_Controller
             $this->db->where('pid', $prd['pid']);
             $this->db->update('geopos_products');
         }
-        $this->db->delete('geopos_transactions', array('tid' => $tid));
+        // $this->db->delete('geopos_transactions', array('tid' => $tid)); // Immutable Ledger Rule
         $data = array('type' => 9, 'rid' => $tid);
         $this->db->delete('geopos_metadata', $data);
         echo json_encode(array('status' => 'Success', 'message' =>
@@ -775,7 +792,7 @@ class Transactions extends CI_Controller
 
     public function cancelpurchase()
     {
-        if (!$this->aauth->premission(2)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(2))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $tid = intval($this->input->post('tid'));
@@ -784,17 +801,14 @@ class Transactions extends CI_Controller
         $this->db->where('id', $tid);
         $this->db->update('geopos_purchase');
         //reverse
-        $this->db->select('debit,credit,acid');
+        $this->db->select('id,debit,credit,acid');
         $this->db->from('geopos_transactions');
         $this->db->where('tid', $tid);
         $this->db->where('ext', 1);
         $query = $this->db->get();
         $revresult = $query->result_array();
         foreach ($revresult as $trans) {
-            $amt = $trans['debit'] - $trans['credit'];
-            $this->db->set('lastbal', "lastbal+$amt", FALSE);
-            $this->db->where('id', $trans['acid']);
-            $this->db->update('geopos_accounts');
+            $this->transactions->reverse_transaction($trans['id'], 'Purchase Cancelled');
         }
         $this->db->select('pid,qty');
         $this->db->from('geopos_purchase_items');
@@ -807,14 +821,14 @@ class Transactions extends CI_Controller
             $this->db->where('pid', $prd['pid']);
             $this->db->update('geopos_products');
         }
-        $this->db->delete('geopos_transactions', array('tid' => $tid, 'ext' => 1));
+        // $this->db->delete('geopos_transactions', array('tid' => $tid, 'ext' => 1)); // Immutable Ledger Rule
         echo json_encode(array('status' => 'Success', 'message' =>
             $this->lang->line('Purchase canceled!')));
     }
 
     public function translist()
     {
-        if (!$this->aauth->premission(5)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
         $ttype = $this->input->get('type');
@@ -850,7 +864,7 @@ class Transactions extends CI_Controller
     public function categories()
     {
         $this->li_a = 'misc_settings';
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -866,7 +880,7 @@ class Transactions extends CI_Controller
 
     public function createcat()
     {
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -882,7 +896,7 @@ class Transactions extends CI_Controller
     public function editcat()
     {
 
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -904,7 +918,7 @@ class Transactions extends CI_Controller
     public function save_createcat()
     {
 
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -924,7 +938,7 @@ class Transactions extends CI_Controller
 
     public function editcatsave()
     {
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 
@@ -949,7 +963,7 @@ class Transactions extends CI_Controller
 
     public function delete_cat()
     {
-        if ($this->aauth->get_user()->roleid < 5) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->get_user()->roleid < 5)) {
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
         }
 
@@ -964,7 +978,7 @@ class Transactions extends CI_Controller
 
     public function save_trans()
     {
-        if (!$this->aauth->premission(5)) {
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(5))) {
 
             exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
 

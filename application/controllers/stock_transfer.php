@@ -10,7 +10,7 @@ class Stock_transfer extends CI_Controller
         $this->load->library('aauth');
         
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
     }
     

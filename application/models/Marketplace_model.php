@@ -28,6 +28,32 @@ class Marketplace_model extends CI_Model
              $this->db->query("ALTER TABLE `geopos_marketplace_requests` CHANGE `created_at` `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
         }
 
+        if (!$this->db->table_exists('geopos_workers')) {
+            $this->load->dbforge();
+            $this->dbforge->add_field(array(
+                'id' => array('type' => 'INT', 'constraint' => 11, 'unsigned' => TRUE, 'auto_increment' => TRUE),
+                'name' => array('type' => 'VARCHAR', 'constraint' => 255),
+                'category' => array('type' => 'VARCHAR', 'constraint' => 100),
+                'phone' => array('type' => 'VARCHAR', 'constraint' => 20),
+                'hourly_rate' => array('type' => 'DECIMAL', 'constraint' => '10,2', 'default' => '0.00'),
+                'rating' => array('type' => 'DECIMAL', 'constraint' => '3,2', 'default' => '5.00'),
+                'loc' => array('type' => 'INT', 'constraint' => 11, 'default' => 0),
+                'status' => array('type' => 'ENUM("online", "offline")', 'default' => 'online'),
+                'created_at' => array('type' => 'DATETIME', 'default' => NULL)
+            ));
+            $this->dbforge->add_key('id', TRUE);
+            $this->dbforge->create_table('geopos_workers', TRUE);
+            $this->db->query("ALTER TABLE `geopos_workers` CHANGE `created_at` `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
+            
+            // Seed some data for bundling demo
+            $this->db->insert_batch('geopos_workers', [
+                ['name' => 'Amila Transport', 'category' => 'Transport', 'hourly_rate' => 1500, 'rating' => 4.8],
+                ['name' => 'Sunil Sawing', 'category' => 'Sawing', 'hourly_rate' => 2000, 'rating' => 4.9],
+                ['name' => 'Kamal Masonry', 'category' => 'Masonry', 'hourly_rate' => 1800, 'rating' => 4.7],
+                ['name' => 'Nimal Painting', 'category' => 'Painting', 'hourly_rate' => 1200, 'rating' => 4.6]
+            ]);
+        }
+
         // Direct Buy Workflow Migrations
         $fields = array(
             'transport_cost' => array('type' => 'DECIMAL', 'constraint' => '10,2', 'default' => '0.00'),
@@ -517,18 +543,43 @@ class Marketplace_model extends CI_Model
 
             $note = "Timber Sale: " . $lot_name . " (" . ucfirst($bid['lot_type']) . ")";
         
-            $bank_acc = $config['key1'];
-            $income_acc = $config['url'];
-            $amount = $bid['bid_amount'] + ($bid['transport_cost'] ?? 0);
+            $amount = $bid['bid_amount']; // Base amount for commission calculation
+            $commission_rate = 0.05; // 5%
+            $commission_amount = $amount * $commission_rate;
+            $seller_amount = $amount - $commission_amount;
 
-            // Debit: Bank/Cash (Asset Increase)
-            // Credit: Timber Sales (Income Increase)
+            // Account IDs from univarsal_api
+            $bank_account_id = $config['key1']; // Debit (Bank/Cash)
+            $sales_income_account_id = $config['url']; // Credit (Sales Income)
+            $commission_income_account_id = 7; // Commission Account
+            $setup_fee_account_id = 8; // Setup Fee Account
+
             $user_loc = $bid['loc'] ?? 0;
+
+            // Collect Setup Fee if not already collected for this lot
+            $this->collect_setup_fee($bid['lot_id'], $bid['lot_type'], $user_loc);
+            // Record the Commission Deduction (Debit Sales Income / Credit Commission Account)
             $this->transactions->add_double_entry(
-                $bank_acc,    // Debit Account
-                $income_acc,  // Credit Account
-                $amount,      // Amount
-                $note,        // Note
+                $sales_income_account_id, // Debit Account (Sales Income)
+                $commission_income_account_id, // Credit Account (Commission Income)
+                $commission_amount,
+                "Marketplace Commission (5%) - Lot #" . $bid['lot_id'],
+                $bid['buyer_id'],
+                $this->_get_username($bid['buyer_id']),
+                'Marketplace Commission',
+                'Marketplace',
+                date('Y-m-d H:i:s'),
+                $user_loc,
+                0,
+                $bid['id']
+            );
+
+            // Record the Total Sale (Debit Bank)
+            $this->transactions->add_double_entry(
+                $bank_account_id, // Debit Account (Bank)
+                $sales_income_account_id, // Credit Account (Sales Income - Gross)
+                $amount, // Full bid amount
+                "Marketplace Sale - Lot #" . $bid['lot_id'], // Note
                 $bid['buyer_id'], // Payer ID
                 $this->_get_username($bid['buyer_id']), // Payer Name
                 'Timber Sale', // Category
@@ -637,5 +688,36 @@ class Marketplace_model extends CI_Model
         $this->db->where('user_id', $user_id);
         $this->db->order_by('created_at', 'DESC');
         return $this->db->get('geopos_marketplace_requests')->result_array();
+    }
+    public function collect_setup_fee($lot_id, $lot_type, $loc = 0)
+    {
+        // Logic to collect a one-time setup fee (e.g., $1000) for a marketplace listing
+        // We check metadata to see if it's already collected
+        $this->db->where('type', 20); // 20 = Marketplace Setup Fee
+        $this->db->where('rid', $lot_id);
+        $query = $this->db->get('geopos_metadata');
+
+        if ($query->num_rows() == 0) {
+            $setup_fee = 1000; // Fixed Setup Fee
+            $setup_fee_account_id = 8;
+            $bank_account_id = 1; // Default Bank
+
+            $this->load->model('transactions_model', 'transactions');
+            $this->transactions->add_double_entry(
+                $bank_account_id,
+                $setup_fee_account_id,
+                $setup_fee,
+                "Listing Setup Fee - Lot #$lot_id ($lot_type)",
+                0, // Payer ID (System/Seller)
+                'Marketplace',
+                'Listing Fee',
+                'Marketplace',
+                date('Y-m-d H:i:s'),
+                $loc
+            );
+
+            // Mark as collected
+            $this->db->insert('geopos_metadata', array('type' => 20, 'rid' => $lot_id, 'col1' => 'Collected'));
+        }
     }
 }

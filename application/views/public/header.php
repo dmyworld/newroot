@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <!-- Tailwind CSS -->
@@ -25,8 +25,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        body: ['"Inter"', 'sans-serif'],
+                        sans: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+                        body: ['"Inter"', '"Noto Sans Sinhala"', 'sans-serif'],
                     },
                     colors: {
                         primary: '#2563eb',    /* Royal Blue */
@@ -56,4 +56,37 @@
     </style>
 </head>
 <body class="bg-[#eff6ff] text-slate-700 font-sans antialiased overflow-x-hidden">
-<?php $this->load->view('public/nav'); ?>
+<?php 
+// Global Translation Logic for Public Header
+$lang_id = isset($_GET['lang']) ? $_GET['lang'] : 'si'; 
+$trans = [
+    'en' => [
+        'nav_home' => 'Home',
+        'nav_solutions' => 'Solutions',
+        'nav_marketplace' => 'Marketplace',
+        'nav_green' => 'Green SL',
+        'nav_workforce' => 'Workforce',
+        'nav_calculator' => 'Calculator',
+        'nav_login' => 'Login',
+        'nav_register' => 'Get Started',
+        'industry_timber' => 'Timber Industry',
+        'industry_hardware' => 'Hardware Stores',
+        'industry_construction' => 'Construction & Services',
+    ],
+    'si' => [
+        'nav_home' => 'මුල් පිටුව',
+        'nav_solutions' => 'විසඳුම්',
+        'nav_marketplace' => 'වෙළඳපොළ',
+        'nav_green' => 'Green Future',
+        'nav_workforce' => 'සේවක බලකාය',
+        'nav_calculator' => 'ගණක යන්ත්‍රය',
+        'nav_login' => 'ඇතුල් වන්න',
+        'nav_register' => 'ලියාපදිංචි වන්න',
+        'industry_timber' => 'දැව කර්මාන්තය',
+        'industry_hardware' => 'Hardware වෙළඳසැල්',
+        'industry_construction' => 'ඉදිකිරීම් සහ සේවා',
+    ]
+];
+$t = isset($trans[$lang_id]) ? $trans[$lang_id] : $trans['si'];
+$this->load->view('public/nav', ['t' => $t, 'lang_id' => $lang_id]); 
+?>

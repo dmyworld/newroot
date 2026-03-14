@@ -2293,3 +2293,1970 @@ DEBUG - 2026-03-04 04:05:19 --> Config file loaded: C:\Users\user\Documents\GitH
 INFO - 2026-03-04 04:05:19 --> Database Driver Class Initialized
 INFO - 2026-03-04 04:05:19 --> Final output sent to browser
 DEBUG - 2026-03-04 04:05:19 --> Total execution time: 0.1935
+INFO - 2026-03-04 04:56:59 --> Config Class Initialized
+INFO - 2026-03-04 04:56:59 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:56:59 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:56:59 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:56:59 --> URI Class Initialized
+INFO - 2026-03-04 04:56:59 --> Router Class Initialized
+INFO - 2026-03-04 04:56:59 --> Output Class Initialized
+INFO - 2026-03-04 04:56:59 --> Security Class Initialized
+DEBUG - 2026-03-04 04:56:59 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:56:59 --> Input Class Initialized
+INFO - 2026-03-04 04:56:59 --> Language Class Initialized
+INFO - 2026-03-04 04:56:59 --> Loader Class Initialized
+INFO - 2026-03-04 04:56:59 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:56:59 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:56:59 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:56:59 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:56:59 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:56:59 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:56:59 --> Controller Class Initialized
+INFO - 2026-03-04 10:26:59 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:26:59 --> Controller Class Initialized
+INFO - 2026-03-04 10:26:59 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:26:59 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:26:59 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:26:59 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:26:59 --> Database Forge Class Initialized
+INFO - 2026-03-04 10:26:59 --> Model "Marketplace_model" initialized
+INFO - 2026-03-04 10:26:59 --> Model "Wood_types_model" initialized
+INFO - 2026-03-04 10:26:59 --> Model "Worker_model" initialized
+INFO - 2026-03-04 10:26:59 --> Model "Audit_model" initialized
+INFO - 2026-03-04 10:26:59 --> Model "Categories_model" initialized
+INFO - 2026-03-04 10:26:59 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 10:26:59 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 10:26:59 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/hero_premium.php
+INFO - 2026-03-04 10:26:59 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/index.php
+INFO - 2026-03-04 10:26:59 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 10:26:59 --> Final output sent to browser
+DEBUG - 2026-03-04 10:26:59 --> Total execution time: 0.6912
+INFO - 2026-03-04 04:57:04 --> Config Class Initialized
+INFO - 2026-03-04 04:57:04 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:04 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:04 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:04 --> URI Class Initialized
+INFO - 2026-03-04 04:57:04 --> Router Class Initialized
+INFO - 2026-03-04 04:57:04 --> Output Class Initialized
+INFO - 2026-03-04 04:57:04 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:04 --> Input Class Initialized
+INFO - 2026-03-04 04:57:04 --> Language Class Initialized
+INFO - 2026-03-04 04:57:04 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:04 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:04 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:04 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:04 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:04 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:04 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:04 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:04 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:04 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:04 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:04 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 10:27:04 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 10:27:04 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 10:27:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:04 --> Form Validation Class Initialized
+ERROR - 2026-03-04 10:27:04 --> Severity: error --> Exception: Call to undefined function getIcon() C:\Users\user\Documents\GitHub\www\newroot\application\views\landing_page\includes\floating.php 18
+INFO - 2026-03-04 04:57:09 --> Config Class Initialized
+INFO - 2026-03-04 04:57:09 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:09 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:09 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:09 --> URI Class Initialized
+DEBUG - 2026-03-04 04:57:09 --> No URI present. Default controller set.
+INFO - 2026-03-04 04:57:09 --> Router Class Initialized
+INFO - 2026-03-04 04:57:09 --> Output Class Initialized
+INFO - 2026-03-04 04:57:09 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:09 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:09 --> Input Class Initialized
+INFO - 2026-03-04 04:57:09 --> Language Class Initialized
+INFO - 2026-03-04 04:57:09 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:09 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:09 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:09 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:09 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:09 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:09 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:09 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:09 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:10 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:10 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:10 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:10 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:10 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 10:27:10 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 10:27:10 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 10:27:10 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:10 --> Form Validation Class Initialized
+ERROR - 2026-03-04 10:27:10 --> Severity: error --> Exception: Call to undefined function getIcon() C:\Users\user\Documents\GitHub\www\newroot\application\views\landing_page\includes\floating.php 18
+INFO - 2026-03-04 04:57:14 --> Config Class Initialized
+INFO - 2026-03-04 04:57:14 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:14 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:14 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:14 --> URI Class Initialized
+INFO - 2026-03-04 04:57:14 --> Router Class Initialized
+INFO - 2026-03-04 04:57:14 --> Output Class Initialized
+INFO - 2026-03-04 04:57:14 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:14 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:14 --> Input Class Initialized
+INFO - 2026-03-04 04:57:14 --> Language Class Initialized
+INFO - 2026-03-04 04:57:14 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:14 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:14 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:14 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:14 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:14 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:14 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:14 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:14 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:14 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:14 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:14 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:14 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:14 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 10:27:14 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 10:27:14 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 10:27:14 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:14 --> Form Validation Class Initialized
+INFO - 2026-03-04 10:27:14 --> Model "Employee_model" initialized
+INFO - 2026-03-04 10:27:14 --> Model "Tenant_model" initialized
+INFO - 2026-03-04 10:27:14 --> Model "Locations_model" initialized
+INFO - 2026-03-04 10:27:14 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\user/index.php
+INFO - 2026-03-04 10:27:14 --> Final output sent to browser
+DEBUG - 2026-03-04 10:27:14 --> Total execution time: 0.3042
+INFO - 2026-03-04 04:57:14 --> Config Class Initialized
+INFO - 2026-03-04 04:57:14 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:14 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:14 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:14 --> URI Class Initialized
+INFO - 2026-03-04 04:57:14 --> Router Class Initialized
+INFO - 2026-03-04 04:57:14 --> Output Class Initialized
+INFO - 2026-03-04 04:57:14 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:14 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:14 --> Input Class Initialized
+INFO - 2026-03-04 04:57:14 --> Language Class Initialized
+ERROR - 2026-03-04 04:57:14 --> 404 Page Not Found: Userfiles/company
+INFO - 2026-03-04 04:57:27 --> Config Class Initialized
+INFO - 2026-03-04 04:57:27 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:27 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:27 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:27 --> URI Class Initialized
+INFO - 2026-03-04 04:57:27 --> Router Class Initialized
+INFO - 2026-03-04 04:57:27 --> Output Class Initialized
+INFO - 2026-03-04 04:57:27 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:27 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:27 --> Input Class Initialized
+INFO - 2026-03-04 04:57:27 --> Language Class Initialized
+INFO - 2026-03-04 04:57:27 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:27 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:27 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:27 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:27 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:27 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:27 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 10:27:27 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 10:27:27 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 10:27:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:27 --> Form Validation Class Initialized
+INFO - 2026-03-04 10:27:27 --> Helper loaded: email_helper
+INFO - 2026-03-04 04:57:27 --> Config Class Initialized
+INFO - 2026-03-04 04:57:27 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:27 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:27 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:27 --> URI Class Initialized
+INFO - 2026-03-04 04:57:27 --> Router Class Initialized
+INFO - 2026-03-04 04:57:27 --> Output Class Initialized
+INFO - 2026-03-04 04:57:27 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:27 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:27 --> Input Class Initialized
+INFO - 2026-03-04 04:57:27 --> Language Class Initialized
+INFO - 2026-03-04 04:57:27 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:27 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:27 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:27 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:27 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:27 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:27 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:27 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:27:27 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:27:27 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:27:27 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:27:27 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:27:27 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:27:28 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:27:28 --> Could not find the language line "None"
+INFO - 2026-03-04 10:27:28 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:27:28 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:27:28 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:27:28 --> Final output sent to browser
+DEBUG - 2026-03-04 10:27:28 --> Total execution time: 1.1240
+INFO - 2026-03-04 04:57:32 --> Config Class Initialized
+INFO - 2026-03-04 04:57:32 --> Hooks Class Initialized
+DEBUG - 2026-03-04 04:57:32 --> UTF-8 Support Enabled
+INFO - 2026-03-04 04:57:32 --> Utf8 Class Initialized
+INFO - 2026-03-04 04:57:32 --> URI Class Initialized
+INFO - 2026-03-04 04:57:32 --> Router Class Initialized
+INFO - 2026-03-04 04:57:32 --> Output Class Initialized
+INFO - 2026-03-04 04:57:32 --> Security Class Initialized
+DEBUG - 2026-03-04 04:57:32 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 04:57:32 --> Input Class Initialized
+INFO - 2026-03-04 04:57:32 --> Language Class Initialized
+INFO - 2026-03-04 04:57:32 --> Loader Class Initialized
+INFO - 2026-03-04 04:57:32 --> Helper loaded: url_helper
+INFO - 2026-03-04 04:57:32 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 04:57:32 --> Helper loaded: form_helper
+INFO - 2026-03-04 04:57:32 --> Helper loaded: language_helper
+INFO - 2026-03-04 04:57:32 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 04:57:32 --> Database Driver Class Initialized
+INFO - 2026-03-04 04:57:32 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:32 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:32 --> Controller Class Initialized
+INFO - 2026-03-04 10:27:32 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:27:32 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:27:32 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:27:32 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:27:32 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:27:32 --> Final output sent to browser
+DEBUG - 2026-03-04 10:27:32 --> Total execution time: 0.1584
+INFO - 2026-03-04 05:00:04 --> Config Class Initialized
+INFO - 2026-03-04 05:00:04 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:00:04 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:00:04 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:00:04 --> URI Class Initialized
+INFO - 2026-03-04 05:00:04 --> Router Class Initialized
+INFO - 2026-03-04 05:00:04 --> Output Class Initialized
+INFO - 2026-03-04 05:00:04 --> Security Class Initialized
+DEBUG - 2026-03-04 05:00:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:00:04 --> Input Class Initialized
+INFO - 2026-03-04 05:00:04 --> Language Class Initialized
+INFO - 2026-03-04 05:00:04 --> Loader Class Initialized
+INFO - 2026-03-04 05:00:04 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:00:04 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:00:04 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:00:04 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:00:04 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:00:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:00:04 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:04 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:04 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:30:04 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:30:04 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:30:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:04 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:30:04 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:30:04 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:30:04 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:30:04 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:30:04 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:30:05 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:30:05 --> Could not find the language line "None"
+INFO - 2026-03-04 10:30:05 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:30:05 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:30:05 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:30:05 --> Final output sent to browser
+DEBUG - 2026-03-04 10:30:05 --> Total execution time: 1.4290
+INFO - 2026-03-04 05:00:11 --> Config Class Initialized
+INFO - 2026-03-04 05:00:11 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:00:11 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:00:11 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:00:11 --> URI Class Initialized
+INFO - 2026-03-04 05:00:11 --> Router Class Initialized
+INFO - 2026-03-04 05:00:11 --> Output Class Initialized
+INFO - 2026-03-04 05:00:11 --> Security Class Initialized
+DEBUG - 2026-03-04 05:00:11 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:00:11 --> Input Class Initialized
+INFO - 2026-03-04 05:00:11 --> Language Class Initialized
+INFO - 2026-03-04 05:00:11 --> Loader Class Initialized
+INFO - 2026-03-04 05:00:11 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:00:11 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:00:11 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:00:11 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:00:11 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:00:11 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:00:11 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:11 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:11 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:11 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:30:11 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:30:11 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:30:11 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:30:11 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:11 --> Final output sent to browser
+DEBUG - 2026-03-04 10:30:11 --> Total execution time: 0.1493
+INFO - 2026-03-04 05:00:40 --> Config Class Initialized
+INFO - 2026-03-04 05:00:40 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:00:40 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:00:40 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:00:40 --> URI Class Initialized
+INFO - 2026-03-04 05:00:40 --> Router Class Initialized
+INFO - 2026-03-04 05:00:40 --> Output Class Initialized
+INFO - 2026-03-04 05:00:40 --> Security Class Initialized
+DEBUG - 2026-03-04 05:00:40 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:00:40 --> Input Class Initialized
+INFO - 2026-03-04 05:00:40 --> Language Class Initialized
+INFO - 2026-03-04 05:00:41 --> Loader Class Initialized
+INFO - 2026-03-04 05:00:41 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:00:41 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:00:41 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:00:41 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:00:41 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:00:41 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:00:41 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:41 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:41 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:41 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:30:41 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:30:41 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:30:41 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:41 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:30:41 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:30:41 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:30:41 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:30:41 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:30:41 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:30:41 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:30:41 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:30:41 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:30:42 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:30:42 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:30:42 --> Could not find the language line "return_abuse"
+INFO - 2026-03-04 10:30:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:30:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:30:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:30:42 --> Final output sent to browser
+DEBUG - 2026-03-04 10:30:42 --> Total execution time: 1.2101
+INFO - 2026-03-04 05:00:44 --> Config Class Initialized
+INFO - 2026-03-04 05:00:44 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:00:44 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:00:44 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:00:44 --> URI Class Initialized
+INFO - 2026-03-04 05:00:44 --> Router Class Initialized
+INFO - 2026-03-04 05:00:44 --> Output Class Initialized
+INFO - 2026-03-04 05:00:44 --> Security Class Initialized
+DEBUG - 2026-03-04 05:00:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:00:44 --> Input Class Initialized
+INFO - 2026-03-04 05:00:45 --> Language Class Initialized
+INFO - 2026-03-04 05:00:45 --> Loader Class Initialized
+INFO - 2026-03-04 05:00:45 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:00:45 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:00:45 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:00:45 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:00:45 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:00:45 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:00:45 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:45 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:45 --> Controller Class Initialized
+INFO - 2026-03-04 10:30:45 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:30:45 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:30:45 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:30:45 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:30:45 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:30:45 --> Final output sent to browser
+DEBUG - 2026-03-04 10:30:45 --> Total execution time: 0.7735
+INFO - 2026-03-04 05:01:28 --> Config Class Initialized
+INFO - 2026-03-04 05:01:28 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:01:28 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:01:28 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:01:28 --> URI Class Initialized
+INFO - 2026-03-04 05:01:28 --> Router Class Initialized
+INFO - 2026-03-04 05:01:28 --> Output Class Initialized
+INFO - 2026-03-04 05:01:28 --> Security Class Initialized
+DEBUG - 2026-03-04 05:01:28 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:01:28 --> Input Class Initialized
+INFO - 2026-03-04 05:01:28 --> Language Class Initialized
+INFO - 2026-03-04 05:01:28 --> Loader Class Initialized
+INFO - 2026-03-04 05:01:28 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:01:28 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:01:28 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:01:28 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:01:28 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:01:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:01:28 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:28 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:28 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:31:28 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:31:28 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:31:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:28 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:31:28 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:31:28 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:31:28 --> Model "Analytics_model" initialized
+ERROR - 2026-03-04 10:31:29 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:31:29 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:31:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\intelligence/dead_stock.php
+INFO - 2026-03-04 10:31:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:31:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:31:37 --> Final output sent to browser
+DEBUG - 2026-03-04 10:31:37 --> Total execution time: 8.6723
+INFO - 2026-03-04 05:01:44 --> Config Class Initialized
+INFO - 2026-03-04 05:01:44 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:01:44 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:01:44 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:01:44 --> URI Class Initialized
+INFO - 2026-03-04 05:01:44 --> Router Class Initialized
+INFO - 2026-03-04 05:01:44 --> Output Class Initialized
+INFO - 2026-03-04 05:01:44 --> Security Class Initialized
+DEBUG - 2026-03-04 05:01:44 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:01:44 --> Input Class Initialized
+INFO - 2026-03-04 05:01:44 --> Language Class Initialized
+INFO - 2026-03-04 05:01:44 --> Loader Class Initialized
+INFO - 2026-03-04 05:01:44 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:01:44 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:01:44 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:01:44 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:01:44 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:01:44 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:01:44 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:44 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:45 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:45 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:31:45 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:31:45 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:31:45 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:31:45 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:45 --> Final output sent to browser
+DEBUG - 2026-03-04 10:31:45 --> Total execution time: 0.6987
+INFO - 2026-03-04 05:01:56 --> Config Class Initialized
+INFO - 2026-03-04 05:01:56 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:01:56 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:01:56 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:01:56 --> URI Class Initialized
+INFO - 2026-03-04 05:01:56 --> Router Class Initialized
+INFO - 2026-03-04 05:01:56 --> Output Class Initialized
+INFO - 2026-03-04 05:01:56 --> Security Class Initialized
+DEBUG - 2026-03-04 05:01:56 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:01:56 --> Input Class Initialized
+INFO - 2026-03-04 05:01:56 --> Language Class Initialized
+INFO - 2026-03-04 05:01:56 --> Loader Class Initialized
+INFO - 2026-03-04 05:01:56 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:01:56 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:01:56 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:01:56 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:01:56 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:01:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:01:56 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:56 --> Controller Class Initialized
+INFO - 2026-03-04 10:31:56 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:31:56 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:31:56 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:31:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:31:56 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:31:56 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:31:56 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:31:56 --> Model "Analytics_model" initialized
+ERROR - 2026-03-04 10:31:57 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:31:57 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:32:06 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\intelligence/dead_stock.php
+INFO - 2026-03-04 10:32:06 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:32:06 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:32:06 --> Final output sent to browser
+DEBUG - 2026-03-04 10:32:06 --> Total execution time: 9.6798
+INFO - 2026-03-04 05:02:12 --> Config Class Initialized
+INFO - 2026-03-04 05:02:12 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:02:12 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:02:12 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:02:12 --> URI Class Initialized
+INFO - 2026-03-04 05:02:12 --> Router Class Initialized
+INFO - 2026-03-04 05:02:12 --> Output Class Initialized
+INFO - 2026-03-04 05:02:12 --> Security Class Initialized
+DEBUG - 2026-03-04 05:02:12 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:02:12 --> Input Class Initialized
+INFO - 2026-03-04 05:02:12 --> Language Class Initialized
+INFO - 2026-03-04 05:02:12 --> Loader Class Initialized
+INFO - 2026-03-04 05:02:12 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:02:12 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:02:12 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:02:12 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:02:12 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:02:12 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:02:12 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:12 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:12 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:12 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:32:12 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:32:12 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:32:12 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:32:12 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:12 --> Final output sent to browser
+DEBUG - 2026-03-04 10:32:12 --> Total execution time: 0.1356
+INFO - 2026-03-04 05:02:28 --> Config Class Initialized
+INFO - 2026-03-04 05:02:28 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:02:28 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:02:28 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:02:28 --> URI Class Initialized
+INFO - 2026-03-04 05:02:28 --> Router Class Initialized
+INFO - 2026-03-04 05:02:28 --> Output Class Initialized
+INFO - 2026-03-04 05:02:28 --> Security Class Initialized
+DEBUG - 2026-03-04 05:02:29 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:02:29 --> Input Class Initialized
+INFO - 2026-03-04 05:02:29 --> Language Class Initialized
+INFO - 2026-03-04 05:02:29 --> Loader Class Initialized
+INFO - 2026-03-04 05:02:29 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:02:29 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:02:29 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:02:29 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:02:29 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:02:29 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:02:29 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:29 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:29 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:29 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:32:29 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:32:29 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:32:29 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:29 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:32:29 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:32:29 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:32:29 --> Model "Analytics_model" initialized
+ERROR - 2026-03-04 10:32:30 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:32:30 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:32:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\intelligence/dead_stock.php
+INFO - 2026-03-04 10:32:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:32:37 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:32:37 --> Final output sent to browser
+DEBUG - 2026-03-04 10:32:37 --> Total execution time: 9.1004
+INFO - 2026-03-04 05:02:42 --> Config Class Initialized
+INFO - 2026-03-04 05:02:42 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:02:42 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:02:42 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:02:42 --> URI Class Initialized
+INFO - 2026-03-04 05:02:42 --> Router Class Initialized
+INFO - 2026-03-04 05:02:42 --> Output Class Initialized
+INFO - 2026-03-04 05:02:42 --> Security Class Initialized
+DEBUG - 2026-03-04 05:02:42 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:02:42 --> Input Class Initialized
+INFO - 2026-03-04 05:02:42 --> Language Class Initialized
+INFO - 2026-03-04 05:02:42 --> Loader Class Initialized
+INFO - 2026-03-04 05:02:42 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:02:42 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:02:42 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:02:42 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:02:42 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:02:42 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:02:42 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:42 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:42 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:42 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:32:42 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:32:42 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:32:42 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:32:42 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:42 --> Final output sent to browser
+DEBUG - 2026-03-04 10:32:42 --> Total execution time: 0.1217
+INFO - 2026-03-04 05:02:56 --> Config Class Initialized
+INFO - 2026-03-04 05:02:56 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:02:56 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:02:56 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:02:56 --> URI Class Initialized
+INFO - 2026-03-04 05:02:56 --> Router Class Initialized
+INFO - 2026-03-04 05:02:56 --> Output Class Initialized
+INFO - 2026-03-04 05:02:56 --> Security Class Initialized
+DEBUG - 2026-03-04 05:02:56 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:02:56 --> Input Class Initialized
+INFO - 2026-03-04 05:02:56 --> Language Class Initialized
+INFO - 2026-03-04 05:02:56 --> Loader Class Initialized
+INFO - 2026-03-04 05:02:56 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:02:56 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:02:56 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:02:56 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:02:56 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:02:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:02:56 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:56 --> Controller Class Initialized
+INFO - 2026-03-04 10:32:56 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:32:56 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:32:56 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:32:56 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:32:56 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:32:56 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:32:56 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:32:56 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:32:56 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:32:56 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:32:58 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:32:58 --> Could not find the language line "None"
+INFO - 2026-03-04 10:32:58 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:32:58 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:32:58 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:32:58 --> Final output sent to browser
+DEBUG - 2026-03-04 10:32:58 --> Total execution time: 2.3516
+INFO - 2026-03-04 05:03:02 --> Config Class Initialized
+INFO - 2026-03-04 05:03:02 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:03:02 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:03:02 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:03:02 --> URI Class Initialized
+INFO - 2026-03-04 05:03:02 --> Router Class Initialized
+INFO - 2026-03-04 05:03:02 --> Output Class Initialized
+INFO - 2026-03-04 05:03:02 --> Security Class Initialized
+DEBUG - 2026-03-04 05:03:02 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:03:02 --> Input Class Initialized
+INFO - 2026-03-04 05:03:02 --> Language Class Initialized
+INFO - 2026-03-04 05:03:02 --> Loader Class Initialized
+INFO - 2026-03-04 05:03:02 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:03:02 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:03:02 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:03:02 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:03:02 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:03:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:03:02 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:02 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:02 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:33:02 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:33:02 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:33:02 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:33:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:02 --> Final output sent to browser
+DEBUG - 2026-03-04 10:33:02 --> Total execution time: 0.1434
+INFO - 2026-03-04 05:03:40 --> Config Class Initialized
+INFO - 2026-03-04 05:03:40 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:03:40 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:03:40 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:03:40 --> URI Class Initialized
+INFO - 2026-03-04 05:03:40 --> Router Class Initialized
+INFO - 2026-03-04 05:03:40 --> Output Class Initialized
+INFO - 2026-03-04 05:03:40 --> Security Class Initialized
+DEBUG - 2026-03-04 05:03:40 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:03:40 --> Input Class Initialized
+INFO - 2026-03-04 05:03:40 --> Language Class Initialized
+INFO - 2026-03-04 05:03:40 --> Loader Class Initialized
+INFO - 2026-03-04 05:03:40 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:03:40 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:03:40 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:03:40 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:03:40 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:03:40 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:03:40 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:40 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:40 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:40 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:33:40 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:33:40 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:33:40 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:40 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:33:40 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:33:40 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:33:40 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:33:40 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:33:40 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:33:41 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:33:41 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:33:41 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:33:42 --> Could not find the language line "None"
+INFO - 2026-03-04 10:33:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:33:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:33:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:33:42 --> Final output sent to browser
+DEBUG - 2026-03-04 10:33:42 --> Total execution time: 2.1752
+INFO - 2026-03-04 05:03:46 --> Config Class Initialized
+INFO - 2026-03-04 05:03:46 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:03:46 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:03:46 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:03:46 --> URI Class Initialized
+INFO - 2026-03-04 05:03:46 --> Router Class Initialized
+INFO - 2026-03-04 05:03:46 --> Output Class Initialized
+INFO - 2026-03-04 05:03:46 --> Security Class Initialized
+DEBUG - 2026-03-04 05:03:46 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:03:46 --> Input Class Initialized
+INFO - 2026-03-04 05:03:46 --> Language Class Initialized
+INFO - 2026-03-04 05:03:46 --> Loader Class Initialized
+INFO - 2026-03-04 05:03:46 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:03:46 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:03:46 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:03:46 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:03:46 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:03:46 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:03:46 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:46 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:46 --> Controller Class Initialized
+INFO - 2026-03-04 10:33:46 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:33:46 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:33:46 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:33:46 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:33:46 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:33:46 --> Final output sent to browser
+DEBUG - 2026-03-04 10:33:46 --> Total execution time: 0.6849
+INFO - 2026-03-04 05:15:32 --> Config Class Initialized
+INFO - 2026-03-04 05:15:32 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:15:32 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:15:32 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:15:32 --> URI Class Initialized
+INFO - 2026-03-04 05:15:32 --> Router Class Initialized
+INFO - 2026-03-04 05:15:32 --> Output Class Initialized
+INFO - 2026-03-04 05:15:32 --> Security Class Initialized
+DEBUG - 2026-03-04 05:15:32 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:15:32 --> Input Class Initialized
+INFO - 2026-03-04 05:15:32 --> Language Class Initialized
+INFO - 2026-03-04 05:15:32 --> Loader Class Initialized
+INFO - 2026-03-04 05:15:32 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:15:32 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:15:33 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:15:33 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:15:33 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:15:33 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:15:33 --> Controller Class Initialized
+INFO - 2026-03-04 10:45:33 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:45:33 --> Controller Class Initialized
+INFO - 2026-03-04 10:45:33 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:45:33 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:45:33 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:45:33 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:45:33 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 10:45:33 --> Model "Communication_model" initialized
+INFO - 2026-03-04 10:45:33 --> Model "Risk_model" initialized
+INFO - 2026-03-04 10:45:33 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 10:45:33 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 10:45:33 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:45:34 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+ERROR - 2026-03-04 10:45:34 --> Could not find the language line "None"
+INFO - 2026-03-04 10:45:34 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 10:45:34 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:45:34 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:45:34 --> Final output sent to browser
+DEBUG - 2026-03-04 10:45:34 --> Total execution time: 2.2929
+INFO - 2026-03-04 05:15:38 --> Config Class Initialized
+INFO - 2026-03-04 05:15:38 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:15:38 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:15:38 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:15:38 --> URI Class Initialized
+INFO - 2026-03-04 05:15:38 --> Router Class Initialized
+INFO - 2026-03-04 05:15:38 --> Output Class Initialized
+INFO - 2026-03-04 05:15:38 --> Security Class Initialized
+DEBUG - 2026-03-04 05:15:38 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:15:38 --> Input Class Initialized
+INFO - 2026-03-04 05:15:38 --> Language Class Initialized
+INFO - 2026-03-04 05:15:38 --> Loader Class Initialized
+INFO - 2026-03-04 05:15:38 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:15:38 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:15:38 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:15:38 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:15:38 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:15:38 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:15:38 --> Controller Class Initialized
+INFO - 2026-03-04 10:45:38 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:45:38 --> Controller Class Initialized
+INFO - 2026-03-04 10:45:39 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:45:39 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:45:39 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:45:39 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:45:39 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:45:39 --> Final output sent to browser
+DEBUG - 2026-03-04 10:45:39 --> Total execution time: 0.4895
+INFO - 2026-03-04 05:22:49 --> Config Class Initialized
+INFO - 2026-03-04 05:22:49 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:22:49 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:22:49 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:22:49 --> URI Class Initialized
+INFO - 2026-03-04 05:22:49 --> Router Class Initialized
+INFO - 2026-03-04 05:22:49 --> Output Class Initialized
+INFO - 2026-03-04 05:22:49 --> Security Class Initialized
+DEBUG - 2026-03-04 05:22:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:22:49 --> Input Class Initialized
+INFO - 2026-03-04 05:22:49 --> Language Class Initialized
+INFO - 2026-03-04 05:22:49 --> Loader Class Initialized
+INFO - 2026-03-04 05:22:49 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:22:49 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:22:49 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:22:49 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:22:49 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:22:49 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:22:49 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:49 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:52:49 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:49 --> Model "Subscriptions_model" initialized
+INFO - 2026-03-04 10:52:49 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:52:49 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:52:49 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:52:49 --> Database Driver Class Initialized
+ERROR - 2026-03-04 10:52:49 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:52:49 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:52:49 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\subscriptions/invoices.php
+INFO - 2026-03-04 10:52:49 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:52:49 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:52:49 --> Final output sent to browser
+DEBUG - 2026-03-04 10:52:49 --> Total execution time: 0.5982
+INFO - 2026-03-04 05:22:52 --> Config Class Initialized
+INFO - 2026-03-04 05:22:52 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:22:52 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:22:52 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:22:52 --> URI Class Initialized
+INFO - 2026-03-04 05:22:52 --> Router Class Initialized
+INFO - 2026-03-04 05:22:52 --> Output Class Initialized
+INFO - 2026-03-04 05:22:52 --> Security Class Initialized
+DEBUG - 2026-03-04 05:22:52 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:22:52 --> Input Class Initialized
+INFO - 2026-03-04 05:22:52 --> Language Class Initialized
+INFO - 2026-03-04 05:22:52 --> Loader Class Initialized
+INFO - 2026-03-04 05:22:52 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:22:52 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:22:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:22:52 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:52:52 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:52 --> Model "Subscriptions_model" initialized
+INFO - 2026-03-04 10:52:52 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:52:52 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:52:52 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:52:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:52:52 --> Final output sent to browser
+DEBUG - 2026-03-04 10:52:52 --> Total execution time: 0.1693
+INFO - 2026-03-04 05:22:52 --> Config Class Initialized
+INFO - 2026-03-04 05:22:52 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:22:52 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:22:52 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:22:52 --> URI Class Initialized
+INFO - 2026-03-04 05:22:52 --> Router Class Initialized
+INFO - 2026-03-04 05:22:52 --> Output Class Initialized
+INFO - 2026-03-04 05:22:52 --> Security Class Initialized
+DEBUG - 2026-03-04 05:22:52 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:22:52 --> Input Class Initialized
+INFO - 2026-03-04 05:22:52 --> Language Class Initialized
+INFO - 2026-03-04 05:22:52 --> Loader Class Initialized
+INFO - 2026-03-04 05:22:52 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:22:52 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:22:52 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:22:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:22:52 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:52:52 --> Controller Class Initialized
+INFO - 2026-03-04 10:52:52 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:52:52 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:52:52 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:52:52 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:52:52 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:52:52 --> Final output sent to browser
+DEBUG - 2026-03-04 10:52:52 --> Total execution time: 0.1041
+INFO - 2026-03-04 05:25:24 --> Config Class Initialized
+INFO - 2026-03-04 05:25:24 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:25:24 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:25:24 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:25:24 --> URI Class Initialized
+INFO - 2026-03-04 05:25:24 --> Router Class Initialized
+INFO - 2026-03-04 05:25:24 --> Output Class Initialized
+INFO - 2026-03-04 05:25:24 --> Security Class Initialized
+DEBUG - 2026-03-04 05:25:24 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:25:24 --> Input Class Initialized
+INFO - 2026-03-04 05:25:24 --> Language Class Initialized
+INFO - 2026-03-04 05:25:24 --> Loader Class Initialized
+INFO - 2026-03-04 05:25:24 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:25:24 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:25:24 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:25:24 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:25:24 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:25:24 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:25:24 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:24 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:55:24 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:24 --> Model "Subscriptions_model" initialized
+INFO - 2026-03-04 10:55:24 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:55:24 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:55:24 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:55:24 --> Database Driver Class Initialized
+ERROR - 2026-03-04 10:55:24 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:55:24 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:55:24 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\subscriptions/invoices.php
+INFO - 2026-03-04 10:55:24 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:55:25 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:55:25 --> Final output sent to browser
+DEBUG - 2026-03-04 10:55:25 --> Total execution time: 0.5225
+INFO - 2026-03-04 05:25:26 --> Config Class Initialized
+INFO - 2026-03-04 05:25:26 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:25:26 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:25:26 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:25:26 --> URI Class Initialized
+INFO - 2026-03-04 05:25:26 --> Router Class Initialized
+INFO - 2026-03-04 05:25:26 --> Output Class Initialized
+INFO - 2026-03-04 05:25:26 --> Security Class Initialized
+DEBUG - 2026-03-04 05:25:26 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:25:26 --> Input Class Initialized
+INFO - 2026-03-04 05:25:26 --> Language Class Initialized
+INFO - 2026-03-04 05:25:26 --> Loader Class Initialized
+INFO - 2026-03-04 05:25:26 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:25:26 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:25:26 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:25:26 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:25:26 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:25:26 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:25:26 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:26 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:55:26 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:26 --> Model "Subscriptions_model" initialized
+INFO - 2026-03-04 10:55:26 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:55:26 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:55:26 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:55:26 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:55:26 --> Final output sent to browser
+DEBUG - 2026-03-04 10:55:26 --> Total execution time: 0.1362
+INFO - 2026-03-04 05:25:27 --> Config Class Initialized
+INFO - 2026-03-04 05:25:27 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:25:27 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:25:27 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:25:27 --> URI Class Initialized
+INFO - 2026-03-04 05:25:27 --> Router Class Initialized
+INFO - 2026-03-04 05:25:27 --> Output Class Initialized
+INFO - 2026-03-04 05:25:27 --> Security Class Initialized
+DEBUG - 2026-03-04 05:25:27 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:25:27 --> Input Class Initialized
+INFO - 2026-03-04 05:25:27 --> Language Class Initialized
+INFO - 2026-03-04 05:25:27 --> Loader Class Initialized
+INFO - 2026-03-04 05:25:27 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:25:27 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:25:27 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:25:27 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:25:27 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:25:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:25:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:55:27 --> Controller Class Initialized
+INFO - 2026-03-04 10:55:27 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:55:27 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:55:27 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:55:27 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:55:27 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:55:27 --> Final output sent to browser
+DEBUG - 2026-03-04 10:55:27 --> Total execution time: 0.0963
+INFO - 2026-03-04 05:27:02 --> Config Class Initialized
+INFO - 2026-03-04 05:27:02 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:27:02 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:27:02 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:27:02 --> URI Class Initialized
+INFO - 2026-03-04 05:27:02 --> Router Class Initialized
+INFO - 2026-03-04 05:27:02 --> Output Class Initialized
+INFO - 2026-03-04 05:27:02 --> Security Class Initialized
+DEBUG - 2026-03-04 05:27:02 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:27:02 --> Input Class Initialized
+INFO - 2026-03-04 05:27:02 --> Language Class Initialized
+INFO - 2026-03-04 05:27:02 --> Loader Class Initialized
+INFO - 2026-03-04 05:27:02 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:27:02 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:27:02 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:27:02 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:27:02 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:27:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:02 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:02 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:02 --> Model "Invoices_model" initialized
+INFO - 2026-03-04 10:57:02 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:57:02 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:57:02 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:57:02 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:02 --> Model "Locations_model" initialized
+ERROR - 2026-03-04 10:57:02 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:57:02 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:57:02 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\invoices/invoices.php
+INFO - 2026-03-04 10:57:02 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:57:02 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:57:02 --> Final output sent to browser
+DEBUG - 2026-03-04 10:57:02 --> Total execution time: 0.4821
+INFO - 2026-03-04 05:27:06 --> Config Class Initialized
+INFO - 2026-03-04 05:27:06 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:27:06 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:27:06 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:27:06 --> URI Class Initialized
+INFO - 2026-03-04 05:27:06 --> Router Class Initialized
+INFO - 2026-03-04 05:27:06 --> Output Class Initialized
+INFO - 2026-03-04 05:27:06 --> Security Class Initialized
+DEBUG - 2026-03-04 05:27:06 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:27:06 --> Input Class Initialized
+INFO - 2026-03-04 05:27:06 --> Language Class Initialized
+INFO - 2026-03-04 05:27:06 --> Loader Class Initialized
+INFO - 2026-03-04 05:27:06 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:27:06 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:27:06 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:27:06 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:27:06 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:27:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:06 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:06 --> Config Class Initialized
+INFO - 2026-03-04 05:27:06 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:27:06 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:27:06 --> Utf8 Class Initialized
+INFO - 2026-03-04 10:57:06 --> Controller Class Initialized
+INFO - 2026-03-04 05:27:06 --> URI Class Initialized
+INFO - 2026-03-04 10:57:06 --> Model "Manager_model" initialized
+INFO - 2026-03-04 05:27:06 --> Router Class Initialized
+INFO - 2026-03-04 05:27:06 --> Output Class Initialized
+INFO - 2026-03-04 05:27:06 --> Security Class Initialized
+DEBUG - 2026-03-04 05:27:06 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:27:06 --> Input Class Initialized
+INFO - 2026-03-04 05:27:06 --> Language Class Initialized
+INFO - 2026-03-04 05:27:06 --> Loader Class Initialized
+INFO - 2026-03-04 10:57:06 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 05:27:06 --> Helper loaded: url_helper
+INFO - 2026-03-04 10:57:06 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:57:06 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:57:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:06 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:27:06 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:27:06 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:27:06 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:27:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:06 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:06 --> Final output sent to browser
+DEBUG - 2026-03-04 10:57:06 --> Total execution time: 0.1156
+INFO - 2026-03-04 10:57:06 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:06 --> Model "Invoices_model" initialized
+INFO - 2026-03-04 10:57:06 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:57:06 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:57:06 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:57:06 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:06 --> Model "Locations_model" initialized
+INFO - 2026-03-04 10:57:06 --> Final output sent to browser
+DEBUG - 2026-03-04 10:57:06 --> Total execution time: 0.2106
+INFO - 2026-03-04 05:27:15 --> Config Class Initialized
+INFO - 2026-03-04 05:27:15 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:27:15 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:27:15 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:27:15 --> URI Class Initialized
+INFO - 2026-03-04 05:27:15 --> Router Class Initialized
+INFO - 2026-03-04 05:27:15 --> Output Class Initialized
+INFO - 2026-03-04 05:27:15 --> Security Class Initialized
+DEBUG - 2026-03-04 05:27:15 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:27:15 --> Input Class Initialized
+INFO - 2026-03-04 05:27:15 --> Language Class Initialized
+INFO - 2026-03-04 05:27:15 --> Loader Class Initialized
+INFO - 2026-03-04 05:27:15 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:27:15 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:27:15 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:27:15 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:27:15 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:27:15 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:15 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:15 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:15 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:15 --> Model "Invoices_model" initialized
+INFO - 2026-03-04 10:57:15 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:57:15 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:57:15 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:57:15 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:15 --> Model "Locations_model" initialized
+INFO - 2026-03-04 10:57:15 --> Model "Customers_model" initialized
+INFO - 2026-03-04 10:57:15 --> Model "Plugins_model" initialized
+ERROR - 2026-03-04 10:57:16 --> Could not find the language line "Top"
+INFO - 2026-03-04 10:57:16 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+INFO - 2026-03-04 10:57:18 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\invoices/newinvoice.php
+INFO - 2026-03-04 10:57:18 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 10:57:18 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 10:57:18 --> Final output sent to browser
+DEBUG - 2026-03-04 10:57:18 --> Total execution time: 2.7223
+INFO - 2026-03-04 05:27:20 --> Config Class Initialized
+INFO - 2026-03-04 05:27:20 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:27:20 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:27:20 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:27:20 --> URI Class Initialized
+INFO - 2026-03-04 05:27:20 --> Router Class Initialized
+INFO - 2026-03-04 05:27:20 --> Output Class Initialized
+INFO - 2026-03-04 05:27:20 --> Security Class Initialized
+DEBUG - 2026-03-04 05:27:20 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:27:20 --> Input Class Initialized
+INFO - 2026-03-04 05:27:20 --> Language Class Initialized
+INFO - 2026-03-04 05:27:20 --> Loader Class Initialized
+INFO - 2026-03-04 05:27:20 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:27:20 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:27:20 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:27:20 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:27:20 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:27:20 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:27:20 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:20 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:20 --> Controller Class Initialized
+INFO - 2026-03-04 10:57:20 --> Model "Manager_model" initialized
+INFO - 2026-03-04 10:57:20 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 10:57:20 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 10:57:20 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 10:57:20 --> Database Driver Class Initialized
+INFO - 2026-03-04 10:57:20 --> Final output sent to browser
+DEBUG - 2026-03-04 10:57:20 --> Total execution time: 0.1908
+INFO - 2026-03-04 05:33:31 --> Config Class Initialized
+INFO - 2026-03-04 05:33:31 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:33:31 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:33:31 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:33:31 --> URI Class Initialized
+INFO - 2026-03-04 05:33:31 --> Router Class Initialized
+INFO - 2026-03-04 05:33:31 --> Output Class Initialized
+INFO - 2026-03-04 05:33:31 --> Security Class Initialized
+DEBUG - 2026-03-04 05:33:31 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:33:31 --> Input Class Initialized
+INFO - 2026-03-04 05:33:31 --> Language Class Initialized
+INFO - 2026-03-04 05:33:31 --> Loader Class Initialized
+INFO - 2026-03-04 05:33:31 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:33:31 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:33:31 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:33:31 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:33:31 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:33:31 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:33:31 --> Controller Class Initialized
+INFO - 2026-03-04 11:03:31 --> Database Driver Class Initialized
+INFO - 2026-03-04 11:03:31 --> Controller Class Initialized
+INFO - 2026-03-04 11:03:31 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 11:03:31 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 11:03:31 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 11:03:31 --> Database Driver Class Initialized
+INFO - 2026-03-04 11:03:31 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 11:03:31 --> Model "Communication_model" initialized
+INFO - 2026-03-04 11:03:31 --> Model "Risk_model" initialized
+INFO - 2026-03-04 11:03:31 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 11:03:31 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 11:03:31 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "Top"
+INFO - 2026-03-04 11:03:32 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+ERROR - 2026-03-04 11:03:32 --> Could not find the language line "None"
+INFO - 2026-03-04 11:03:32 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 11:03:32 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 11:03:32 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 11:03:32 --> Final output sent to browser
+DEBUG - 2026-03-04 11:03:32 --> Total execution time: 1.5469
+INFO - 2026-03-04 05:33:35 --> Config Class Initialized
+INFO - 2026-03-04 05:33:35 --> Hooks Class Initialized
+DEBUG - 2026-03-04 05:33:35 --> UTF-8 Support Enabled
+INFO - 2026-03-04 05:33:35 --> Utf8 Class Initialized
+INFO - 2026-03-04 05:33:35 --> URI Class Initialized
+INFO - 2026-03-04 05:33:35 --> Router Class Initialized
+INFO - 2026-03-04 05:33:35 --> Output Class Initialized
+INFO - 2026-03-04 05:33:35 --> Security Class Initialized
+DEBUG - 2026-03-04 05:33:35 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 05:33:35 --> Input Class Initialized
+INFO - 2026-03-04 05:33:35 --> Language Class Initialized
+INFO - 2026-03-04 05:33:36 --> Loader Class Initialized
+INFO - 2026-03-04 05:33:36 --> Helper loaded: url_helper
+INFO - 2026-03-04 05:33:36 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 05:33:36 --> Helper loaded: form_helper
+INFO - 2026-03-04 05:33:36 --> Helper loaded: language_helper
+INFO - 2026-03-04 05:33:36 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 05:33:36 --> Database Driver Class Initialized
+INFO - 2026-03-04 05:33:36 --> Controller Class Initialized
+INFO - 2026-03-04 11:03:36 --> Database Driver Class Initialized
+INFO - 2026-03-04 11:03:36 --> Controller Class Initialized
+INFO - 2026-03-04 11:03:36 --> Model "Manager_model" initialized
+INFO - 2026-03-04 11:03:36 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 11:03:36 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 11:03:36 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 11:03:36 --> Database Driver Class Initialized
+INFO - 2026-03-04 11:03:36 --> Final output sent to browser
+DEBUG - 2026-03-04 11:03:36 --> Total execution time: 0.2093
+INFO - 2026-03-04 16:08:31 --> Config Class Initialized
+INFO - 2026-03-04 16:08:31 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:31 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:31 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:31 --> URI Class Initialized
+INFO - 2026-03-04 16:08:31 --> Router Class Initialized
+INFO - 2026-03-04 16:08:31 --> Output Class Initialized
+INFO - 2026-03-04 16:08:31 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:31 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:31 --> Input Class Initialized
+INFO - 2026-03-04 16:08:31 --> Language Class Initialized
+INFO - 2026-03-04 16:08:31 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:31 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:31 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:31 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:31 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:31 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:31 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:32 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:33 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:33 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:33 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:33 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:33 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:33 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:34 --> Config Class Initialized
+INFO - 2026-03-04 16:08:34 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:34 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:34 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:34 --> URI Class Initialized
+INFO - 2026-03-04 16:08:34 --> Router Class Initialized
+INFO - 2026-03-04 16:08:34 --> Output Class Initialized
+INFO - 2026-03-04 16:08:34 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:34 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:34 --> Input Class Initialized
+INFO - 2026-03-04 16:08:34 --> Language Class Initialized
+INFO - 2026-03-04 16:08:34 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:34 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:34 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:34 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:34 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:34 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:34 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:34 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:34 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:34 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:34 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:34 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:34 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:34 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 21:38:34 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 21:38:34 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 21:38:34 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:34 --> Form Validation Class Initialized
+ERROR - 2026-03-04 21:38:34 --> Severity: error --> Exception: Call to undefined function getIcon() C:\Users\user\Documents\GitHub\www\newroot\application\views\landing_page\includes\floating.php 18
+INFO - 2026-03-04 16:08:41 --> Config Class Initialized
+INFO - 2026-03-04 16:08:41 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:41 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:41 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:41 --> URI Class Initialized
+INFO - 2026-03-04 16:08:41 --> Router Class Initialized
+INFO - 2026-03-04 16:08:41 --> Output Class Initialized
+INFO - 2026-03-04 16:08:41 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:41 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:41 --> Input Class Initialized
+INFO - 2026-03-04 16:08:41 --> Language Class Initialized
+INFO - 2026-03-04 16:08:41 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:41 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:41 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:41 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:41 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:41 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:41 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:41 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:41 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:42 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:42 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:42 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:42 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:42 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 21:38:42 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 21:38:42 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 21:38:42 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:42 --> Form Validation Class Initialized
+INFO - 2026-03-04 21:38:42 --> Model "Employee_model" initialized
+INFO - 2026-03-04 21:38:42 --> Model "Tenant_model" initialized
+INFO - 2026-03-04 21:38:42 --> Model "Locations_model" initialized
+INFO - 2026-03-04 21:38:42 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\user/index.php
+INFO - 2026-03-04 21:38:42 --> Final output sent to browser
+DEBUG - 2026-03-04 21:38:42 --> Total execution time: 0.2508
+INFO - 2026-03-04 16:08:42 --> Config Class Initialized
+INFO - 2026-03-04 16:08:42 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:42 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:42 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:42 --> URI Class Initialized
+INFO - 2026-03-04 16:08:42 --> Router Class Initialized
+INFO - 2026-03-04 16:08:42 --> Output Class Initialized
+INFO - 2026-03-04 16:08:42 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:42 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:42 --> Input Class Initialized
+INFO - 2026-03-04 16:08:42 --> Language Class Initialized
+ERROR - 2026-03-04 16:08:42 --> 404 Page Not Found: Userfiles/company
+INFO - 2026-03-04 16:08:49 --> Config Class Initialized
+INFO - 2026-03-04 16:08:49 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:49 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:49 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:49 --> URI Class Initialized
+INFO - 2026-03-04 16:08:49 --> Router Class Initialized
+INFO - 2026-03-04 16:08:49 --> Output Class Initialized
+INFO - 2026-03-04 16:08:49 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:49 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:49 --> Input Class Initialized
+INFO - 2026-03-04 16:08:49 --> Language Class Initialized
+INFO - 2026-03-04 16:08:49 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:49 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:49 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:49 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:49 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:49 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:49 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:49 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:49 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:49 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:49 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:49 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:49 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:49 --> Database Driver Class Initialized
+DEBUG - 2026-03-04 21:38:49 --> Driver class already loaded. Second attempt ignored.
+DEBUG - 2026-03-04 21:38:49 --> Session class already loaded. Second attempt ignored.
+INFO - 2026-03-04 21:38:49 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:49 --> Form Validation Class Initialized
+INFO - 2026-03-04 21:38:50 --> Helper loaded: email_helper
+INFO - 2026-03-04 16:08:50 --> Config Class Initialized
+INFO - 2026-03-04 16:08:50 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:50 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:50 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:50 --> URI Class Initialized
+INFO - 2026-03-04 16:08:50 --> Router Class Initialized
+INFO - 2026-03-04 16:08:50 --> Output Class Initialized
+INFO - 2026-03-04 16:08:50 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:50 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:50 --> Input Class Initialized
+INFO - 2026-03-04 16:08:50 --> Language Class Initialized
+INFO - 2026-03-04 16:08:50 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:50 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:50 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:50 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:50 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:50 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:50 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:50 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:50 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:50 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:50 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:50 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:50 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:50 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:50 --> Model "Dashboard_model" initialized
+INFO - 2026-03-04 21:38:50 --> Model "Communication_model" initialized
+INFO - 2026-03-04 21:38:50 --> Model "Risk_model" initialized
+INFO - 2026-03-04 21:38:50 --> Model "Intelligence_model" initialized
+INFO - 2026-03-04 21:38:50 --> Model "Analytics_model" initialized
+INFO - 2026-03-04 21:38:50 --> Model "Loss_model" initialized
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "Top"
+INFO - 2026-03-04 21:38:51 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/header.php
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "HelpGuide"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "stock_leak"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "billing_errors"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "return_abuse"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+ERROR - 2026-03-04 21:38:51 --> Could not find the language line "None"
+INFO - 2026-03-04 21:38:51 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\dashboards/owner.php
+INFO - 2026-03-04 21:38:51 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/subscription_modal.php
+INFO - 2026-03-04 21:38:51 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\fixed/footer.php
+INFO - 2026-03-04 21:38:51 --> Final output sent to browser
+DEBUG - 2026-03-04 21:38:51 --> Total execution time: 1.2809
+INFO - 2026-03-04 16:08:54 --> Config Class Initialized
+INFO - 2026-03-04 16:08:54 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:08:54 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:08:54 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:08:54 --> URI Class Initialized
+INFO - 2026-03-04 16:08:54 --> Router Class Initialized
+INFO - 2026-03-04 16:08:54 --> Output Class Initialized
+INFO - 2026-03-04 16:08:54 --> Security Class Initialized
+DEBUG - 2026-03-04 16:08:54 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:08:54 --> Input Class Initialized
+INFO - 2026-03-04 16:08:54 --> Language Class Initialized
+INFO - 2026-03-04 16:08:54 --> Loader Class Initialized
+INFO - 2026-03-04 16:08:54 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:08:54 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:08:54 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:08:54 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:08:54 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:08:54 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:08:54 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:54 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:54 --> Controller Class Initialized
+INFO - 2026-03-04 21:38:54 --> Model "Manager_model" initialized
+INFO - 2026-03-04 21:38:54 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:38:54 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:38:54 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:38:54 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:38:54 --> Final output sent to browser
+DEBUG - 2026-03-04 21:38:54 --> Total execution time: 0.3451
+INFO - 2026-03-04 16:14:03 --> Config Class Initialized
+INFO - 2026-03-04 16:14:03 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:14:03 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:14:03 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:14:03 --> URI Class Initialized
+INFO - 2026-03-04 16:14:03 --> Router Class Initialized
+INFO - 2026-03-04 16:14:03 --> Output Class Initialized
+INFO - 2026-03-04 16:14:03 --> Security Class Initialized
+DEBUG - 2026-03-04 16:14:03 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:14:03 --> Input Class Initialized
+INFO - 2026-03-04 16:14:03 --> Language Class Initialized
+INFO - 2026-03-04 16:14:03 --> Loader Class Initialized
+INFO - 2026-03-04 16:14:03 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:14:03 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:14:03 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:14:03 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:14:03 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:14:03 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:14:03 --> Controller Class Initialized
+INFO - 2026-03-04 21:44:03 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:44:03 --> Controller Class Initialized
+INFO - 2026-03-04 21:44:03 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:44:03 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:44:03 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:44:03 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:44:03 --> Model "GreenFuture_model" initialized
+INFO - 2026-03-04 21:44:03 --> Form Validation Class Initialized
+INFO - 2026-03-04 21:44:03 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 21:44:03 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 21:44:04 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\green_future/hero_premium.php
+INFO - 2026-03-04 21:44:04 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\green_future/donate.php
+INFO - 2026-03-04 21:44:04 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 21:44:04 --> Final output sent to browser
+DEBUG - 2026-03-04 21:44:04 --> Total execution time: 0.7044
+INFO - 2026-03-04 16:14:17 --> Config Class Initialized
+INFO - 2026-03-04 16:14:17 --> Hooks Class Initialized
+DEBUG - 2026-03-04 16:14:17 --> UTF-8 Support Enabled
+INFO - 2026-03-04 16:14:17 --> Utf8 Class Initialized
+INFO - 2026-03-04 16:14:17 --> URI Class Initialized
+INFO - 2026-03-04 16:14:17 --> Router Class Initialized
+INFO - 2026-03-04 16:14:17 --> Output Class Initialized
+INFO - 2026-03-04 16:14:17 --> Security Class Initialized
+DEBUG - 2026-03-04 16:14:17 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 16:14:17 --> Input Class Initialized
+INFO - 2026-03-04 16:14:17 --> Language Class Initialized
+INFO - 2026-03-04 16:14:17 --> Loader Class Initialized
+INFO - 2026-03-04 16:14:17 --> Helper loaded: url_helper
+INFO - 2026-03-04 16:14:17 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 16:14:17 --> Helper loaded: form_helper
+INFO - 2026-03-04 16:14:17 --> Helper loaded: language_helper
+INFO - 2026-03-04 16:14:17 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 16:14:17 --> Database Driver Class Initialized
+INFO - 2026-03-04 16:14:17 --> Controller Class Initialized
+INFO - 2026-03-04 21:44:17 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:44:17 --> Controller Class Initialized
+INFO - 2026-03-04 21:44:17 --> Session: Class initialized using 'database' driver.
+INFO - 2026-03-04 21:44:17 --> Language file loaded: language/english/aauth_lang.php
+DEBUG - 2026-03-04 21:44:17 --> Config file loaded: C:\Users\user\Documents\GitHub\www\newroot\application\config/aauth.php
+INFO - 2026-03-04 21:44:17 --> Database Driver Class Initialized
+INFO - 2026-03-04 21:44:17 --> Database Forge Class Initialized
+INFO - 2026-03-04 21:44:17 --> Model "Marketplace_model" initialized
+INFO - 2026-03-04 21:44:17 --> Model "Wood_types_model" initialized
+INFO - 2026-03-04 21:44:17 --> Model "Worker_model" initialized
+INFO - 2026-03-04 21:44:17 --> Model "Audit_model" initialized
+INFO - 2026-03-04 21:44:17 --> Model "Categories_model" initialized
+INFO - 2026-03-04 21:44:17 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/nav.php
+INFO - 2026-03-04 21:44:17 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/header.php
+INFO - 2026-03-04 21:44:17 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/hero_premium.php
+INFO - 2026-03-04 21:44:17 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\shop/index.php
+INFO - 2026-03-04 21:44:17 --> File loaded: C:\Users\user\Documents\GitHub\www\newroot\application\views\public/footer.php
+INFO - 2026-03-04 21:44:17 --> Final output sent to browser
+DEBUG - 2026-03-04 21:44:17 --> Total execution time: 0.3767
+INFO - 2026-03-04 19:25:28 --> Config Class Initialized
+INFO - 2026-03-04 19:25:28 --> Hooks Class Initialized
+DEBUG - 2026-03-04 19:25:28 --> UTF-8 Support Enabled
+INFO - 2026-03-04 19:25:28 --> Utf8 Class Initialized
+INFO - 2026-03-04 19:25:28 --> URI Class Initialized
+INFO - 2026-03-04 19:25:28 --> Router Class Initialized
+INFO - 2026-03-04 19:25:28 --> Output Class Initialized
+INFO - 2026-03-04 19:25:28 --> Security Class Initialized
+DEBUG - 2026-03-04 19:25:28 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 19:25:28 --> Input Class Initialized
+INFO - 2026-03-04 19:25:28 --> Language Class Initialized
+INFO - 2026-03-04 19:25:28 --> Loader Class Initialized
+INFO - 2026-03-04 19:25:28 --> Helper loaded: url_helper
+INFO - 2026-03-04 19:25:28 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 19:25:28 --> Helper loaded: form_helper
+INFO - 2026-03-04 19:25:28 --> Helper loaded: language_helper
+INFO - 2026-03-04 19:25:28 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 19:25:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 19:25:28 --> Controller Class Initialized
+INFO - 2026-03-04 19:25:38 --> Config Class Initialized
+INFO - 2026-03-04 19:25:38 --> Hooks Class Initialized
+DEBUG - 2026-03-04 19:25:38 --> UTF-8 Support Enabled
+INFO - 2026-03-04 19:25:38 --> Utf8 Class Initialized
+INFO - 2026-03-04 19:25:38 --> URI Class Initialized
+INFO - 2026-03-04 19:25:38 --> Router Class Initialized
+INFO - 2026-03-04 19:25:38 --> Output Class Initialized
+INFO - 2026-03-04 19:25:38 --> Security Class Initialized
+DEBUG - 2026-03-04 19:25:38 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 19:25:38 --> Input Class Initialized
+INFO - 2026-03-04 19:25:38 --> Language Class Initialized
+INFO - 2026-03-04 19:25:38 --> Loader Class Initialized
+INFO - 2026-03-04 19:25:38 --> Helper loaded: url_helper
+INFO - 2026-03-04 19:25:38 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 19:25:38 --> Helper loaded: form_helper
+INFO - 2026-03-04 19:25:38 --> Helper loaded: language_helper
+INFO - 2026-03-04 19:25:38 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 19:25:38 --> Database Driver Class Initialized
+INFO - 2026-03-04 19:25:38 --> Controller Class Initialized
+INFO - 2026-03-04 19:28:09 --> Config Class Initialized
+INFO - 2026-03-04 19:28:09 --> Hooks Class Initialized
+DEBUG - 2026-03-04 19:28:09 --> UTF-8 Support Enabled
+INFO - 2026-03-04 19:28:09 --> Utf8 Class Initialized
+INFO - 2026-03-04 19:28:09 --> URI Class Initialized
+INFO - 2026-03-04 19:28:09 --> Router Class Initialized
+INFO - 2026-03-04 19:28:09 --> Output Class Initialized
+INFO - 2026-03-04 19:28:09 --> Security Class Initialized
+DEBUG - 2026-03-04 19:28:09 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 19:28:09 --> Input Class Initialized
+INFO - 2026-03-04 19:28:09 --> Language Class Initialized
+INFO - 2026-03-04 19:28:09 --> Loader Class Initialized
+INFO - 2026-03-04 19:28:09 --> Helper loaded: url_helper
+INFO - 2026-03-04 19:28:09 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 19:28:09 --> Helper loaded: form_helper
+INFO - 2026-03-04 19:28:09 --> Helper loaded: language_helper
+INFO - 2026-03-04 19:28:09 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 19:28:09 --> Database Driver Class Initialized
+INFO - 2026-03-04 19:28:09 --> Controller Class Initialized
+INFO - 2026-03-04 20:11:54 --> Config Class Initialized
+INFO - 2026-03-04 20:11:54 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:11:54 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:11:54 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:11:54 --> URI Class Initialized
+INFO - 2026-03-04 20:11:54 --> Router Class Initialized
+INFO - 2026-03-04 20:11:55 --> Output Class Initialized
+INFO - 2026-03-04 20:11:55 --> Security Class Initialized
+DEBUG - 2026-03-04 20:11:55 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:11:55 --> Input Class Initialized
+INFO - 2026-03-04 20:11:55 --> Language Class Initialized
+INFO - 2026-03-04 20:11:55 --> Loader Class Initialized
+INFO - 2026-03-04 20:11:55 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:11:55 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:11:55 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:11:55 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:11:55 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:11:55 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:11:55 --> Controller Class Initialized
+INFO - 2026-03-04 20:12:04 --> Config Class Initialized
+INFO - 2026-03-04 20:12:04 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:12:04 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:12:04 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:12:04 --> URI Class Initialized
+INFO - 2026-03-04 20:12:04 --> Router Class Initialized
+INFO - 2026-03-04 20:12:04 --> Output Class Initialized
+INFO - 2026-03-04 20:12:04 --> Security Class Initialized
+DEBUG - 2026-03-04 20:12:04 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:12:04 --> Input Class Initialized
+INFO - 2026-03-04 20:12:04 --> Language Class Initialized
+INFO - 2026-03-04 20:12:04 --> Loader Class Initialized
+INFO - 2026-03-04 20:12:04 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:12:04 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:12:04 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:12:04 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:12:04 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:12:04 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:12:04 --> Controller Class Initialized
+INFO - 2026-03-04 20:12:08 --> Config Class Initialized
+INFO - 2026-03-04 20:12:08 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:12:08 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:12:08 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:12:08 --> URI Class Initialized
+INFO - 2026-03-04 20:12:08 --> Router Class Initialized
+INFO - 2026-03-04 20:12:08 --> Output Class Initialized
+INFO - 2026-03-04 20:12:08 --> Security Class Initialized
+DEBUG - 2026-03-04 20:12:08 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:12:08 --> Input Class Initialized
+INFO - 2026-03-04 20:12:08 --> Language Class Initialized
+INFO - 2026-03-04 20:12:08 --> Loader Class Initialized
+INFO - 2026-03-04 20:12:08 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:12:08 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:12:08 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:12:08 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:12:08 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:12:08 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:12:08 --> Controller Class Initialized
+INFO - 2026-03-04 20:12:23 --> Config Class Initialized
+INFO - 2026-03-04 20:12:23 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:12:23 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:12:23 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:12:23 --> URI Class Initialized
+INFO - 2026-03-04 20:12:23 --> Router Class Initialized
+INFO - 2026-03-04 20:12:23 --> Output Class Initialized
+INFO - 2026-03-04 20:12:23 --> Security Class Initialized
+DEBUG - 2026-03-04 20:12:23 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:12:23 --> Input Class Initialized
+INFO - 2026-03-04 20:12:23 --> Language Class Initialized
+INFO - 2026-03-04 20:12:23 --> Loader Class Initialized
+INFO - 2026-03-04 20:12:23 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:12:23 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:12:23 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:12:23 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:12:23 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:12:23 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:12:23 --> Controller Class Initialized
+INFO - 2026-03-04 20:12:34 --> Config Class Initialized
+INFO - 2026-03-04 20:12:34 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:12:34 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:12:34 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:12:34 --> URI Class Initialized
+INFO - 2026-03-04 20:12:34 --> Router Class Initialized
+INFO - 2026-03-04 20:12:34 --> Output Class Initialized
+INFO - 2026-03-04 20:12:34 --> Security Class Initialized
+DEBUG - 2026-03-04 20:12:34 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:12:34 --> Input Class Initialized
+INFO - 2026-03-04 20:12:34 --> Language Class Initialized
+INFO - 2026-03-04 20:12:34 --> Loader Class Initialized
+INFO - 2026-03-04 20:12:34 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:12:34 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:12:34 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:12:34 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:12:34 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:12:34 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:12:34 --> Controller Class Initialized
+INFO - 2026-03-04 20:13:57 --> Config Class Initialized
+INFO - 2026-03-04 20:13:57 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:13:57 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:13:57 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:13:57 --> URI Class Initialized
+INFO - 2026-03-04 20:13:57 --> Router Class Initialized
+INFO - 2026-03-04 20:13:57 --> Output Class Initialized
+INFO - 2026-03-04 20:13:57 --> Security Class Initialized
+DEBUG - 2026-03-04 20:13:57 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:13:57 --> Input Class Initialized
+INFO - 2026-03-04 20:13:57 --> Language Class Initialized
+INFO - 2026-03-04 20:13:57 --> Loader Class Initialized
+INFO - 2026-03-04 20:13:57 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:13:57 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:13:57 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:13:57 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:13:57 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:13:57 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:13:57 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:14 --> Config Class Initialized
+INFO - 2026-03-04 20:14:14 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:14 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:14 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:14 --> URI Class Initialized
+INFO - 2026-03-04 20:14:14 --> Router Class Initialized
+INFO - 2026-03-04 20:14:14 --> Output Class Initialized
+INFO - 2026-03-04 20:14:14 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:14 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:14 --> Input Class Initialized
+INFO - 2026-03-04 20:14:14 --> Language Class Initialized
+INFO - 2026-03-04 20:14:14 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:14 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:14 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:14 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:14 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:14 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:14 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:14 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:19 --> Config Class Initialized
+INFO - 2026-03-04 20:14:19 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:19 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:19 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:19 --> URI Class Initialized
+INFO - 2026-03-04 20:14:19 --> Router Class Initialized
+INFO - 2026-03-04 20:14:19 --> Output Class Initialized
+INFO - 2026-03-04 20:14:19 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:19 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:19 --> Input Class Initialized
+INFO - 2026-03-04 20:14:19 --> Language Class Initialized
+INFO - 2026-03-04 20:14:19 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:19 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:19 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:19 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:19 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:19 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:19 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:19 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:28 --> Config Class Initialized
+INFO - 2026-03-04 20:14:28 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:28 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:28 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:28 --> URI Class Initialized
+INFO - 2026-03-04 20:14:28 --> Router Class Initialized
+INFO - 2026-03-04 20:14:28 --> Output Class Initialized
+INFO - 2026-03-04 20:14:28 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:28 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:28 --> Input Class Initialized
+INFO - 2026-03-04 20:14:28 --> Language Class Initialized
+INFO - 2026-03-04 20:14:28 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:28 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:28 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:28 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:28 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:28 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:28 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:28 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:28 --> Config Class Initialized
+INFO - 2026-03-04 20:14:28 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:28 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:28 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:28 --> URI Class Initialized
+INFO - 2026-03-04 20:14:28 --> Router Class Initialized
+INFO - 2026-03-04 20:14:28 --> Output Class Initialized
+INFO - 2026-03-04 20:14:28 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:28 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:28 --> Input Class Initialized
+INFO - 2026-03-04 20:14:28 --> Language Class Initialized
+ERROR - 2026-03-04 20:14:28 --> 404 Page Not Found: Userfiles/company
+INFO - 2026-03-04 20:14:36 --> Config Class Initialized
+INFO - 2026-03-04 20:14:36 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:36 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:36 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:36 --> URI Class Initialized
+INFO - 2026-03-04 20:14:36 --> Router Class Initialized
+INFO - 2026-03-04 20:14:36 --> Output Class Initialized
+INFO - 2026-03-04 20:14:36 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:36 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:36 --> Input Class Initialized
+INFO - 2026-03-04 20:14:36 --> Language Class Initialized
+INFO - 2026-03-04 20:14:36 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:36 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:36 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:36 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:36 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:36 --> Config Class Initialized
+INFO - 2026-03-04 20:14:36 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:36 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:36 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:36 --> URI Class Initialized
+INFO - 2026-03-04 20:14:36 --> Router Class Initialized
+INFO - 2026-03-04 20:14:36 --> Output Class Initialized
+INFO - 2026-03-04 20:14:36 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:36 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:36 --> Input Class Initialized
+INFO - 2026-03-04 20:14:36 --> Language Class Initialized
+INFO - 2026-03-04 20:14:36 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:36 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:36 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:36 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:36 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:36 --> Controller Class Initialized
+INFO - 2026-03-04 20:14:38 --> Config Class Initialized
+INFO - 2026-03-04 20:14:38 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:14:38 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:14:38 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:14:38 --> URI Class Initialized
+INFO - 2026-03-04 20:14:38 --> Router Class Initialized
+INFO - 2026-03-04 20:14:38 --> Output Class Initialized
+INFO - 2026-03-04 20:14:38 --> Security Class Initialized
+DEBUG - 2026-03-04 20:14:38 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:14:38 --> Input Class Initialized
+INFO - 2026-03-04 20:14:38 --> Language Class Initialized
+INFO - 2026-03-04 20:14:38 --> Loader Class Initialized
+INFO - 2026-03-04 20:14:38 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:14:38 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:14:38 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:14:38 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:14:38 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:14:38 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:14:38 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:07 --> Config Class Initialized
+INFO - 2026-03-04 20:15:07 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:07 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:07 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:07 --> URI Class Initialized
+INFO - 2026-03-04 20:15:07 --> Router Class Initialized
+INFO - 2026-03-04 20:15:07 --> Output Class Initialized
+INFO - 2026-03-04 20:15:07 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:07 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:07 --> Input Class Initialized
+INFO - 2026-03-04 20:15:07 --> Language Class Initialized
+INFO - 2026-03-04 20:15:07 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:07 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:07 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:07 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:07 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:07 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:07 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:07 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:13 --> Config Class Initialized
+INFO - 2026-03-04 20:15:13 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:13 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:13 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:13 --> URI Class Initialized
+INFO - 2026-03-04 20:15:13 --> Router Class Initialized
+INFO - 2026-03-04 20:15:13 --> Output Class Initialized
+INFO - 2026-03-04 20:15:13 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:13 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:13 --> Input Class Initialized
+INFO - 2026-03-04 20:15:13 --> Language Class Initialized
+INFO - 2026-03-04 20:15:13 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:13 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:13 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:13 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:13 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:13 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:13 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:13 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:14 --> Config Class Initialized
+INFO - 2026-03-04 20:15:14 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:14 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:14 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:14 --> URI Class Initialized
+INFO - 2026-03-04 20:15:14 --> Router Class Initialized
+INFO - 2026-03-04 20:15:14 --> Output Class Initialized
+INFO - 2026-03-04 20:15:14 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:14 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:14 --> Input Class Initialized
+INFO - 2026-03-04 20:15:14 --> Language Class Initialized
+INFO - 2026-03-04 20:15:14 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:14 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:14 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:14 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:14 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:14 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:14 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:14 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:18 --> Config Class Initialized
+INFO - 2026-03-04 20:15:18 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:18 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:18 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:18 --> URI Class Initialized
+INFO - 2026-03-04 20:15:18 --> Router Class Initialized
+INFO - 2026-03-04 20:15:18 --> Output Class Initialized
+INFO - 2026-03-04 20:15:18 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:18 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:18 --> Input Class Initialized
+INFO - 2026-03-04 20:15:18 --> Language Class Initialized
+INFO - 2026-03-04 20:15:18 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:18 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:18 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:18 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:18 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:18 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:18 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:18 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:38 --> Config Class Initialized
+INFO - 2026-03-04 20:15:38 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:38 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:38 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:38 --> URI Class Initialized
+INFO - 2026-03-04 20:15:38 --> Router Class Initialized
+INFO - 2026-03-04 20:15:38 --> Output Class Initialized
+INFO - 2026-03-04 20:15:38 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:38 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:38 --> Input Class Initialized
+INFO - 2026-03-04 20:15:38 --> Language Class Initialized
+INFO - 2026-03-04 20:15:38 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:38 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:38 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:38 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:38 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:38 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:38 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:38 --> Controller Class Initialized
+INFO - 2026-03-04 20:15:40 --> Config Class Initialized
+INFO - 2026-03-04 20:15:40 --> Hooks Class Initialized
+DEBUG - 2026-03-04 20:15:40 --> UTF-8 Support Enabled
+INFO - 2026-03-04 20:15:40 --> Utf8 Class Initialized
+INFO - 2026-03-04 20:15:40 --> URI Class Initialized
+INFO - 2026-03-04 20:15:40 --> Router Class Initialized
+INFO - 2026-03-04 20:15:40 --> Output Class Initialized
+INFO - 2026-03-04 20:15:40 --> Security Class Initialized
+DEBUG - 2026-03-04 20:15:40 --> Global POST, GET and COOKIE data sanitized
+INFO - 2026-03-04 20:15:40 --> Input Class Initialized
+INFO - 2026-03-04 20:15:40 --> Language Class Initialized
+INFO - 2026-03-04 20:15:40 --> Loader Class Initialized
+INFO - 2026-03-04 20:15:40 --> Helper loaded: url_helper
+INFO - 2026-03-04 20:15:40 --> Helper loaded: siteconfig_helper
+INFO - 2026-03-04 20:15:40 --> Helper loaded: form_helper
+INFO - 2026-03-04 20:15:40 --> Helper loaded: language_helper
+INFO - 2026-03-04 20:15:40 --> Language file loaded: language/english/english_lang.php
+INFO - 2026-03-04 20:15:40 --> Database Driver Class Initialized
+INFO - 2026-03-04 20:15:40 --> Controller Class Initialized

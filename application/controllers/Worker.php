@@ -10,6 +10,9 @@ class Worker extends CI_Controller
         $this->load->model('Worker_model', 'worker');
         $this->load->model('Employee_model', 'employee');
         $this->li_a = 'worker';
+        
+        // Relaxing global permission check to allow public browsing of workers
+        // Sensitive methods (register, hire, etc.) will have individual checks
     }
 
     /**
@@ -17,19 +20,55 @@ class Worker extends CI_Controller
      */
     public function index()
     {
+        $macro    = $this->input->get('macro') ?: 'services'; // Default to services for Worker page
         $category = $this->input->get('category');
         $location = $this->input->get('location');
 
+        // 1. Worker Services
         $data['workers'] = $this->worker->get_active_workers($category, $location);
+        
+        // 2. Load additional data for Marketplace consistency
+        $this->load->model('Marketplace_model', 'mp');
+        $this->load->model('QuoteRequest_model', 'qr');
+        $this->load->model('Categories_model', 'categories_m');
+
+        $data['lots'] = []; // Not primary for worker page but good for structure
+        $data['hardware'] = [];
+        $data['jobs'] = $this->mp->get_open_job_requests(10);
+        $data['quote_requests'] = $this->qr->get_active_requests(8);
         $data['categories'] = $this->worker->get_worker_categories();
+        
+        $data['locations'] = [
+            'Western' => ['Colombo', 'Gampaha', 'Kalutara'],
+            'Central' => ['Kandy', 'Matale', 'Nuwara Eliya'],
+            'Southern' => ['Galle', 'Matara', 'Hambantota'],
+            'Northern' => ['Jaffna', 'Kilinochchi', 'Mannar', 'Mullaitivu', 'Vavuniya'],
+            'Eastern' => ['Batticaloa', 'Ampara', 'Trincomalee'],
+            'North Western' => ['Kurunegala', 'Puttalam'],
+            'North Central' => ['Anuradhapura', 'Polonnaruwa'],
+            'Uva' => ['Badulla', 'Moneragala'],
+            'Sabaragamuwa' => ['Ratnapura', 'Kegalle']
+        ];
+
+        $data['macro'] = $macro;
         $data['is_logged_in'] = $this->aauth->is_loggedin();
 
-        // Public view
-        $head['title'] = "Browse Workers";
-        $this->load->view('landing_page/includes/header', $head);
-        $this->load->view('landing_page/includes/nav');
+        // Public view using landing page headers/footers for guest access
+        $head['title'] = "Professional Workforce - TimberPro Ecosystem";
+        
+        if ($data['is_logged_in']) {
+            $this->load->view('fixed/header', $head);
+        } else {
+            $this->load->view('public/header', $head);
+        }
+
         $this->load->view('worker/browse_public', $data);
-        $this->load->view('landing_page/includes/footer');
+
+        if ($data['is_logged_in']) {
+            $this->load->view('fixed/footer');
+        } else {
+            $this->load->view('public/footer');
+        }
     }
 
     /**
@@ -38,7 +77,7 @@ class Worker extends CI_Controller
     public function register()
     {
         if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
+            redirect('/hub/login', 'refresh');
         }
 
         $user_id = $this->aauth->get_user()->id;
@@ -114,9 +153,8 @@ class Worker extends CI_Controller
      */
     public function view($id)
     {
-        if (!$this->aauth->is_loggedin()) {
-            redirect('/user/', 'refresh');
-        }
+        // Publicly accessible, but we should track if they are logged in for specific UI elements
+        $data['is_logged_in'] = $this->aauth->is_loggedin();
 
         $data['worker'] = $this->worker->get_worker_profile($id);
         if (!$data['worker']) {
@@ -124,12 +162,26 @@ class Worker extends CI_Controller
         }
 
         $data['worker']['skills_array'] = json_decode($data['worker']['skills'], true);
+        $data['current_user_id'] = $this->aauth->is_loggedin() ? $this->aauth->get_user()->id : 0;
 
         $head['title'] = "Worker Profile - " . $data['worker']['display_name'];
-        $head['usernm'] = $this->aauth->get_user()->username;
-        $this->load->view('fixed/header', $head);
+        $head['usernm'] = $data['is_logged_in'] ? $this->aauth->get_user()->username : '';
+        
+        // Decide which header to use based on public/logged-in state
+        if ($data['is_logged_in']) {
+            $this->load->view('fixed/header', $head);
+        } else {
+            $this->load->view('landing_page/includes/header', $head);
+            $this->load->view('landing_page/includes/nav');
+        }
+
         $this->load->view('worker/view', $data);
-        $this->load->view('fixed/footer');
+
+        if ($data['is_logged_in']) {
+            $this->load->view('fixed/footer');
+        } else {
+            $this->load->view('landing_page/includes/footer');
+        }
     }
 
     /**
@@ -188,7 +240,10 @@ class Worker extends CI_Controller
 
     public function job_requests()
     {
-        if (!$this->aauth->is_loggedin()) { redirect('/user/'); return; }
+        if (!$this->aauth->is_loggedin()) { redirect('/hub/login'); return; }
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7))) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
         $head['title'] = "Job Request Hub";
         $head['usernm'] = $this->aauth->get_user()->username;
         $loc = $this->aauth->get_user()->loc;
@@ -201,7 +256,10 @@ class Worker extends CI_Controller
 
     public function profiles()
     {
-        if (!$this->aauth->is_loggedin()) { redirect('/user/'); return; }
+        if (!$this->aauth->is_loggedin()) { redirect('/hub/login'); return; }
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7))) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
         $head['title'] = "Workforce Profiles";
         $head['usernm'] = $this->aauth->get_user()->username;
         $loc = $this->aauth->get_user()->loc;
@@ -214,7 +272,10 @@ class Worker extends CI_Controller
 
     public function attendance()
     {
-        if (!$this->aauth->is_loggedin()) { redirect('/user/'); return; }
+        if (!$this->aauth->is_loggedin()) { redirect('/hub/login'); return; }
+        if (!($this->aauth->get_user()->roleid == 1 || $this->aauth->premission(7))) {
+            exit('<h3>Sorry! You have insufficient permissions to access this section</h3>');
+        }
         $head['title'] = "Attendance & Payroll Tracking";
         $head['usernm'] = $this->aauth->get_user()->username;
         $loc = $this->aauth->get_user()->loc;
@@ -235,7 +296,9 @@ class Worker extends CI_Controller
         if ($this->input->post('action')) {
             $action = $this->input->post('action');
             $note = $this->input->post('note') ?? '';
-            $this->worker->log_attendance($user_id, $action, $note);
+            $lat = $this->input->post('lat') ?? null;
+            $lng = $this->input->post('lng') ?? null;
+            $this->worker->log_attendance($user_id, $action, $note, $lat, $lng);
             redirect('worker/clock');
         }
 
@@ -270,5 +333,68 @@ class Worker extends CI_Controller
         $this->load->view('fixed/header', $head);
         $this->load->view('worker/payroll', $data);
         $this->load->view('fixed/footer');
+    }
+
+    /**
+     * AJAX Toggle Worker Availability
+     */
+    public function ajax_toggle_status()
+    {
+        if (!$this->aauth->is_loggedin()) {
+            echo json_encode(array('status' => 'Error', 'message' => 'Unauthorized'));
+            return;
+        }
+
+        $user_id = $this->aauth->get_user()->id;
+        $result = $this->worker->toggle_availability($user_id);
+        echo json_encode($result);
+    }
+
+    /**
+     * AJAX Portfolio Upload
+     */
+    public function portfolio_upload()
+    {
+        if (!$this->aauth->is_loggedin()) {
+            echo json_encode(array('status' => 'Error', 'message' => 'Unauthorized'));
+            return;
+        }
+
+        $user_id = $this->aauth->get_user()->id;
+        $profile = $this->worker->get_profile_by_user($user_id);
+
+        if (!$profile) {
+            echo json_encode(array('status' => 'Error', 'message' => 'Profile not found'));
+            return;
+        }
+
+        $config['upload_path'] = './uploads/worker_portfolios/';
+        $config['allowed_types'] = 'jpg|jpeg|png|gif';
+        $config['max_size'] = 5120; // 5MB
+        $config['encrypt_name'] = TRUE;
+
+        if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0755, true);
+        }
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('file')) {
+            echo json_encode(array('status' => 'Error', 'message' => $this->upload->display_errors('', '')));
+        } else {
+            $upload_data = $this->upload->data();
+            $file_path = 'uploads/worker_portfolios/' . $upload_data['file_name'];
+
+            $portfolio = json_decode($profile['portfolio'] ?? '[]', true);
+            $portfolio[] = $file_path;
+
+            $this->worker->update_profile($user_id, array('portfolio' => json_encode($portfolio)));
+
+            echo json_encode(array(
+                'status' => 'Success',
+                'message' => 'Portfolio item added!',
+                'file' => base_url($file_path)
+            ));
+        }
     }
 }
